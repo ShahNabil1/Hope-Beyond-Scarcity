@@ -77,21 +77,35 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Hope Beyond Scarcity" },
+      {
+        name: "description",
+        content:
+          "Hope Beyond Scarcity — building hope and lasting change beyond scarcity.",
+      },
+      { name: "author", content: "Hope Beyond Scarcity" },
+      { name: "apple-mobile-web-app-title", content: "Hope Beyond Scarcity" },
+      { name: "theme-color", content: "#ffffff" },
+      { property: "og:title", content: "Hope Beyond Scarcity" },
+      {
+        property: "og:description",
+        content:
+          "Hope Beyond Scarcity — building hope and lasting change beyond scarcity.",
+      },
+      { property: "og:site_name", content: "Hope Beyond Scarcity" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", type: "image/png", href: "/favicon-96x96.png", sizes: "96x96" },
+      { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+      { rel: "shortcut icon", href: "/favicon.ico" },
+      { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
+      { rel: "manifest", href: "/site.webmanifest" },
     ],
   }),
   shellComponent: RootShell,
