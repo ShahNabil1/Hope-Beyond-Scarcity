@@ -142,18 +142,19 @@ const FormMessage = React.forwardRef<
   const { error, formMessageId } = useFormField();
   const body = error ? String(error?.message ?? "") : children;
 
-  if (!body) {
-    return null;
-  }
-
   return (
     <p
       ref={ref}
       id={formMessageId}
-      className={cn("text-[0.8rem] font-medium text-destructive", className)}
+      aria-live="polite"
+      className={cn(
+        "min-h-[1.15rem] text-[0.8rem] font-medium leading-[1.15rem] text-destructive transition-opacity duration-200",
+        body ? "opacity-100" : "opacity-0",
+        className,
+      )}
       {...props}
     >
-      {body}
+      {body || "\u00A0"}
     </p>
   );
 });
