@@ -96,7 +96,7 @@ function SignUpPage() {
       password: parsed.data.password,
       options: {
         emailRedirectTo: `${window.location.origin}/auth`,
-        data: { full_name: parsed.data.fullName },
+        data: { full_name: parsed.data.fullName, policies_accepted: "true" },
       },
     });
     setSubmitting(false);
