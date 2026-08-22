@@ -34,7 +34,7 @@ export const Route = createFileRoute("/auth/")({
       { property: "og:title", content: "Sign In | Hope Beyond Scarcity" },
       {
         property: "og:description",
-        content: "Access your Hope Beyond Scarcity donor portal or admin workspace.",
+        content: "Access your donor portal.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -102,7 +102,7 @@ function SignInPage() {
   return (
     <AuthShell
       title="Sign in"
-      description="Access your donor portal or admin workspace."
+      description="Access your donor portal."
       footer={
         <>
           New to Hope Beyond Scarcity?{" "}
