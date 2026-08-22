@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+import { RequireRole } from "@/components/auth/require-role";
 import { PageHero, PlaceholderSection } from "@/components/page-hero";
 
 const title = "Admin CMS | Hope Beyond Scarcity";
@@ -20,13 +21,13 @@ export const Route = createFileRoute("/_authenticated/admin")({
 
 function AdminPage() {
   return (
-    <>
+    <RequireRole roles={["admin", "editor"]}>
       <PageHero
         eyebrow="Staff Only"
         title="Admin content management"
         description="Publish stories, toggle the emergency appeal, and manage campaigns."
       />
-      <PlaceholderSection note="Role-protected CMS will live here once Supabase Auth and roles are enabled." />
-    </>
+      <PlaceholderSection note="Role-protected CMS modules will live here. Visible to Admin and Editor roles only." />
+    </RequireRole>
   );
 }
