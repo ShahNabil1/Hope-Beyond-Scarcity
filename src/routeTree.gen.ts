@@ -23,6 +23,7 @@ import { Route as RefundRouteImport } from './routes/refund'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as VolunteerRouteImport } from './routes/volunteer'
 import { Route as AuthIndexRouteImport } from './routes/auth/index'
+import { Route as AuthSignUpRouteImport } from './routes/auth/sign-up'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -94,6 +95,11 @@ const AuthIndexRoute = AuthIndexRouteImport.update({
   path: '/auth/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthSignUpRoute = AuthSignUpRouteImport.update({
+  id: '/auth/sign-up',
+  path: '/auth/sign-up',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -109,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/refund': typeof RefundRoute
   '/terms': typeof TermsRoute
   '/volunteer': typeof VolunteerRoute
+  '/auth/sign-up': typeof AuthSignUpRoute
   '/auth/': typeof AuthIndexRoute
 }
 export interface FileRoutesByTo {
@@ -125,6 +132,7 @@ export interface FileRoutesByTo {
   '/refund': typeof RefundRoute
   '/terms': typeof TermsRoute
   '/volunteer': typeof VolunteerRoute
+  '/auth/sign-up': typeof AuthSignUpRoute
   '/auth': typeof AuthIndexRoute
 }
 export interface FileRoutesById {
@@ -142,6 +150,7 @@ export interface FileRoutesById {
   '/refund': typeof RefundRoute
   '/terms': typeof TermsRoute
   '/volunteer': typeof VolunteerRoute
+  '/auth/sign-up': typeof AuthSignUpRoute
   '/auth/': typeof AuthIndexRoute
 }
 export interface FileRouteTypes {
@@ -160,6 +169,7 @@ export interface FileRouteTypes {
     | '/refund'
     | '/terms'
     | '/volunteer'
+    | '/auth/sign-up'
     | '/auth/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -176,6 +186,7 @@ export interface FileRouteTypes {
     | '/refund'
     | '/terms'
     | '/volunteer'
+    | '/auth/sign-up'
     | '/auth'
   id:
     | '__root__'
@@ -192,6 +203,7 @@ export interface FileRouteTypes {
     | '/refund'
     | '/terms'
     | '/volunteer'
+    | '/auth/sign-up'
     | '/auth/'
   fileRoutesById: FileRoutesById
 }
@@ -209,6 +221,7 @@ export interface RootRouteChildren {
   RefundRoute: typeof RefundRoute
   TermsRoute: typeof TermsRoute
   VolunteerRoute: typeof VolunteerRoute
+  AuthSignUpRoute: typeof AuthSignUpRoute
   AuthIndexRoute: typeof AuthIndexRoute
 }
 
@@ -312,6 +325,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/sign-up': {
+      id: '/auth/sign-up'
+      path: '/auth/sign-up'
+      fullPath: '/auth/sign-up'
+      preLoaderRoute: typeof AuthSignUpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -329,6 +349,7 @@ const rootRouteChildren: RootRouteChildren = {
   RefundRoute: RefundRoute,
   TermsRoute: TermsRoute,
   VolunteerRoute: VolunteerRoute,
+  AuthSignUpRoute: AuthSignUpRoute,
   AuthIndexRoute: AuthIndexRoute,
 }
 export const routeTree = rootRouteImport

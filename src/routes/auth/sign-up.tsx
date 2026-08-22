@@ -51,16 +51,28 @@ const signUpSchema = z
       .min(8, "Password must be at least 8 characters")
       .max(72, "Password must be less than 72 characters"),
     confirmPassword: z.string().min(1, "Please confirm your password"),
-    acceptTerms: z.literal(true, { errorMap: () => ({ message: "You must accept the Terms of Service" }) }),
-    acceptPrivacy: z.literal(true, { errorMap: () => ({ message: "You must accept the Privacy Policy" }) }),
-    acceptRefund: z.literal(true, { errorMap: () => ({ message: "You must accept the Refund Policy" }) }),
+    acceptTerms: z.boolean(),
+    acceptPrivacy: z.boolean(),
+    acceptRefund: z.boolean(),
   })
   .refine((values) => values.password === values.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"],
+  })
+  .refine((values) => values.acceptTerms, {
+    message: "You must accept the Terms of Service",
+    path: ["acceptTerms"],
+  })
+  .refine((values) => values.acceptPrivacy, {
+    message: "You must accept the Privacy Policy",
+    path: ["acceptPrivacy"],
+  })
+  .refine((values) => values.acceptRefund, {
+    message: "You must accept the Refund Policy",
+    path: ["acceptRefund"],
   });
 
-type SignUpValues = z.input<typeof signUpSchema>;
+type SignUpValues = z.infer<typeof signUpSchema>;
 
 const consents = [
   { name: "acceptTerms", label: "Terms of Service", to: "/terms" },
