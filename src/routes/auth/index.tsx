@@ -20,7 +20,9 @@ import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Separator } from "@/components/ui/separator";
 import { fetchRoles, landingPathForRoles, useAuth } from "@/hooks/use-auth";
+import { ensureRegistered } from "@/lib/account.functions";
 import { supabase } from "@/lib/supabase";
+
 
 export const Route = createFileRoute("/auth/")({
   ssr: false,
@@ -61,10 +63,30 @@ function SignInPage() {
   });
 
   useEffect(() => {
-    if (!loading && isAuthenticated) {
+    if (loading || !isAuthenticated) return;
+    let cancelled = false;
+    (async () => {
+      let registered = true;
+      try {
+        const result = await ensureRegistered();
+        registered = result.registered;
+      } catch {
+        registered = true;
+      }
+      if (cancelled) return;
+      if (!registered) {
+        await supabase.auth.signOut();
+        toast.error("No account found for that Google address. Please create an account first.");
+        navigate({ to: "/auth/sign-up", replace: true });
+        return;
+      }
       navigate({ to: homePath, replace: true });
-    }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [loading, isAuthenticated, homePath, navigate]);
+
 
   async function onSubmit(values: z.infer<typeof signInSchema>) {
     setSubmitting(true);
