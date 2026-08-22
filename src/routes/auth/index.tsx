@@ -20,7 +20,9 @@ import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Separator } from "@/components/ui/separator";
 import { fetchRoles, landingPathForRoles, useAuth } from "@/hooks/use-auth";
+import { ensureRegistered } from "@/lib/account.functions";
 import { supabase } from "@/lib/supabase";
+
 
 export const Route = createFileRoute("/auth/")({
   ssr: false,
