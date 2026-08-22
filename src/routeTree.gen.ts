@@ -23,6 +23,7 @@ import { Route as RefundRouteImport } from './routes/refund'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as VolunteerRouteImport } from './routes/volunteer'
 import { Route as AuthIndexRouteImport } from './routes/auth/index'
+import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
 import { Route as AuthSignUpRouteImport } from './routes/auth/sign-up'
 
 const IndexRoute = IndexRouteImport.update({
@@ -95,6 +96,11 @@ const AuthIndexRoute = AuthIndexRouteImport.update({
   path: '/auth/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
+  id: '/auth/forgot-password',
+  path: '/auth/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthSignUpRoute = AuthSignUpRouteImport.update({
   id: '/auth/sign-up',
   path: '/auth/sign-up',
@@ -115,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/refund': typeof RefundRoute
   '/terms': typeof TermsRoute
   '/volunteer': typeof VolunteerRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/auth/': typeof AuthIndexRoute
 }
@@ -132,6 +139,7 @@ export interface FileRoutesByTo {
   '/refund': typeof RefundRoute
   '/terms': typeof TermsRoute
   '/volunteer': typeof VolunteerRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/auth': typeof AuthIndexRoute
 }
@@ -150,6 +158,7 @@ export interface FileRoutesById {
   '/refund': typeof RefundRoute
   '/terms': typeof TermsRoute
   '/volunteer': typeof VolunteerRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/auth/': typeof AuthIndexRoute
 }
@@ -169,6 +178,7 @@ export interface FileRouteTypes {
     | '/refund'
     | '/terms'
     | '/volunteer'
+    | '/auth/forgot-password'
     | '/auth/sign-up'
     | '/auth/'
   fileRoutesByTo: FileRoutesByTo
@@ -186,6 +196,7 @@ export interface FileRouteTypes {
     | '/refund'
     | '/terms'
     | '/volunteer'
+    | '/auth/forgot-password'
     | '/auth/sign-up'
     | '/auth'
   id:
@@ -203,6 +214,7 @@ export interface FileRouteTypes {
     | '/refund'
     | '/terms'
     | '/volunteer'
+    | '/auth/forgot-password'
     | '/auth/sign-up'
     | '/auth/'
   fileRoutesById: FileRoutesById
@@ -221,6 +233,7 @@ export interface RootRouteChildren {
   RefundRoute: typeof RefundRoute
   TermsRoute: typeof TermsRoute
   VolunteerRoute: typeof VolunteerRoute
+  AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
   AuthSignUpRoute: typeof AuthSignUpRoute
   AuthIndexRoute: typeof AuthIndexRoute
 }
@@ -325,6 +338,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/forgot-password': {
+      id: '/auth/forgot-password'
+      path: '/auth/forgot-password'
+      fullPath: '/auth/forgot-password'
+      preLoaderRoute: typeof AuthForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth/sign-up': {
       id: '/auth/sign-up'
       path: '/auth/sign-up'
@@ -349,6 +369,7 @@ const rootRouteChildren: RootRouteChildren = {
   RefundRoute: RefundRoute,
   TermsRoute: TermsRoute,
   VolunteerRoute: VolunteerRoute,
+  AuthForgotPasswordRoute: AuthForgotPasswordRoute,
   AuthSignUpRoute: AuthSignUpRoute,
   AuthIndexRoute: AuthIndexRoute,
 }
