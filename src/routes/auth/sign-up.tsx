@@ -208,40 +208,46 @@ function SignUpPage() {
             )}
           />
 
-          <div className="space-y-3 rounded-lg border border-border bg-muted/40 p-4">
-            {consents.map((consent) => (
-              <FormField
-                key={consent.name}
-                control={form.control}
-                name={consent.name}
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start gap-3 space-y-0">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value === true}
-                        onCheckedChange={(checked) => field.onChange(checked === true)}
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel className="text-sm font-normal">
-                        I have read and agree to the{" "}
-                        <Link to={consent.to} className="font-semibold text-primary hover:underline">
-                          {consent.label}
-                        </Link>
-                      </FormLabel>
-                      <FormMessage />
-                    </div>
-                  </FormItem>
-                )}
-              />
-            ))}
+          <div className="rounded-lg border border-border bg-muted/40 p-4">
+            <FormField
+              control={form.control}
+              name="acceptPolicies"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start gap-3 space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value === true}
+                      onCheckedChange={(checked) => field.onChange(checked === true)}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel className="text-sm font-normal">
+                      I have read and agree to the{" "}
+                      <Link to="/terms" className="font-semibold text-primary hover:underline">
+                        Terms of Service
+                      </Link>
+                      ,{" "}
+                      <Link to="/privacy" className="font-semibold text-primary hover:underline">
+                        Privacy Policy
+                      </Link>
+                      , and{" "}
+                      <Link to="/refund" className="font-semibold text-primary hover:underline">
+                        Refund Policy
+                      </Link>
+                      .
+                    </FormLabel>
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
+            />
           </div>
 
-          <Button type="submit" className="w-full" disabled={submitting || !allConsentsChecked}>
+          <Button type="submit" className="w-full" disabled={submitting || !allPoliciesAccepted}>
             {submitting ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : null}
             {submitting ? "Creating account…" : "Create account"}
           </Button>
-          {!allConsentsChecked ? (
+          {!allPoliciesAccepted ? (
             <p className="text-center text-xs text-muted-foreground">
               Please accept all three policies to continue.
             </p>
