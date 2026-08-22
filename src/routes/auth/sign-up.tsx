@@ -18,6 +18,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
+import { PasswordStrength } from "@/components/auth/password-strength";
+import { passwordSchema } from "@/lib/password";
 import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/auth/sign-up")({
@@ -46,10 +49,7 @@ const signUpSchema = z
   .object({
     fullName: z.string().trim().min(2, "Please enter your full name").max(100),
     email: z.string().trim().min(1, "Email is required").email("Enter a valid email address").max(255),
-    password: z
-      .string()
-      .min(8, "Password must be at least 8 characters")
-      .max(72, "Password must be less than 72 characters"),
+    password: passwordSchema,
     confirmPassword: z.string().min(1, "Please confirm your password"),
     acceptPolicies: z.boolean(),
   })
@@ -188,8 +188,9 @@ function SignUpPage() {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input type="password" autoComplete="new-password" placeholder="At least 8 characters" {...field} />
+                  <PasswordInput autoComplete="new-password" placeholder="At least 8 characters" {...field} />
                 </FormControl>
+                <PasswordStrength value={field.value} />
                 <FormMessage />
               </FormItem>
             )}
@@ -201,7 +202,7 @@ function SignUpPage() {
               <FormItem>
                 <FormLabel>Confirm password</FormLabel>
                 <FormControl>
-                  <Input type="password" autoComplete="new-password" placeholder="Re-enter your password" {...field} />
+                  <PasswordInput autoComplete="new-password" placeholder="Re-enter your password" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -247,11 +248,13 @@ function SignUpPage() {
             {submitting ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : null}
             {submitting ? "Creating account…" : "Create account"}
           </Button>
-          {!allPoliciesAccepted ? (
-            <p className="text-center text-xs text-muted-foreground">
-              Please accept all three policies to continue.
-            </p>
-          ) : null}
+          <p
+            className={`min-h-4 text-center text-xs leading-4 text-muted-foreground transition-opacity duration-200 ${
+              allPoliciesAccepted ? "opacity-0" : "opacity-100"
+            }`}
+          >
+            Please accept the policies to continue.
+          </p>
         </form>
       </Form>
     </AuthShell>
