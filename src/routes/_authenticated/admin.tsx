@@ -5,7 +5,7 @@ import { PageHero, PlaceholderSection } from "@/components/page-hero";
 const title = "Admin CMS | Hope Beyond Scarcity";
 const description = "Internal content management for programs, news, events, and campaigns.";
 
-export const Route = createFileRoute("/admin")({
+export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
       { title },
