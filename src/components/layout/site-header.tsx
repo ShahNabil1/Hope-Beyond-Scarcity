@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Menu, HeartHandshake } from "lucide-react";
+import { Menu } from "lucide-react";
+
+import { BrandLogo } from "@/components/brand-logo";
 
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -22,9 +24,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
       <div className="mx-auto flex h-18 max-w-7xl items-center gap-4 px-4 py-3 sm:px-6 lg:px-8">
         <Link to="/" className="flex items-center gap-2.5" aria-label="Hope Beyond Scarcity home">
-          <span className="flex size-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-            <HeartHandshake className="size-5" aria-hidden="true" />
-          </span>
+          <BrandLogo className="size-11" />
           <span className="leading-tight">
             <span className="block text-base font-bold tracking-tight text-foreground">
               Hope Beyond Scarcity
