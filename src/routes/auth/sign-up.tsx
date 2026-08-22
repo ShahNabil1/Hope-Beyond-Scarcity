@@ -51,34 +51,18 @@ const signUpSchema = z
       .min(8, "Password must be at least 8 characters")
       .max(72, "Password must be less than 72 characters"),
     confirmPassword: z.string().min(1, "Please confirm your password"),
-    acceptTerms: z.boolean(),
-    acceptPrivacy: z.boolean(),
-    acceptRefund: z.boolean(),
+    acceptPolicies: z.boolean(),
   })
   .refine((values) => values.password === values.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"],
   })
-  .refine((values) => values.acceptTerms, {
-    message: "You must accept the Terms of Service",
-    path: ["acceptTerms"],
-  })
-  .refine((values) => values.acceptPrivacy, {
-    message: "You must accept the Privacy Policy",
-    path: ["acceptPrivacy"],
-  })
-  .refine((values) => values.acceptRefund, {
-    message: "You must accept the Refund Policy",
-    path: ["acceptRefund"],
+  .refine((values) => values.acceptPolicies, {
+    message: "You must accept all policies to continue",
+    path: ["acceptPolicies"],
   });
 
 type SignUpValues = z.infer<typeof signUpSchema>;
-
-const consents = [
-  { name: "acceptTerms", label: "Terms of Service", to: "/terms" },
-  { name: "acceptPrivacy", label: "Privacy Policy", to: "/privacy" },
-  { name: "acceptRefund", label: "Refund Policy", to: "/refund" },
-] as const;
 
 function SignUpPage() {
   const [submitting, setSubmitting] = useState(false);
@@ -87,21 +71,17 @@ function SignUpPage() {
   const form = useForm<SignUpValues>({
     resolver: zodResolver(signUpSchema),
     mode: "onChange",
-    // All three policy checkboxes are strictly unchecked by default.
     defaultValues: {
       fullName: "",
       email: "",
       password: "",
       confirmPassword: "",
-      acceptTerms: false,
-      acceptPrivacy: false,
-      acceptRefund: false,
+      acceptPolicies: false,
     },
   });
 
   const values = form.watch();
-  const allConsentsChecked =
-    values.acceptTerms === true && values.acceptPrivacy === true && values.acceptRefund === true;
+  const allPoliciesAccepted = values.acceptPolicies === true;
 
   async function onSubmit(raw: SignUpValues) {
     const parsed = signUpSchema.safeParse(raw);
