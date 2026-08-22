@@ -61,10 +61,30 @@ function SignInPage() {
   });
 
   useEffect(() => {
-    if (!loading && isAuthenticated) {
+    if (loading || !isAuthenticated) return;
+    let cancelled = false;
+    (async () => {
+      let registered = true;
+      try {
+        const result = await ensureRegistered();
+        registered = result.registered;
+      } catch {
+        registered = true;
+      }
+      if (cancelled) return;
+      if (!registered) {
+        await supabase.auth.signOut();
+        toast.error("No account found for that Google address. Please create an account first.");
+        navigate({ to: "/auth/sign-up", replace: true });
+        return;
+      }
       navigate({ to: homePath, replace: true });
-    }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [loading, isAuthenticated, homePath, navigate]);
+
 
   async function onSubmit(values: z.infer<typeof signInSchema>) {
     setSubmitting(true);
