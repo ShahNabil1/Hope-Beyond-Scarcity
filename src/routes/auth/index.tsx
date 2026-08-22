@@ -177,11 +177,6 @@ function SignInPage() {
         Continue with Google
       </Button>
 
-      <p className="mt-3 flex gap-2 rounded-md bg-muted/60 p-3 text-xs leading-relaxed text-muted-foreground">
-        <Info className="mt-0.5 size-3.5 shrink-0 text-primary" aria-hidden="true" />
-        Google login only works if this account was previously registered with the same email
-        address. Otherwise, please create an account with email first.
-      </p>
     </AuthShell>
   );
 }
