@@ -1,4 +1,6 @@
 import { Link } from "@tanstack/react-router";
+
+import { BrandLogo } from "@/components/brand-logo";
 import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Youtube } from "lucide-react";
 
 const columns = [
@@ -34,7 +36,8 @@ export function SiteFooter() {
     <footer className="mt-24 border-t border-border bg-primary-deep text-primary-foreground">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-2 lg:grid-cols-4 lg:px-8">
         <div>
-          <h2 className="text-lg font-bold">Hope Beyond Scarcity</h2>
+          <BrandLogo className="size-12" />
+          <h2 className="mt-3 text-lg font-bold">Hope Beyond Scarcity</h2>
           <p className="mt-3 max-w-xs text-sm text-primary-foreground/75">
             A Canadian Not-for-Profit Corporation working alongside families to build dignity,
             health, and lasting hope beyond scarcity.

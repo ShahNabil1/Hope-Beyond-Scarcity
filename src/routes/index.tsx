@@ -6,10 +6,11 @@ import {
   MapPin,
   Package,
   ShieldCheck,
-  Sparkles,
   Stethoscope,
   Users,
 } from "lucide-react";
+
+import { BrandLogo } from "@/components/brand-logo";
 
 import heroImage from "@/assets/hero-children.jpg";
 import missionImage from "@/assets/mission-founders.jpg";
