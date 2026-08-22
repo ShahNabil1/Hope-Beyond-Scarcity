@@ -6,10 +6,11 @@ import {
   MapPin,
   Package,
   ShieldCheck,
-  Sparkles,
   Stethoscope,
   Users,
 } from "lucide-react";
+
+import { BrandLogo } from "@/components/brand-logo";
 
 import heroImage from "@/assets/hero-children.jpg";
 import missionImage from "@/assets/mission-founders.jpg";
@@ -71,7 +72,7 @@ function Index() {
         />
         <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
           <span className="inline-flex items-center gap-2 rounded-full bg-primary-foreground/15 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest">
-            <Sparkles className="size-3.5" aria-hidden="true" />
+            <BrandLogo className="size-5" />
             Canadian Not-for-Profit Corporation
           </span>
           <h1 className="mt-6 max-w-3xl text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl">

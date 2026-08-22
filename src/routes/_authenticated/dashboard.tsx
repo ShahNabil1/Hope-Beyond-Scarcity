@@ -6,7 +6,7 @@ const title = "Donor Dashboard | Hope Beyond Scarcity";
 const description =
   "Track your giving history, manage monthly donations, and download tax receipts in one secure place.";
 
-export const Route = createFileRoute("/dashboard")({
+export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
       { title },
