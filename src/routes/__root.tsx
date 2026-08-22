@@ -11,6 +11,9 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { SiteHeader } from "../components/layout/site-header";
+import { SiteFooter } from "../components/layout/site-footer";
+
 
 function NotFoundComponent() {
   return (
@@ -101,12 +104,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap",
+      },
       { rel: "icon", type: "image/png", href: "/favicon-96x96.png", sizes: "96x96" },
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
       { rel: "shortcut icon", href: "/favicon.ico" },
       { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
       { rel: "manifest", href: "/site.webmanifest" },
     ],
+
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -133,8 +143,15 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <div className="flex min-h-screen flex-col font-sans antialiased">
+        <SiteHeader />
+        <main className="flex-1">
+          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+          <Outlet />
+        </main>
+        <SiteFooter />
+      </div>
     </QueryClientProvider>
   );
+
 }
