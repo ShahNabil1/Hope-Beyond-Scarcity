@@ -17,6 +17,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
+import { PasswordStrength } from "@/components/auth/password-strength";
+import { passwordSchema } from "@/lib/password";
 import { fetchRoles, landingPathForRoles } from "@/hooks/use-auth";
 import { supabase } from "@/lib/supabase";
 
@@ -43,7 +46,7 @@ export const Route = createFileRoute("/auth/reset-password")({
 
 const schema = z
   .object({
-    password: z.string().min(8, "Password must be at least 8 characters").max(72),
+    password: passwordSchema,
     confirmPassword: z.string().min(1, "Please confirm your password"),
   })
   .refine((values) => values.password === values.confirmPassword, {
@@ -109,8 +112,9 @@ function ResetPasswordPage() {
               <FormItem>
                 <FormLabel>New password</FormLabel>
                 <FormControl>
-                  <Input type="password" autoComplete="new-password" placeholder="At least 8 characters" {...field} />
+                  <PasswordInput autoComplete="new-password" placeholder="At least 8 characters" {...field} />
                 </FormControl>
+                <PasswordStrength value={field.value} />
                 <FormMessage />
               </FormItem>
             )}
@@ -122,7 +126,7 @@ function ResetPasswordPage() {
               <FormItem>
                 <FormLabel>Confirm new password</FormLabel>
                 <FormControl>
-                  <Input type="password" autoComplete="new-password" placeholder="Re-enter your password" {...field} />
+                  <PasswordInput autoComplete="new-password" placeholder="Re-enter your password" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

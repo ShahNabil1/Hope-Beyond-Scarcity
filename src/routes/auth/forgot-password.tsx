@@ -18,6 +18,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
+import { PasswordStrength } from "@/components/auth/password-strength";
+import { passwordSchema } from "@/lib/password";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { fetchRoles, landingPathForRoles } from "@/hooks/use-auth";
 import { supabase } from "@/lib/supabase";
@@ -51,7 +54,7 @@ const requestSchema = z.object({
 const resetSchema = z
   .object({
     token: z.string().length(6, "Enter the 6-digit code from your email"),
-    password: z.string().min(8, "Password must be at least 8 characters").max(72),
+    password: passwordSchema,
     confirmPassword: z.string().min(1, "Please confirm your password"),
   })
   .refine((values) => values.password === values.confirmPassword, {
@@ -123,7 +126,7 @@ function ForgotPasswordPage() {
     return (
       <AuthShell
         title="Enter your reset code"
-        description={`We sent a 6-digit code to ${email}. It expires in 60 minutes.`}
+        description={`We sent a 6-digit code to ${email}. It expires in 5 minutes.`}
         footer={
           <button
             type="button"
@@ -166,8 +169,9 @@ function ForgotPasswordPage() {
                 <FormItem>
                   <FormLabel>New password</FormLabel>
                   <FormControl>
-                    <Input type="password" autoComplete="new-password" placeholder="At least 8 characters" {...field} />
+                    <PasswordInput autoComplete="new-password" placeholder="At least 8 characters" {...field} />
                   </FormControl>
+                  <PasswordStrength value={field.value} />
                   <FormMessage />
                 </FormItem>
               )}
@@ -179,7 +183,7 @@ function ForgotPasswordPage() {
                 <FormItem>
                   <FormLabel>Confirm new password</FormLabel>
                   <FormControl>
-                    <Input type="password" autoComplete="new-password" placeholder="Re-enter your password" {...field} />
+                    <PasswordInput autoComplete="new-password" placeholder="Re-enter your password" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

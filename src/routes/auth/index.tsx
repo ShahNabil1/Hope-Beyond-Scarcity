@@ -17,6 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Separator } from "@/components/ui/separator";
 import { fetchRoles, landingPathForRoles, useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/lib/supabase";
@@ -142,7 +143,7 @@ function SignInPage() {
                   </Link>
                 </div>
                 <FormControl>
-                  <Input type="password" autoComplete="current-password" placeholder="••••••••" {...field} />
+                  <PasswordInput autoComplete="current-password" placeholder="••••••••" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
