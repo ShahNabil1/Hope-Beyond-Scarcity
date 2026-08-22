@@ -248,11 +248,13 @@ function SignUpPage() {
             {submitting ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : null}
             {submitting ? "Creating account…" : "Create account"}
           </Button>
-          {!allPoliciesAccepted ? (
-            <p className="text-center text-xs text-muted-foreground">
-              Please accept all three policies to continue.
-            </p>
-          ) : null}
+          <p
+            className={`min-h-4 text-center text-xs leading-4 text-muted-foreground transition-opacity duration-200 ${
+              allPoliciesAccepted ? "opacity-0" : "opacity-100"
+            }`}
+          >
+            Please accept the policies to continue.
+          </p>
         </form>
       </Form>
     </AuthShell>
