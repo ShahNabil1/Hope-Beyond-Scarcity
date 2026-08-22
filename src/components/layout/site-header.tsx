@@ -1,11 +1,21 @@
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
-import { Menu } from "lucide-react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { LayoutDashboard, LogOut, Menu, UserRound } from "lucide-react";
 
 import { BrandLogo } from "@/components/brand-logo";
 
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/hooks/use-auth";
 
 const navLinks = [
   { to: "/", label: "Home" },
@@ -19,6 +29,16 @@ const navLinks = [
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const { isAuthenticated, user, roles, homePath, signOut } = useAuth();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  async function handleSignOut() {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await signOut();
+    navigate({ to: "/auth", replace: true });
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
@@ -58,6 +78,39 @@ export function SiteHeader() {
             <Link to="/donate">Donate Now</Link>
           </Button>
 
+          {isAuthenticated ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" aria-label="Account menu">
+                  <UserRound className="size-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel className="truncate">
+                  {user?.email}
+                  <span className="mt-0.5 block text-[11px] font-medium uppercase tracking-widest text-muted-foreground">
+                    {roles.length ? roles.join(" · ") : "member"}
+                  </span>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to={homePath}>
+                    <LayoutDashboard className="size-4" />
+                    {homePath === "/admin" ? "Admin CMS" : "Donor dashboard"}
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => void handleSignOut()}>
+                  <LogOut className="size-4" />
+                  Sign out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button asChild variant="ghost" className="hidden sm:inline-flex">
+              <Link to="/auth">Sign in</Link>
+            </Button>
+          )}
+
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open menu">
@@ -85,6 +138,28 @@ export function SiteHeader() {
                   <Button asChild onClick={() => setOpen(false)}>
                     <Link to="/donate">Donate Now</Link>
                   </Button>
+                  {isAuthenticated ? (
+                    <>
+                      <Button asChild variant="ghost" onClick={() => setOpen(false)}>
+                        <Link to={homePath}>
+                          {homePath === "/admin" ? "Admin CMS" : "Donor dashboard"}
+                        </Link>
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        onClick={() => {
+                          setOpen(false);
+                          void handleSignOut();
+                        }}
+                      >
+                        Sign out
+                      </Button>
+                    </>
+                  ) : (
+                    <Button asChild variant="ghost" onClick={() => setOpen(false)}>
+                      <Link to="/auth">Sign in</Link>
+                    </Button>
+                  )}
                 </div>
               </nav>
             </SheetContent>
