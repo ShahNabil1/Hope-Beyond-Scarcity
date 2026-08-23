@@ -1,4 +1,10 @@
-export const CONTENT_TABLES = ["programs", "news_posts", "events", "volunteer_roles"] as const;
+export const CONTENT_TABLES = [
+  "programs",
+  "news_posts",
+  "events",
+  "volunteer_roles",
+  "legal_pages",
+] as const;
 export type ContentTable = (typeof CONTENT_TABLES)[number];
 
 export type FieldKind =
@@ -160,6 +166,33 @@ export const CONTENT_CONFIG: Record<ContentTable, ContentConfig> = {
       is_active: true,
     },
   },
+  legal_pages: {
+    table: "legal_pages",
+    singular: "Legal page",
+    plural: "Legal pages",
+    titleField: "title",
+    subtitleField: "summary",
+    fields: [
+      { name: "title", label: "Title", kind: "text", required: true },
+      { name: "slug", label: "Slug", kind: "text", required: true, help: "Used in the URL, e.g. privacy" },
+      { name: "summary", label: "Summary", kind: "textarea", required: true, full: true },
+      {
+        name: "body",
+        label: "Policy body",
+        kind: "richtext",
+        full: true,
+        help: 'Use "## Heading" for sections, "- " for bullets, blank lines between paragraphs, **bold** for emphasis.',
+      },
+      { name: "effective_date", label: "Effective date", kind: "text", placeholder: "2026-01-01" },
+      ...commonTail,
+    ],
+    defaults: {
+      summary: "",
+      body: "",
+      sort_order: 0,
+      is_active: true,
+    },
+  },
 };
 
 export const CONTENT_COLUMNS: Record<ContentTable, string[]> = {
@@ -167,6 +200,7 @@ export const CONTENT_COLUMNS: Record<ContentTable, string[]> = {
   news_posts: CONTENT_CONFIG.news_posts.fields.map((f) => f.name),
   events: CONTENT_CONFIG.events.fields.map((f) => f.name),
   volunteer_roles: CONTENT_CONFIG.volunteer_roles.fields.map((f) => f.name),
+  legal_pages: CONTENT_CONFIG.legal_pages.fields.map((f) => f.name),
 };
 
 export function slugify(value: string) {

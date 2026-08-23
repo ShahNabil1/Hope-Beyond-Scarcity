@@ -30,3 +30,18 @@ export const getVolunteerRoles = createServerFn({ method: "GET" }).handler(async
 export const getSiteSettings = createServerFn({ method: "GET" }).handler(async () =>
   fetchSiteSettings(),
 );
+
+export const getLegalPages = createServerFn({ method: "GET" }).handler(async () => {
+  const { fetchLegalPages } = await import("./content.server");
+  return fetchLegalPages();
+});
+
+export const getLegalPage = createServerFn({ method: "GET" })
+  .inputValidator((data: { slug: string }) => {
+    if (!data?.slug || !/^[a-z0-9-]{1,120}$/i.test(data.slug)) throw new Error("Invalid slug");
+    return data;
+  })
+  .handler(async ({ data }) => {
+    const { fetchLegalPage } = await import("./content.server");
+    return fetchLegalPage(data.slug);
+  });

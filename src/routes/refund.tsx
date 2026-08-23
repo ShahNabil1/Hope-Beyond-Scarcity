@@ -1,27 +1,35 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 
-import { PageHero, PlaceholderSection } from "@/components/page-hero";
-
-const title = "Refund Policy | Hope Beyond Scarcity";
-const description = "Our donation refund and cancellation policy for one-time and monthly gifts.";
+import { LegalFallback, LegalPageView } from "@/components/legal/legal-page-view";
+import { getLegalPage } from "@/lib/content.functions";
 
 export const Route = createFileRoute("/refund")({
-  head: () => ({
-    meta: [
-      { title },
-      { name: "description", content: description },
-      { property: "og:title", content: title },
-      { property: "og:description", content: description },
-    ],
-  }),
+  loader: async () => {
+    const page = await getLegalPage({ data: { slug: "refund" } });
+    if (!page) throw notFound();
+    return page;
+  },
+  head: ({ loaderData }) => {
+    const title = `${loaderData?.title ?? "Refund Policy"} | Hope Beyond Scarcity`;
+    const description =
+      loaderData?.summary ??
+      "Our donation refund and cancellation policy for one-time and monthly gifts.";
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description.slice(0, 155) },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description.slice(0, 155) },
+        { property: "og:type", content: "article" },
+        { name: "twitter:card", content: "summary" },
+      ],
+    };
+  },
+  errorComponent: () => <LegalFallback note="We couldn't load this policy right now." />,
+  notFoundComponent: () => <LegalFallback note="This policy has not been published yet." />,
   component: RefundPage,
 });
 
 function RefundPage() {
-  return (
-    <>
-      <PageHero eyebrow="Legal" title="Refund Policy" />
-      <PlaceholderSection note="Full refund policy copy will be published here." />
-    </>
-  );
+  return <LegalPageView page={Route.useLoaderData()} />;
 }
