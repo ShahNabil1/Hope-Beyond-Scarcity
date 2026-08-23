@@ -197,11 +197,13 @@ function DonatePage() {
                   $
                 </span>
                 <Input
+                  ref={amountInputRef}
                   id="custom-amount"
                   inputMode="decimal"
                   placeholder="Enter an amount"
                   className="pl-7"
                   aria-describedby="amount-help"
+                  aria-label="Donation amount in Canadian dollars"
                   aria-invalid={amountTouched && amountError ? true : undefined}
                   value={customAmount}
                   onBlur={() => setAmountTouched(true)}
@@ -212,6 +214,14 @@ function DonatePage() {
                     setCheckoutOpen(false);
                     setCheckoutError(null);
                   }}
+                  onKeyDown={(event) => {
+                    // Enter from the amount field jumps to the donate button,
+                    // which is the next logical step in the flow.
+                    if (event.key === "Enter" && canDonate) {
+                      event.preventDefault();
+                      donateButtonRef.current?.focus();
+                    }
+                  }}
                 />
                 <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-muted-foreground">
                   CAD
@@ -220,6 +230,7 @@ function DonatePage() {
               <p
                 id="amount-help"
                 role={amountTouched && amountError ? "alert" : undefined}
+                aria-live={amountTouched && amountError ? "assertive" : "off"}
                 className={cn(
                   "min-h-[1.25rem] text-xs",
                   amountTouched && amountError ? "text-destructive" : "text-muted-foreground",
