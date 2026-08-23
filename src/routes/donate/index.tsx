@@ -139,7 +139,7 @@ function DonatePage() {
                   type="button"
                   onClick={() => {
                     setPresetAmount(amount);
-                    setCustomAmount("");
+                    setCustomAmount(String(amount));
                     setCheckoutOpen(false);
                   }}
                   className={cn(
