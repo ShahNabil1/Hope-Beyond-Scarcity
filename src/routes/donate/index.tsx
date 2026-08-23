@@ -265,7 +265,7 @@ function DonatePage() {
             <p className="mt-3 min-h-[1rem] text-center text-xs text-muted-foreground">
               {policiesAccepted
                 ? "Card details are entered directly with our payment processor — they never touch our servers."
-                : "Accept all three policies above to continue."}
+                : "Accept the Terms, Privacy, and Refund policies above to continue."}
             </p>
           </div>
 
