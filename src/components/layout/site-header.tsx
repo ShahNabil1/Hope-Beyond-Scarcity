@@ -42,18 +42,23 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-      <div className="mx-auto flex h-18 max-w-7xl items-center gap-4 px-4 py-3 sm:px-6 lg:px-8">
-        <Link to="/" className="flex items-center gap-2.5" aria-label="Hope Beyond Scarcity home">
-          <BrandLogo className="size-11" />
-          <span className="leading-tight">
-            <span className="block text-base font-bold tracking-tight text-foreground">
+      <div className="mx-auto flex h-18 max-w-7xl items-center gap-2 px-4 py-3 sm:gap-4 sm:px-6 lg:px-8">
+        <Link
+          to="/"
+          className="flex min-w-0 items-center gap-2 sm:gap-2.5"
+          aria-label="Hope Beyond Scarcity home"
+        >
+          <BrandLogo className="size-9 shrink-0 sm:size-11" />
+          <span className="min-w-0 leading-tight">
+            <span className="block truncate text-sm font-bold tracking-tight text-foreground sm:text-base">
               Hope Beyond Scarcity
             </span>
-            <span className="block text-[11px] font-medium uppercase tracking-widest text-muted-foreground">
+            <span className="hidden text-[11px] font-medium uppercase tracking-widest text-muted-foreground sm:block">
               Canadian Not-for-Profit
             </span>
           </span>
         </Link>
+
 
         <nav className="ml-auto hidden items-center gap-1 lg:flex" aria-label="Main">
           {navLinks.map((link) => (
