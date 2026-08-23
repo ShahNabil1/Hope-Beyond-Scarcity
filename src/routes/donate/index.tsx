@@ -76,12 +76,18 @@ function DonatePage() {
         description="Secure Canadian donations in CAD. Transparent reporting. Every dollar tracked from gift to village."
       />
 
-      <section className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:px-8 lg:py-20">
+      <section
+        className={`mx-auto grid max-w-6xl gap-6 px-4 py-10 sm:gap-8 sm:px-6 lg:gap-8 lg:px-8 lg:py-16 xl:max-w-7xl xl:gap-10 ${
+          checkoutOpen
+            ? "lg:grid-cols-[minmax(0,1fr)_400px] xl:grid-cols-[minmax(0,1fr)_460px]"
+            : "lg:grid-cols-[minmax(0,1fr)_340px] xl:grid-cols-[minmax(0,1fr)_360px]"
+        }`}
+      >
         <div className="space-y-8">
           <PaymentTestModeBanner />
 
           {/* Frequency */}
-          <div className="rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-soft)]">
+          <div className="rounded-2xl border border-border bg-card p-5 shadow-[var(--shadow-soft)] sm:p-6">
             <h2 className="text-lg font-semibold text-foreground">1. Choose your giving rhythm</h2>
             <div className="mt-4 grid grid-cols-2 gap-3">
               <FrequencyOption
@@ -128,7 +134,7 @@ function DonatePage() {
           </div>
 
           {/* Amount */}
-          <div className="rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-soft)]">
+          <div className="rounded-2xl border border-border bg-card p-5 shadow-[var(--shadow-soft)] sm:p-6">
             <h2 className="text-lg font-semibold text-foreground">2. Choose your amount (CAD)</h2>
             <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
               {PRESET_AMOUNTS_CAD.map((amount) => (
@@ -211,7 +217,7 @@ function DonatePage() {
           </div>
 
           {/* Legal */}
-          <div className="rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-soft)]">
+          <div className="rounded-2xl border border-border bg-card p-5 shadow-[var(--shadow-soft)] sm:p-6">
             <h2 className="text-lg font-semibold text-foreground">3. Confirm and give</h2>
 
             <div className="mt-4 rounded-xl border border-border bg-muted/50 p-4 text-xs leading-relaxed text-muted-foreground">
@@ -291,9 +297,13 @@ function DonatePage() {
 
         </div>
 
-        <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
+        <aside
+          className={`space-y-4 lg:sticky lg:top-24 lg:self-start ${
+            checkoutOpen ? "order-first lg:order-none" : ""
+          }`}
+        >
           {checkoutOpen && returnUrl ? (
-            <div className="space-y-3 rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-soft)]">
+            <div className="space-y-3 rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-soft)] sm:p-5">
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 text-primary">
                   <ShieldCheck className="size-5" aria-hidden="true" />
