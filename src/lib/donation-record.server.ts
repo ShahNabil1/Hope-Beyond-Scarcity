@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 
 import { sendDonationReceipt } from "@/lib/donation-receipt.server";
-import type { StripeEnv } from "@/lib/stripe.server";
+import { createStripeClient, type StripeEnv } from "@/lib/stripe.server";
 
 let _supabase: ReturnType<typeof createClient<any>> | null = null;
 function getSupabase() {
@@ -14,12 +14,82 @@ function getSupabase() {
   return _supabase;
 }
 
+function isoFromUnix(seconds: number | null | undefined): string | null {
+  return seconds ? new Date(seconds * 1000).toISOString() : null;
+}
+
+/** Keeps the local subscription row in sync with Stripe. */
+export async function upsertSubscriptionFromStripe(subscription: any, env: StripeEnv) {
+  const userId = subscription.metadata?.userId;
+  if (!userId) {
+    console.error("Subscription is missing userId metadata", subscription.id);
+    return;
+  }
+
+  const item = subscription.items?.data?.[0];
+  const customerId =
+    typeof subscription.customer === "string"
+      ? subscription.customer
+      : subscription.customer?.id;
+  if (!customerId) {
+    console.error("Subscription is missing a customer", subscription.id);
+    return;
+  }
+
+  const periodStart = item?.current_period_start ?? subscription.current_period_start;
+  const periodEnd = item?.current_period_end ?? subscription.current_period_end;
+  const { error } = await getSupabase().from("subscriptions").upsert(
+    {
+      user_id: userId,
+      stripe_subscription_id: subscription.id,
+      stripe_customer_id: customerId,
+      product_id: typeof item?.price?.product === "string" ? item.price.product : null,
+      price_id:
+        item?.price?.lookup_key ?? item?.price?.metadata?.lovable_external_id ?? item?.price?.id ?? null,
+      amount_cents: item?.price?.unit_amount ?? null,
+      currency: item?.price?.currency ?? "cad",
+      status: subscription.status,
+      current_period_start: isoFromUnix(periodStart),
+      current_period_end: isoFromUnix(periodEnd),
+      cancel_at_period_end: subscription.cancel_at_period_end ?? false,
+      environment: env,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "stripe_subscription_id" },
+  );
+
+  if (error) throw new Error(`Subscription sync failed: ${error.message}`);
+}
+
+/**
+ * Checkout completion is a reliable fallback when subscription webhooks are
+ * delayed or unavailable. It also repairs an already-completed monthly gift
+ * when the donor revisits the thank-you URL.
+ */
+export async function syncSubscriptionFromSession(session: any, env: StripeEnv) {
+  if (session.mode !== "subscription") return;
+  const subscriptionId =
+    typeof session.subscription === "string" ? session.subscription : session.subscription?.id;
+  if (!subscriptionId) {
+    console.error("Monthly checkout is missing a subscription", session.id);
+    return;
+  }
+
+  const stripe = createStripeClient(env);
+  const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+  await upsertSubscriptionFromStripe(subscription, env);
+}
+
 /**
  * Upserts the donation row for a Stripe checkout session and, for paid
  * donations, sends the PDF receipt exactly once (guarded by receipt_sent_at).
  * Safe to call from both the Stripe webhook and the thank-you page.
  */
 export async function recordDonationFromSession(session: any, env: StripeEnv, status: string) {
+  if (status === "paid" && session.mode === "subscription") {
+    await syncSubscriptionFromSession(session, env);
+  }
+
   const { data, error } = await getSupabase()
     .from("donations")
     .upsert(
