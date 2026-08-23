@@ -297,9 +297,13 @@ function DonatePage() {
 
         </div>
 
-        <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
+        <aside
+          className={`space-y-4 lg:sticky lg:top-24 lg:self-start ${
+            checkoutOpen ? "order-first lg:order-none" : ""
+          }`}
+        >
           {checkoutOpen && returnUrl ? (
-            <div className="space-y-3 rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-soft)]">
+            <div className="space-y-3 rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-soft)] sm:p-5">
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 text-primary">
                   <ShieldCheck className="size-5" aria-hidden="true" />
