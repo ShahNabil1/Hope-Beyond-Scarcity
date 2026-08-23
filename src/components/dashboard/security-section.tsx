@@ -36,12 +36,17 @@ import { supabase } from "@/lib/supabase";
 
 const passwordFormSchema = z
   .object({
+    currentPassword: z.string().min(1, "Enter your current password"),
     password: passwordSchema,
     confirmPassword: z.string().min(1, "Please confirm your password"),
   })
   .refine((values) => values.password === values.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"],
+  })
+  .refine((values) => values.password !== values.currentPassword, {
+    message: "Your new password must be different from your current password",
+    path: ["password"],
   });
 
 export function SecuritySection({ email }: { email: string }) {
@@ -54,31 +59,32 @@ export function SecuritySection({ email }: { email: string }) {
   const passwordForm = useForm<z.infer<typeof passwordFormSchema>>({
     resolver: zodResolver(passwordFormSchema),
     mode: "onChange",
-    defaultValues: { password: "", confirmPassword: "" },
+    defaultValues: { currentPassword: "", password: "", confirmPassword: "" },
   });
 
   async function savePassword(values: z.infer<typeof passwordFormSchema>) {
     setSavingPassword(true);
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email,
+      password: values.currentPassword,
+    });
+    if (signInError) {
+      setSavingPassword(false);
+      passwordForm.setError("currentPassword", {
+        message: "Your current password is incorrect",
+      });
+      return;
+    }
     const { error } = await supabase.auth.updateUser({ password: values.password });
     setSavingPassword(false);
     if (error) {
       toast.error(error.message || "Could not update your password.");
       return;
     }
-    passwordForm.reset({ password: "", confirmPassword: "" });
+    passwordForm.reset({ currentPassword: "", password: "", confirmPassword: "" });
     toast.success("Password updated.");
   }
 
-  async function sendResetLink() {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/reset-password`,
-    });
-    if (error) {
-      toast.error(error.message || "Could not send the verification code.");
-      return;
-    }
-    toast.success("We sent a 6-digit verification code to your email.");
-  }
 
   async function onDelete() {
     setDeleting(true);
@@ -103,6 +109,23 @@ export function SecuritySection({ email }: { email: string }) {
         <CardContent>
           <Form {...passwordForm}>
             <form onSubmit={passwordForm.handleSubmit(savePassword)} className="space-y-4" noValidate>
+              <FormField
+                control={passwordForm.control}
+                name="currentPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Current password</FormLabel>
+                    <FormControl>
+                      <PasswordInput
+                        autoComplete="current-password"
+                        placeholder="Enter your current password"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={passwordForm.control}
                 name="password"
@@ -145,10 +168,8 @@ export function SecuritySection({ email }: { email: string }) {
                   ) : null}
                   {savingPassword ? "Updating…" : "Update password"}
                 </Button>
-                <Button type="button" variant="outline" onClick={sendResetLink}>
-                  Email me a verification code
-                </Button>
               </div>
+
             </form>
           </Form>
         </CardContent>
