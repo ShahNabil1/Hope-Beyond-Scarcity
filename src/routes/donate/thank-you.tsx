@@ -87,9 +87,10 @@ function ThankYouPage() {
         </div>
       ) : (
         <div className="w-full space-y-6">
-          <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary-soft text-primary">
-            <CheckCircle2 className="size-9" aria-hidden="true" />
+          <div className="mx-auto flex items-center justify-center">
+            <BrandLogo className="size-20 sm:size-24" />
           </div>
+
           <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
             Thank you — your gift is on its way
           </h1>
