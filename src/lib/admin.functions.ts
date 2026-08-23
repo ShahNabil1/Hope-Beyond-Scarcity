@@ -157,8 +157,10 @@ export const adminUpdateMessage = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { requireStaff } = await import("@/lib/admin.server");
     const { admin } = await requireStaff(context.supabase, context.userId);
-    const { id, ...patch } = data;
-    const { error } = await admin.from("contact_messages").update(patch).eq("id", id);
+    const patch: { status?: string; admin_notes?: string | null } = {};
+    if (data.status !== undefined) patch.status = data.status;
+    if (data.admin_notes !== undefined) patch.admin_notes = data.admin_notes;
+    const { error } = await admin.from("contact_messages").update(patch).eq("id", data.id);
     if (error) return { error: error.message };
     return { ok: true as const };
   });
