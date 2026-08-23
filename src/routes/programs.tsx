@@ -110,9 +110,12 @@ function ProgramsPage() {
                         {program.impact_label ?? program.location}
                       </p>
                     </div>
-                    <Button asChild size="sm">
-                      <Link to="/donate">Fund this program</Link>
-                    </Button>
+                    <div className="flex flex-wrap gap-2">
+                      <ProgramDetailDialog program={program} />
+                      <Button asChild size="sm">
+                        <Link to="/donate">Fund this program</Link>
+                      </Button>
+                    </div>
                   </div>
                 </article>
               );
