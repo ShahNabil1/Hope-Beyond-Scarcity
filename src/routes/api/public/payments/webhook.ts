@@ -5,6 +5,7 @@ import {
   handleInvoicePaymentFailed,
   recordDonationFromInvoice,
   recordDonationFromSession,
+  upsertSubscriptionFromStripe,
 } from "@/lib/donation-record.server";
 import { type StripeEnv, verifyWebhook } from "@/lib/stripe.server";
 
@@ -17,42 +18,6 @@ function getSupabase() {
     );
   }
   return _supabase;
-}
-
-function isoFromUnix(seconds: number | null | undefined): string | null {
-  return seconds ? new Date(seconds * 1000).toISOString() : null;
-}
-
-async function upsertSubscription(subscription: any, env: StripeEnv) {
-  const userId = subscription.metadata?.userId;
-  if (!userId) {
-    console.error("No userId in subscription metadata");
-    return;
-  }
-  const item = subscription.items?.data?.[0];
-  const periodStart = item?.current_period_start ?? subscription.current_period_start;
-  const periodEnd = item?.current_period_end ?? subscription.current_period_end;
-
-  await getSupabase()
-    .from("subscriptions")
-    .upsert(
-      {
-        user_id: userId,
-        stripe_subscription_id: subscription.id,
-        stripe_customer_id: subscription.customer,
-        product_id: typeof item?.price?.product === "string" ? item.price.product : null,
-        price_id: item?.price?.lookup_key ?? item?.price?.id ?? null,
-        amount_cents: item?.price?.unit_amount ?? null,
-        currency: item?.price?.currency ?? "cad",
-        status: subscription.status,
-        current_period_start: isoFromUnix(periodStart),
-        current_period_end: isoFromUnix(periodEnd),
-        cancel_at_period_end: subscription.cancel_at_period_end ?? false,
-        environment: env,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: "stripe_subscription_id" },
-    );
 }
 
 async function markSubscriptionCanceled(subscription: any, env: StripeEnv) {
@@ -69,7 +34,7 @@ async function handleWebhook(req: Request, env: StripeEnv, origin: string) {
   switch (event.type) {
     case "customer.subscription.created":
     case "customer.subscription.updated":
-      await upsertSubscription(event.data.object, env);
+      await upsertSubscriptionFromStripe(event.data.object, env);
       break;
     case "customer.subscription.deleted":
       await markSubscriptionCanceled(event.data.object, env);
