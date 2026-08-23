@@ -80,8 +80,11 @@ export function SiteHeader() {
             <Link to="/volunteer">Get Involved</Link>
           </Button>
           <Button asChild size="sm" className="shadow-sm sm:h-10 sm:px-4 sm:text-sm">
-            <Link to="/donate">Donate</Link>
+            <Link to="/donate">
+              Donate<span className="hidden sm:inline">&nbsp;Now</span>
+            </Link>
           </Button>
+
 
 
           {isAuthenticated ? (
