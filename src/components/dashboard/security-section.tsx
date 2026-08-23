@@ -30,9 +30,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/ui/password-input";
 import { useAuth } from "@/hooks/use-auth";
+import { changeMyPassword } from "@/lib/account.functions";
 import { passwordSchema } from "@/lib/password";
 import { deleteMyAccount } from "@/lib/portal.functions";
-import { supabase } from "@/lib/supabase";
 
 const passwordFormSchema = z
   .object({
@@ -64,25 +64,30 @@ export function SecuritySection({ email }: { email: string }) {
 
   async function savePassword(values: z.infer<typeof passwordFormSchema>) {
     setSavingPassword(true);
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password: values.currentPassword,
-    });
-    if (signInError) {
-      setSavingPassword(false);
-      passwordForm.setError("currentPassword", {
-        message: "Your current password is incorrect",
+    try {
+      const result = await changeMyPassword({
+        data: {
+          currentPassword: values.currentPassword,
+          newPassword: values.password,
+        },
       });
-      return;
+
+      if ("error" in result) {
+        if (result.error === "Your current password is incorrect.") {
+          passwordForm.setError("currentPassword", { message: result.error });
+        } else {
+          toast.error(result.error);
+        }
+        return;
+      }
+
+      passwordForm.reset({ currentPassword: "", password: "", confirmPassword: "" });
+      toast.success("Password updated.");
+    } catch {
+      toast.error("Could not update your password. Please try again.");
+    } finally {
+      setSavingPassword(false);
     }
-    const { error } = await supabase.auth.updateUser({ password: values.password });
-    setSavingPassword(false);
-    if (error) {
-      toast.error(error.message || "Could not update your password.");
-      return;
-    }
-    passwordForm.reset({ currentPassword: "", password: "", confirmPassword: "" });
-    toast.success("Password updated.");
   }
 
 
