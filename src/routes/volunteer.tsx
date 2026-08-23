@@ -46,7 +46,7 @@ const steps = [
 ];
 
 function VolunteerPage() {
-  const roles = Route.useLoaderData();
+  const roles = Route.useLoaderData() ?? [];
 
   return (
     <>
@@ -95,9 +95,9 @@ function VolunteerPage() {
                   </p>
                 ) : null}
 
-                {role.skills.length > 0 ? (
+                {(role.skills ?? []).length > 0 ? (
                   <ul className="mt-4 flex flex-wrap gap-2">
-                    {role.skills.map((skill) => (
+                    {(role.skills ?? []).map((skill) => (
                       <li
                         key={skill}
                         className="rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground"

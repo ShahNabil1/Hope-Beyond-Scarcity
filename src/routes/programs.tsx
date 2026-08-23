@@ -47,7 +47,7 @@ function ProgramsFallback({ note }: { note: string }) {
 }
 
 function ProgramsPage() {
-  const programs = Route.useLoaderData();
+  const programs = Route.useLoaderData() ?? [];
 
   return (
     <>
@@ -90,9 +90,9 @@ function ProgramsPage() {
                     </p>
                   ) : null}
 
-                  {program.highlights.length > 0 ? (
+                  {(program.highlights ?? []).length > 0 ? (
                     <ul className="mt-5 space-y-2 text-sm text-foreground">
-                      {program.highlights.map((item) => (
+                      {(program.highlights ?? []).map((item) => (
                         <li key={item} className="flex gap-2">
                           <span className="mt-2 size-1.5 shrink-0 rounded-full bg-primary" />
                           <span>{item}</span>
