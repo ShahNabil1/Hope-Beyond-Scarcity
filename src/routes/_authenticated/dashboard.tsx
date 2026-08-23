@@ -45,11 +45,7 @@ function DonorPortalPage() {
 
   return (
     <>
-      <PageHero
-        eyebrow="Donor & Volunteer Portal"
-        title="Your account"
-        description="Your profile, giving history, monthly support, volunteer work and account settings — all in one place."
-      />
+      <PageHero eyebrow="Donor & Volunteer Portal" title="Your account" />
 
       <section className="mx-auto w-full max-w-5xl px-4 py-10 pb-28 sm:py-14 md:pb-14">
         {loading || !user ? (
