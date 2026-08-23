@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { HeartHandshake, Receipt, RefreshCw, ShieldCheck, UserRound } from "lucide-react";
 
@@ -40,6 +41,7 @@ const TABS = [
 
 function DonorPortalPage() {
   const { user, loading } = useAuth();
+  const [tab, setTab] = useState<string>("profile");
 
   return (
     <>
@@ -49,15 +51,15 @@ function DonorPortalPage() {
         description="Your profile, giving history, monthly support, volunteer work and account settings — all in one place."
       />
 
-      <section className="mx-auto w-full max-w-5xl px-4 py-10 sm:py-14">
+      <section className="mx-auto w-full max-w-5xl px-4 py-10 pb-28 sm:py-14 md:pb-14">
         {loading || !user ? (
           <div className="space-y-4">
             <Skeleton className="h-12 w-full" />
             <Skeleton className="h-64 w-full" />
           </div>
         ) : (
-          <Tabs defaultValue="profile" className="w-full">
-            <div className="-mx-4 overflow-x-auto px-4 pb-2">
+          <Tabs value={tab} onValueChange={setTab} className="w-full">
+            <div className="-mx-4 hidden overflow-x-auto px-4 pb-2 md:block">
               <TabsList className="inline-flex h-auto w-max gap-1 p-1">
                 {TABS.map((tab) => (
                   <TabsTrigger key={tab.value} value={tab.value} className="gap-2 whitespace-nowrap">
@@ -67,6 +69,7 @@ function DonorPortalPage() {
                 ))}
               </TabsList>
             </div>
+
 
             <TabsContent value="profile" className="mt-6">
               <ProfileSection userId={user.id} email={user.email ?? ""} />
@@ -83,6 +86,40 @@ function DonorPortalPage() {
             <TabsContent value="security" className="mt-6">
               <SecuritySection email={user.email ?? ""} />
             </TabsContent>
+
+            <nav
+              aria-label="Dashboard sections"
+              className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
+            >
+              <div className="grid grid-cols-5">
+                {TABS.map((item) => {
+                  const activeTab = tab === item.value;
+                  return (
+                    <button
+                      key={item.value}
+                      type="button"
+                      onClick={() => {
+                        setTab(item.value);
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }}
+                      aria-current={activeTab ? "page" : undefined}
+                      className={`flex flex-col items-center gap-1 px-1 py-2.5 text-[11px] font-medium transition-colors ${
+                        activeTab ? "text-primary" : "text-muted-foreground"
+                      }`}
+                    >
+                      <span
+                        className={`flex size-8 items-center justify-center rounded-full transition-colors ${
+                          activeTab ? "bg-primary/10" : ""
+                        }`}
+                      >
+                        <item.icon className="size-[18px]" aria-hidden="true" />
+                      </span>
+                      <span className="leading-tight">{item.label.split(" ")[0]}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </nav>
           </Tabs>
         )}
       </section>
