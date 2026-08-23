@@ -41,7 +41,7 @@ function DonatePage() {
   const { user, isAuthenticated } = useAuth();
   const [frequency, setFrequency] = useState<DonationFrequency>("one_time");
   const [presetAmount, setPresetAmount] = useState<number | null>(50);
-  const [customAmount, setCustomAmount] = useState("");
+  const [customAmount, setCustomAmount] = useState("50");
   const [email, setEmail] = useState("");
   const [acceptedPolicies, setAcceptedPolicies] = useState(false);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
