@@ -162,7 +162,7 @@ function ArticlePage() {
               {gallery.map((src) => (
                 <img
                   key={src}
-                  src={src}
+                  src={mediaUrl(src)}
                   alt=""
                   loading="lazy"
                   className="aspect-[4/3] w-full rounded-2xl border border-border object-cover"
