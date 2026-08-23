@@ -122,6 +122,129 @@ export type Database = {
         }
         Relationships: []
       }
+      events: {
+        Row: {
+          capacity: number | null
+          city: string | null
+          cover_image_url: string | null
+          created_at: string
+          description: string | null
+          ends_at: string | null
+          event_type: string
+          id: string
+          is_active: boolean
+          is_featured: boolean
+          is_virtual: boolean
+          registration_url: string | null
+          slug: string
+          sort_order: number
+          starts_at: string
+          summary: string
+          timezone: string
+          title: string
+          updated_at: string
+          venue: string | null
+        }
+        Insert: {
+          capacity?: number | null
+          city?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          ends_at?: string | null
+          event_type?: string
+          id?: string
+          is_active?: boolean
+          is_featured?: boolean
+          is_virtual?: boolean
+          registration_url?: string | null
+          slug: string
+          sort_order?: number
+          starts_at: string
+          summary: string
+          timezone?: string
+          title: string
+          updated_at?: string
+          venue?: string | null
+        }
+        Update: {
+          capacity?: number | null
+          city?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          ends_at?: string | null
+          event_type?: string
+          id?: string
+          is_active?: boolean
+          is_featured?: boolean
+          is_virtual?: boolean
+          registration_url?: string | null
+          slug?: string
+          sort_order?: number
+          starts_at?: string
+          summary?: string
+          timezone?: string
+          title?: string
+          updated_at?: string
+          venue?: string | null
+        }
+        Relationships: []
+      }
+      news_posts: {
+        Row: {
+          author_name: string | null
+          body: string | null
+          category: string
+          cover_image_url: string | null
+          created_at: string
+          excerpt: string
+          id: string
+          is_active: boolean
+          is_featured: boolean
+          location: string | null
+          published_at: string
+          slug: string
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_name?: string | null
+          body?: string | null
+          category?: string
+          cover_image_url?: string | null
+          created_at?: string
+          excerpt: string
+          id?: string
+          is_active?: boolean
+          is_featured?: boolean
+          location?: string | null
+          published_at?: string
+          slug: string
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_name?: string | null
+          body?: string | null
+          category?: string
+          cover_image_url?: string | null
+          created_at?: string
+          excerpt?: string
+          id?: string
+          is_active?: boolean
+          is_featured?: boolean
+          location?: string | null
+          published_at?: string
+          slug?: string
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -154,6 +277,63 @@ export type Database = {
           location?: string | null
           phone?: string | null
           policies_accepted_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      programs: {
+        Row: {
+          created_at: string
+          description: string | null
+          focus_area: string | null
+          highlights: string[]
+          icon: string | null
+          id: string
+          image_url: string | null
+          impact_label: string | null
+          impact_stat: string | null
+          is_active: boolean
+          location: string | null
+          name: string
+          slug: string
+          sort_order: number
+          summary: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          focus_area?: string | null
+          highlights?: string[]
+          icon?: string | null
+          id?: string
+          image_url?: string | null
+          impact_label?: string | null
+          impact_stat?: string | null
+          is_active?: boolean
+          location?: string | null
+          name: string
+          slug: string
+          sort_order?: number
+          summary: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          focus_area?: string | null
+          highlights?: string[]
+          icon?: string | null
+          id?: string
+          image_url?: string | null
+          impact_label?: string | null
+          impact_stat?: string | null
+          is_active?: boolean
+          location?: string | null
+          name?: string
+          slug?: string
+          sort_order?: number
+          summary?: string
           updated_at?: string
         }
         Relationships: []
@@ -272,6 +452,60 @@ export type Database = {
           status?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      volunteer_roles: {
+        Row: {
+          commitment: string | null
+          created_at: string
+          description: string | null
+          id: string
+          interest_area: string
+          is_active: boolean
+          is_remote: boolean
+          location: string | null
+          skills: string[]
+          slug: string
+          sort_order: number
+          spots_available: number | null
+          summary: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          commitment?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          interest_area?: string
+          is_active?: boolean
+          is_remote?: boolean
+          location?: string | null
+          skills?: string[]
+          slug: string
+          sort_order?: number
+          spots_available?: number | null
+          summary: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          commitment?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          interest_area?: string
+          is_active?: boolean
+          is_remote?: boolean
+          location?: string | null
+          skills?: string[]
+          slug?: string
+          sort_order?: number
+          spots_available?: number | null
+          summary?: string
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
