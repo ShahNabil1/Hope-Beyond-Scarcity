@@ -316,7 +316,7 @@ function FieldControl({
   value: unknown;
   folder: string;
   onChange: (next: unknown) => void;
-  onTitleBlur?: (title: string) => void;
+  onTitleBlur?: ((title: string) => void) | undefined;
 }) {
   const wrapperClass = field.full || field.kind === "gallery" ? "sm:col-span-2" : "";
 
