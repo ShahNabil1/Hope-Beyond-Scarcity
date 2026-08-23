@@ -1,5 +1,13 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { Inbox, LayoutDashboard, Settings } from "lucide-react";
+import {
+  CalendarDays,
+  HandHeart,
+  HeartHandshake,
+  Inbox,
+  LayoutDashboard,
+  Newspaper,
+  Settings,
+} from "lucide-react";
 
 import { RequireRole } from "@/components/auth/require-role";
 import { AdminShell, type AdminNavItem } from "@/components/admin/admin-shell";
@@ -9,6 +17,10 @@ const description = "Internal content management for programs, news, events, and
 
 const navItems: AdminNavItem[] = [
   { to: "/admin", label: "Overview", icon: <LayoutDashboard />, exact: true },
+  { to: "/admin/programs", label: "Programs", icon: <HeartHandshake /> },
+  { to: "/admin/news", label: "News", icon: <Newspaper /> },
+  { to: "/admin/events", label: "Events", icon: <CalendarDays /> },
+  { to: "/admin/volunteers", label: "Volunteer roles", icon: <HandHeart /> },
   { to: "/admin/messages", label: "Messages", icon: <Inbox /> },
   { to: "/admin/settings", label: "Site settings", icon: <Settings /> },
 ];
