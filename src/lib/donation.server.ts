@@ -106,6 +106,18 @@ export async function fetchDonationStatus(sessionId: string, environment: Stripe
   try {
     const stripe = createStripeClient(environment);
     const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+    // Fallback: if the Stripe webhook has not (yet) recorded this donation or
+    // sent the receipt, do it here so the donor always gets their PDF receipt.
+    if (session.payment_status && session.payment_status !== "unpaid") {
+      try {
+        const { recordDonationFromSession } = await import("@/lib/donation-record.server");
+        await recordDonationFromSession(session, environment, "paid");
+      } catch (e) {
+        console.error("Receipt fallback failed:", e);
+      }
+    }
+
     return {
       status: session.status ?? "unknown",
       paymentStatus: session.payment_status ?? null,
