@@ -106,52 +106,48 @@ export function DonationsSection({ userId }: { userId: string }) {
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Receipt</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {rows.map((row) => (
-                  <TableRow key={row.id}>
-                    <TableCell className="whitespace-nowrap">{formatDate(row.created_at)}</TableCell>
-                    <TableCell className="font-medium">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {rows.map((row) => (
+              <div
+                key={row.id}
+                className="flex flex-col justify-between rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary/40"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <p className="text-lg font-semibold text-foreground">
                       {formatCad(row.amount_cents)}
                       {row.environment === "sandbox" ? (
                         <span className="ml-2 text-xs text-muted-foreground">test</span>
                       ) : null}
-                    </TableCell>
-                    <TableCell>{row.donation_type === "monthly" ? "Monthly" : "One-time"}</TableCell>
-                    <TableCell>
-                      <Badge variant={statusVariant(row.status)} className="capitalize">
-                        {row.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        disabled={row.status !== "paid" || busyId === row.id}
-                        onClick={() => onDownload(row.id)}
-                      >
-                        {busyId === row.id ? (
-                          <Loader2 className="size-4 animate-spin" aria-hidden="true" />
-                        ) : (
-                          <Download className="size-4" aria-hidden="true" />
-                        )}
-                        Download
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                    </p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                      {formatDate(row.created_at)}
+                    </p>
+                  </div>
+                  <Badge variant={statusVariant(row.status)} className="capitalize">
+                    {row.status}
+                  </Badge>
+                </div>
+                <div className="mt-4 flex items-center justify-between">
+                  <span className="text-xs font-medium text-muted-foreground">
+                    {row.donation_type === "monthly" ? "Monthly" : "One-time"}
+                  </span>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled={row.status !== "paid" || busyId === row.id}
+                    onClick={() => onDownload(row.id)}
+                  >
+                    {busyId === row.id ? (
+                      <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                    ) : (
+                      <Download className="size-4" aria-hidden="true" />
+                    )}
+                    Receipt
+                  </Button>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </CardContent>
