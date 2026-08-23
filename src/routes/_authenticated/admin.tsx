@@ -1,6 +1,9 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import {
   CalendarDays,
+  CircleDollarSign,
+  Repeat,
+
   HandHeart,
   HeartHandshake,
   Inbox,
@@ -26,6 +29,9 @@ const navItems: AdminNavItem[] = [
   { to: "/admin/members", label: "Members", icon: <Users /> },
   { to: "/admin/applications", label: "Applications", icon: <HandHeart /> },
   { to: "/admin/pitches", label: "Pitches", icon: <Lightbulb /> },
+  { to: "/admin/donations", label: "Donations", icon: <CircleDollarSign /> },
+  { to: "/admin/recurring", label: "Recurring gifts", icon: <Repeat /> },
+
   { to: "/admin/messages", label: "Messages", icon: <Inbox /> },
   { to: "/admin/settings", label: "Site settings", icon: <Settings /> },
 ];
