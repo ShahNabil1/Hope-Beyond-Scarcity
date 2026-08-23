@@ -15,7 +15,7 @@ export async function fetchPrograms() {
   const { data, error } = await publicClient()
     .from("programs")
     .select(
-      "id,slug,name,summary,description,focus_area,location,icon,impact_stat,impact_label,highlights,image_url",
+      "id,slug,name,summary,description,focus_area,location,icon,impact_stat,impact_label,highlights,image_url,gallery_images",
     )
     .eq("is_active", true)
     .order("sort_order", { ascending: true });
