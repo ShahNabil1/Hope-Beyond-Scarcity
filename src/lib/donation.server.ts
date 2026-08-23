@@ -1,5 +1,9 @@
 import { type StripeEnv, createStripeClient, getStripeErrorMessage } from "@/lib/stripe.server";
-import type { DonationInput } from "@/lib/donation";
+import {
+  DONATION_CURRENCY_STRIPE,
+  validateDonation,
+  type DonationInput,
+} from "@/lib/donation";
 
 async function resolveOrCreateCustomer(
   stripe: ReturnType<typeof createStripeClient>,
@@ -39,6 +43,9 @@ export async function createDonationSession(
   data: DonationInput,
 ): Promise<{ clientSecret: string } | { error: string }> {
   try {
+    // Re-validate on the server: the amount charged is always the exact
+    // integer CAD cent amount that passed validation.
+    validateDonation(data);
     const stripe = createStripeClient(data.environment);
     const isMonthly = data.frequency === "monthly";
 
@@ -58,7 +65,7 @@ export async function createDonationSession(
       line_items: [
         {
           price_data: {
-            currency: "cad",
+            currency: DONATION_CURRENCY_STRIPE,
             product_data: { name: productName },
             unit_amount: data.amountInCents,
             ...(isMonthly && { recurring: { interval: "month" as const } }),
