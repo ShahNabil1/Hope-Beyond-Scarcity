@@ -227,6 +227,45 @@ export type Database = {
         }
         Relationships: []
       }
+      legal_pages: {
+        Row: {
+          body: string
+          created_at: string
+          effective_date: string | null
+          id: string
+          is_active: boolean
+          slug: string
+          sort_order: number
+          summary: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          body?: string
+          created_at?: string
+          effective_date?: string | null
+          id?: string
+          is_active?: boolean
+          slug: string
+          sort_order?: number
+          summary?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          effective_date?: string | null
+          id?: string
+          is_active?: boolean
+          slug?: string
+          sort_order?: number
+          summary?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       news_comments: {
         Row: {
           author_avatar_url: string | null
