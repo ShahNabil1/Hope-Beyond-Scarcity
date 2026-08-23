@@ -47,11 +47,10 @@ function DonatePage() {
   const [checkoutOpen, setCheckoutOpen] = useState(false);
 
   const amountInCents = useMemo(() => {
-    if (presetAmount !== null) return presetAmount * 100;
     const parsed = Number.parseFloat(customAmount);
     if (!Number.isFinite(parsed)) return 0;
     return Math.round(parsed * 100);
-  }, [presetAmount, customAmount]);
+  }, [customAmount]);
 
   const donorEmail = user?.email ?? (email.trim() || undefined);
   const needsAccount = frequency === "monthly" && !isAuthenticated;
