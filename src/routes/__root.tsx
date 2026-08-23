@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -142,6 +143,10 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  // On the donate page, the footer is hidden on mobile to keep the checkout
+  // flow focused and reduce scrolling on small screens.
+  const hideFooterOnMobile = pathname.startsWith("/donate");
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -152,7 +157,9 @@ function RootComponent() {
             {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
             <Outlet />
           </main>
-          <SiteFooter />
+          <div className={hideFooterOnMobile ? "hidden md:block" : undefined}>
+            <SiteFooter />
+          </div>
         </div>
         <Toaster richColors position="top-center" />
       </AuthProvider>

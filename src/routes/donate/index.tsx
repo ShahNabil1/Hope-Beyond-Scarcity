@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Heart, Lock, Repeat, ShieldCheck } from "lucide-react";
 
@@ -47,6 +47,11 @@ function DonatePage() {
   const [amountTouched, setAmountTouched] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
+  const amountInputRef = useRef<HTMLInputElement>(null);
+  const donateButtonRef = useRef<HTMLButtonElement>(null);
+  const checkoutPanelRef = useRef<HTMLDivElement>(null);
+  const liveErrorRef = useRef<HTMLParagraphElement>(null);
+
   const parsedAmount = useMemo(() => parseCadAmountToCents(customAmount), [customAmount]);
   const amountInCents = "cents" in parsedAmount ? parsedAmount.cents : 0;
   const amountError = "error" in parsedAmount ? parsedAmount.error : null;
@@ -56,6 +61,31 @@ function DonatePage() {
   const amountValid = amountError === null;
   const policiesAccepted = acceptedPolicies;
   const canDonate = amountValid && policiesAccepted && !needsAccount && !checkoutOpen;
+
+  // Announce amount errors to screen readers once the field has been touched.
+  useEffect(() => {
+    if (amountTouched && amountError && liveErrorRef.current) {
+      liveErrorRef.current.textContent = amountError;
+    }
+  }, [amountTouched, amountError]);
+
+  // Move focus to the secure-payment panel when checkout opens so keyboard
+  // and screen-reader users land on the active checkout instead of being
+  // stranded on the now-disabled donate button.
+  useEffect(() => {
+    if (!checkoutOpen) {
+      // When checkout closes, return focus to the donate button so the user
+      // can re-enter the flow without losing their place in the tab order.
+      donateButtonRef.current?.focus();
+      return;
+    }
+    if (!checkoutPanelRef.current) return;
+    // Slight delay lets the Stripe iframe mount before we focus.
+    const timer = window.setTimeout(() => {
+      checkoutPanelRef.current?.focus();
+    }, 150);
+    return () => window.clearTimeout(timer);
+  }, [checkoutOpen]);
 
   const returnUrl =
     typeof window === "undefined"
@@ -167,11 +197,13 @@ function DonatePage() {
                   $
                 </span>
                 <Input
+                  ref={amountInputRef}
                   id="custom-amount"
                   inputMode="decimal"
                   placeholder="Enter an amount"
                   className="pl-7"
                   aria-describedby="amount-help"
+                  aria-label="Donation amount in Canadian dollars"
                   aria-invalid={amountTouched && amountError ? true : undefined}
                   value={customAmount}
                   onBlur={() => setAmountTouched(true)}
@@ -182,6 +214,14 @@ function DonatePage() {
                     setCheckoutOpen(false);
                     setCheckoutError(null);
                   }}
+                  onKeyDown={(event) => {
+                    // Enter from the amount field jumps to the donate button,
+                    // which is the next logical step in the flow.
+                    if (event.key === "Enter" && canDonate) {
+                      event.preventDefault();
+                      donateButtonRef.current?.focus();
+                    }
+                  }}
                 />
                 <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-muted-foreground">
                   CAD
@@ -190,6 +230,7 @@ function DonatePage() {
               <p
                 id="amount-help"
                 role={amountTouched && amountError ? "alert" : undefined}
+                aria-live={amountTouched && amountError ? "assertive" : "off"}
                 className={cn(
                   "min-h-[1.25rem] text-xs",
                   amountTouched && amountError ? "text-destructive" : "text-muted-foreground",
@@ -262,14 +303,22 @@ function DonatePage() {
             </div>
 
             <Button
+              ref={donateButtonRef}
               type="button"
               size="lg"
               className="mt-6 w-full"
               disabled={!canDonate}
+              aria-disabled={!canDonate}
+              aria-describedby="donate-btn-help"
               onClick={() => {
                 setAmountTouched(true);
                 setCheckoutError(null);
-                if (!amountValid) return;
+                if (!amountValid) {
+                  // Move focus back to the amount field so the error is
+                  // discoverable for keyboard and screen-reader users.
+                  amountInputRef.current?.focus();
+                  return;
+                }
                 setCheckoutOpen(true);
               }}
             >
@@ -278,15 +327,24 @@ function DonatePage() {
                 ? `Give ${amountValid ? formatCad(amountInCents) : ""} monthly`
                 : `Donate ${amountValid ? formatCad(amountInCents) : ""}`}
             </Button>
+            {/* Visually-hidden live region so screen readers announce
+                checkout initialization errors even if focus is elsewhere. */}
+            <p ref={liveErrorRef} className="sr-only" aria-live="assertive" aria-atomic="true">
+              {checkoutError ?? ""}
+            </p>
             {checkoutError ? (
               <p
                 role="alert"
+                aria-live="assertive"
                 className="mt-3 rounded-xl border border-destructive/40 bg-destructive/10 p-3 text-center text-xs text-destructive"
               >
                 {checkoutError}
               </p>
             ) : null}
-            <p className="mt-3 min-h-[1rem] text-center text-xs text-muted-foreground">
+            <p
+              id="donate-btn-help"
+              className="mt-3 min-h-[1rem] text-center text-xs text-muted-foreground"
+            >
               {amountTouched && amountError
                 ? amountError
                 : policiesAccepted
@@ -303,7 +361,13 @@ function DonatePage() {
           }`}
         >
           {checkoutOpen && returnUrl ? (
-            <div className="space-y-3 rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-soft)] sm:p-5">
+            <div
+              ref={checkoutPanelRef}
+              tabIndex={-1}
+              role="region"
+              aria-label="Secure payment"
+              className="space-y-3 rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-soft)] outline-none focus-visible:ring-2 focus-visible:ring-ring sm:p-5"
+            >
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 text-primary">
                   <ShieldCheck className="size-5" aria-hidden="true" />
