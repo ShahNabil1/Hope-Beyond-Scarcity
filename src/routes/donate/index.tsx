@@ -289,10 +289,16 @@ function DonatePage() {
             </p>
           </div>
 
+        </div>
+
+        <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
           {checkoutOpen && returnUrl ? (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-foreground">Secure payment</h2>
+            <div className="space-y-3 rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-soft)]">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 text-primary">
+                  <ShieldCheck className="size-5" aria-hidden="true" />
+                  <h2 className="text-base font-semibold text-foreground">Secure payment</h2>
+                </div>
                 <Button variant="ghost" size="sm" onClick={() => setCheckoutOpen(false)}>
                   Change amount
                 </Button>
@@ -306,29 +312,15 @@ function DonatePage() {
                 onError={setCheckoutError}
               />
             </div>
-          ) : null}
-        </div>
-
-        <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
-          <div className="rounded-2xl border border-border bg-primary-soft p-6">
-            <div className="flex items-center gap-2 text-primary">
-              <ShieldCheck className="size-5" aria-hidden="true" />
-              <span className="text-sm font-semibold uppercase tracking-wide">Secure giving</span>
+          ) : (
+            <div className="rounded-2xl border border-border bg-card p-6 text-sm text-muted-foreground">
+              <p className="font-semibold text-foreground">Where your gift goes</p>
+              <p className="mt-2">
+                $25 stocks a family care package. $50 helps repair a village water pump. $100 funds a
+                week of community health outreach.
+              </p>
             </div>
-            <ul className="mt-4 space-y-3 text-sm text-foreground">
-              <li>PCI-DSS compliant checkout — card data goes straight to our processor.</li>
-              <li>All gifts processed in Canadian dollars (CAD).</li>
-              <li>Emailed acknowledgement and PDF receipt for every gift.</li>
-              <li>Cancel or change monthly giving anytime from your dashboard.</li>
-            </ul>
-          </div>
-          <div className="rounded-2xl border border-border bg-card p-6 text-sm text-muted-foreground">
-            <p className="font-semibold text-foreground">Where your gift goes</p>
-            <p className="mt-2">
-              $25 stocks a family care package. $50 helps repair a village water pump. $100 funds a
-              week of community health outreach.
-            </p>
-          </div>
+          )}
         </aside>
       </section>
     </>
