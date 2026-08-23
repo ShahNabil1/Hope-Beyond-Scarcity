@@ -86,6 +86,40 @@ function DonorPortalPage() {
             <TabsContent value="security" className="mt-6">
               <SecuritySection email={user.email ?? ""} />
             </TabsContent>
+
+            <nav
+              aria-label="Dashboard sections"
+              className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
+            >
+              <div className="grid grid-cols-5">
+                {TABS.map((item) => {
+                  const activeTab = tab === item.value;
+                  return (
+                    <button
+                      key={item.value}
+                      type="button"
+                      onClick={() => {
+                        setTab(item.value);
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }}
+                      aria-current={activeTab ? "page" : undefined}
+                      className={`flex flex-col items-center gap-1 px-1 py-2.5 text-[11px] font-medium transition-colors ${
+                        activeTab ? "text-primary" : "text-muted-foreground"
+                      }`}
+                    >
+                      <span
+                        className={`flex size-8 items-center justify-center rounded-full transition-colors ${
+                          activeTab ? "bg-primary/10" : ""
+                        }`}
+                      >
+                        <item.icon className="size-[18px]" aria-hidden="true" />
+                      </span>
+                      <span className="leading-tight">{item.label.split(" ")[0]}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </nav>
           </Tabs>
         )}
       </section>
