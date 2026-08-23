@@ -12,4 +12,14 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  vite: {
+    resolve: {
+      alias: [
+        // pdf-lib ships CommonJS compiled against tslib v1; in the Worker ESM bundle its
+        // default-import interop resolves to undefined and crashes SSR at module load.
+        // Force every tslib import to the modern ESM build (superset of v1 helpers).
+        { find: /^tslib$/, replacement: "tslib/modules/index.js" },
+      ],
+    },
+  },
 });
