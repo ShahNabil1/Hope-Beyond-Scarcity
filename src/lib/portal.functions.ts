@@ -169,3 +169,51 @@ export const deleteMyAccount = createServerFn({ method: "POST" })
 
     return { ok: true };
   });
+
+/** Billing timeline (past charges, next charge, saved card) for one recurring gift. */
+export const getRecurringTimelineFn = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { subscriptionId: string }) => {
+    if (!isUuid(data.subscriptionId)) throw new Error("Invalid subscription id");
+    return data;
+  })
+  .handler(async ({ data, context }) => {
+    const { data: row } = await context.supabase
+      .from("subscriptions")
+      .select("stripe_subscription_id, environment")
+      .eq("id", data.subscriptionId)
+      .eq("user_id", context.userId)
+      .maybeSingle();
+
+    if (!row || !isEnv(row.environment)) return { error: "Recurring gift not found." };
+
+    const { getRecurringTimeline } = await import("@/lib/portal.server");
+    return getRecurringTimeline({
+      environment: row.environment,
+      stripeSubscriptionId: row.stripe_subscription_id,
+    });
+  });
+
+/** Retry the newest declined charge on the caller's recurring gift. */
+export const retryRecurringPayment = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { subscriptionId: string }) => {
+    if (!isUuid(data.subscriptionId)) throw new Error("Invalid subscription id");
+    return data;
+  })
+  .handler(async ({ data, context }) => {
+    const { data: row } = await context.supabase
+      .from("subscriptions")
+      .select("stripe_subscription_id, environment")
+      .eq("id", data.subscriptionId)
+      .eq("user_id", context.userId)
+      .maybeSingle();
+
+    if (!row || !isEnv(row.environment)) return { error: "Recurring gift not found." };
+
+    const { retryLatestInvoice } = await import("@/lib/portal.server");
+    return retryLatestInvoice({
+      environment: row.environment,
+      stripeSubscriptionId: row.stripe_subscription_id,
+    });
+  });
