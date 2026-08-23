@@ -11,10 +11,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/use-auth";
 import {
-  MAX_DONATION_CAD,
-  MIN_DONATION_CAD,
   PRESET_AMOUNTS_CAD,
   formatCad,
+  parseCadAmountToCents,
   type DonationFrequency,
 } from "@/lib/donation";
 import { cn } from "@/lib/utils";
@@ -45,17 +44,16 @@ function DonatePage() {
   const [email, setEmail] = useState("");
   const [acceptedPolicies, setAcceptedPolicies] = useState(false);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [amountTouched, setAmountTouched] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
-  const amountInCents = useMemo(() => {
-    const parsed = Number.parseFloat(customAmount);
-    if (!Number.isFinite(parsed)) return 0;
-    return Math.round(parsed * 100);
-  }, [customAmount]);
+  const parsedAmount = useMemo(() => parseCadAmountToCents(customAmount), [customAmount]);
+  const amountInCents = "cents" in parsedAmount ? parsedAmount.cents : 0;
+  const amountError = "error" in parsedAmount ? parsedAmount.error : null;
 
   const donorEmail = user?.email ?? (email.trim() || undefined);
   const needsAccount = frequency === "monthly" && !isAuthenticated;
-  const amountValid =
-    amountInCents >= MIN_DONATION_CAD * 100 && amountInCents <= MAX_DONATION_CAD * 100;
+  const amountValid = amountError === null;
   const policiesAccepted = acceptedPolicies;
   const canDonate = amountValid && policiesAccepted && !needsAccount && !checkoutOpen;
 
@@ -67,6 +65,7 @@ function DonatePage() {
   const selectFrequency = (next: DonationFrequency) => {
     setFrequency(next);
     setCheckoutOpen(false);
+    setCheckoutError(null);
   };
 
   return (
@@ -139,7 +138,9 @@ function DonatePage() {
                   onClick={() => {
                     setPresetAmount(amount);
                     setCustomAmount(String(amount));
+                    setAmountTouched(true);
                     setCheckoutOpen(false);
+                    setCheckoutError(null);
                   }}
                   className={cn(
                     "rounded-xl border px-4 py-3 text-base font-semibold transition-colors",
@@ -164,11 +165,16 @@ function DonatePage() {
                   inputMode="decimal"
                   placeholder="Enter an amount"
                   className="pl-7"
+                  aria-describedby="amount-help"
+                  aria-invalid={amountTouched && amountError ? true : undefined}
                   value={customAmount}
+                  onBlur={() => setAmountTouched(true)}
                   onChange={(event) => {
                     setCustomAmount(event.target.value.replace(/[^0-9.]/g, ""));
                     setPresetAmount(null);
+                    setAmountTouched(true);
                     setCheckoutOpen(false);
+                    setCheckoutError(null);
                   }}
                 />
                 <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-muted-foreground">
@@ -176,16 +182,16 @@ function DonatePage() {
                 </span>
               </div>
               <p
+                id="amount-help"
+                role={amountTouched && amountError ? "alert" : undefined}
                 className={cn(
-                  "min-h-[1.25rem] text-xs transition-opacity",
-                  amountInCents > 0 && !amountValid
-                    ? "text-destructive opacity-100"
-                    : "text-muted-foreground opacity-100",
+                  "min-h-[1.25rem] text-xs",
+                  amountTouched && amountError ? "text-destructive" : "text-muted-foreground",
                 )}
               >
-                {amountInCents > 0 && !amountValid
-                  ? `Please enter an amount between $${MIN_DONATION_CAD} and $${MAX_DONATION_CAD.toLocaleString("en-CA")} CAD.`
-                  : "All transactions are processed in Canadian dollars (CAD)."}
+                {amountTouched && amountError
+                  ? amountError
+                  : `You are giving ${formatCad(amountInCents)} CAD. All transactions are processed in Canadian dollars (CAD).`}
               </p>
             </div>
 
@@ -254,17 +260,32 @@ function DonatePage() {
               size="lg"
               className="mt-6 w-full"
               disabled={!canDonate}
-              onClick={() => setCheckoutOpen(true)}
+              onClick={() => {
+                setAmountTouched(true);
+                setCheckoutError(null);
+                if (!amountValid) return;
+                setCheckoutOpen(true);
+              }}
             >
               <Lock className="size-4" aria-hidden="true" />
               {frequency === "monthly"
                 ? `Give ${amountValid ? formatCad(amountInCents) : ""} monthly`
                 : `Donate ${amountValid ? formatCad(amountInCents) : ""}`}
             </Button>
+            {checkoutError ? (
+              <p
+                role="alert"
+                className="mt-3 rounded-xl border border-destructive/40 bg-destructive/10 p-3 text-center text-xs text-destructive"
+              >
+                {checkoutError}
+              </p>
+            ) : null}
             <p className="mt-3 min-h-[1rem] text-center text-xs text-muted-foreground">
-              {policiesAccepted
+              {amountTouched && amountError
+                ? amountError
+                : policiesAccepted
                 ? "Card details are entered directly with our payment processor — they never touch our servers."
-                : "Accept the Terms, Privacy, and Refund policies above to continue."}
+                  : "Accept the Terms, Privacy, and Refund policies above to continue."}
             </p>
           </div>
 
@@ -282,6 +303,7 @@ function DonatePage() {
                 customerEmail={donorEmail}
                 userId={user?.id}
                 returnUrl={returnUrl}
+                onError={setCheckoutError}
               />
             </div>
           ) : null}
