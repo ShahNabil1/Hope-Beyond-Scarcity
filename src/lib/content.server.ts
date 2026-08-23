@@ -85,3 +85,16 @@ export async function fetchVolunteerRoles() {
   if (error) throw new Error(error.message);
   return data ?? [];
 }
+
+const SITE_SETTINGS_FIELDS =
+  "id,emergency_active,emergency_headline,emergency_message,emergency_cta_label,emergency_cta_url,emergency_starts_at,emergency_ends_at,contact_intro,contact_address,contact_email,contact_phone,contact_hours,contact_map_url";
+
+export async function fetchSiteSettings() {
+  const { data, error } = await publicClient()
+    .from("site_settings")
+    .select(SITE_SETTINGS_FIELDS)
+    .eq("id", "default")
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  return data;
+}
