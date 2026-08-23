@@ -361,7 +361,13 @@ function DonatePage() {
           }`}
         >
           {checkoutOpen && returnUrl ? (
-            <div className="space-y-3 rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-soft)] sm:p-5">
+            <div
+              ref={checkoutPanelRef}
+              tabIndex={-1}
+              role="region"
+              aria-label="Secure payment"
+              className="space-y-3 rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-soft)] outline-none focus-visible:ring-2 focus-visible:ring-ring sm:p-5"
+            >
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 text-primary">
                   <ShieldCheck className="size-5" aria-hidden="true" />
