@@ -76,7 +76,13 @@ function DonatePage() {
         description="Secure Canadian donations in CAD. Transparent reporting. Every dollar tracked from gift to village."
       />
 
-      <section className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:px-8 lg:py-20">
+      <section
+        className={`mx-auto grid max-w-6xl gap-6 px-4 py-10 sm:gap-8 sm:px-6 lg:gap-8 lg:px-8 lg:py-16 xl:max-w-7xl xl:gap-10 ${
+          checkoutOpen
+            ? "lg:grid-cols-[minmax(0,1fr)_400px] xl:grid-cols-[minmax(0,1fr)_460px]"
+            : "lg:grid-cols-[minmax(0,1fr)_340px] xl:grid-cols-[minmax(0,1fr)_360px]"
+        }`}
+      >
         <div className="space-y-8">
           <PaymentTestModeBanner />
 
