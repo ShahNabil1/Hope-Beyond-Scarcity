@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { BookOpen, Droplet, HeartHandshake, Package } from "lucide-react";
 
 import { PageHero } from "@/components/page-hero";
+import { ProgramDetailDialog } from "@/components/programs/program-detail-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getPrograms } from "@/lib/content.functions";
