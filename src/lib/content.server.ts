@@ -98,3 +98,28 @@ export async function fetchSiteSettings() {
   if (error) throw new Error(error.message);
   return data;
 }
+
+const LEGAL_FIELDS = "id,slug,title,summary,body,effective_date,updated_at";
+
+export async function fetchLegalPages() {
+  const { data, error } = await publicClient()
+    .from("legal_pages")
+    .select(LEGAL_FIELDS)
+    .eq("is_active", true)
+    .order("sort_order", { ascending: true });
+  if (error) throw new Error(error.message);
+  return data ?? [];
+}
+
+export async function fetchLegalPage(slug: string) {
+  const { data, error } = await publicClient()
+    .from("legal_pages")
+    .select(LEGAL_FIELDS)
+    .eq("is_active", true)
+    .eq("slug", slug)
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+export type LegalPage = NonNullable<Awaited<ReturnType<typeof fetchLegalPage>>>;
