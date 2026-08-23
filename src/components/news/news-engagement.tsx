@@ -216,7 +216,7 @@ export function NewsEngagement({ postId }: { postId: string }) {
             Sign in as a donor or volunteer to react and join the conversation.
           </p>
           <Button asChild size="sm">
-            <Link to="/auth/sign-in">Sign in</Link>
+            <Link to="/auth">Sign in</Link>
           </Button>
         </div>
       )}
