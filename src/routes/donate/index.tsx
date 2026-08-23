@@ -43,9 +43,7 @@ function DonatePage() {
   const [presetAmount, setPresetAmount] = useState<number | null>(50);
   const [customAmount, setCustomAmount] = useState("");
   const [email, setEmail] = useState("");
-  const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
-  const [acceptedRefund, setAcceptedRefund] = useState(false);
+  const [acceptedPolicies, setAcceptedPolicies] = useState(false);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
 
   const amountInCents = useMemo(() => {
@@ -59,7 +57,7 @@ function DonatePage() {
   const needsAccount = frequency === "monthly" && !isAuthenticated;
   const amountValid =
     amountInCents >= MIN_DONATION_CAD * 100 && amountInCents <= MAX_DONATION_CAD * 100;
-  const policiesAccepted = acceptedTerms && acceptedPrivacy && acceptedRefund;
+  const policiesAccepted = acceptedPolicies;
   const canDonate = amountValid && policiesAccepted && !needsAccount && !checkoutOpen;
 
   const returnUrl =
@@ -223,31 +221,33 @@ function DonatePage() {
               </p>
             </div>
 
-            <div className="mt-5 space-y-3">
-              <PolicyCheckbox
-                id="accept-terms"
-                checked={acceptedTerms}
-                onChange={setAcceptedTerms}
-                label="I have read and accept the"
-                linkLabel="Terms of Service"
-                to="/terms"
-              />
-              <PolicyCheckbox
-                id="accept-privacy"
-                checked={acceptedPrivacy}
-                onChange={setAcceptedPrivacy}
-                label="I have read and accept the"
-                linkLabel="Privacy Policy"
-                to="/privacy"
-              />
-              <PolicyCheckbox
-                id="accept-refund"
-                checked={acceptedRefund}
-                onChange={setAcceptedRefund}
-                label="I have read and accept the"
-                linkLabel="Return / Refund Policy"
-                to="/refund"
-              />
+            <div className="mt-5">
+              <div className="flex items-start gap-3">
+                <Checkbox
+                  id="accept-policies"
+                  checked={acceptedPolicies}
+                  onCheckedChange={(value) => setAcceptedPolicies(value === true)}
+                  className="mt-0.5"
+                />
+                <Label
+                  htmlFor="accept-policies"
+                  className="text-sm font-normal leading-relaxed text-muted-foreground"
+                >
+                  I have read and accept the{" "}
+                  <Link to="/terms" className="font-medium text-primary underline underline-offset-4">
+                    Terms of Service
+                  </Link>
+                  ,{" "}
+                  <Link to="/privacy" className="font-medium text-primary underline underline-offset-4">
+                    Privacy Policy
+                  </Link>
+                  , and{" "}
+                  <Link to="/refund" className="font-medium text-primary underline underline-offset-4">
+                    Return / Refund Policy
+                  </Link>
+                  .
+                </Label>
+              </div>
             </div>
 
             <Button
@@ -265,7 +265,7 @@ function DonatePage() {
             <p className="mt-3 min-h-[1rem] text-center text-xs text-muted-foreground">
               {policiesAccepted
                 ? "Card details are entered directly with our payment processor — they never touch our servers."
-                : "Accept all three policies above to continue."}
+                : "Accept the Terms, Privacy, and Refund policies above to continue."}
             </p>
           </div>
 
@@ -352,36 +352,3 @@ function FrequencyOption({
   );
 }
 
-function PolicyCheckbox({
-  id,
-  checked,
-  onChange,
-  label,
-  linkLabel,
-  to,
-}: {
-  id: string;
-  checked: boolean;
-  onChange: (next: boolean) => void;
-  label: string;
-  linkLabel: string;
-  to: "/terms" | "/privacy" | "/refund";
-}) {
-  return (
-    <div className="flex items-start gap-3">
-      <Checkbox
-        id={id}
-        checked={checked}
-        onCheckedChange={(value) => onChange(value === true)}
-        className="mt-0.5"
-      />
-      <Label htmlFor={id} className="text-sm font-normal leading-relaxed text-muted-foreground">
-        {label}{" "}
-        <Link to={to} className="font-medium text-primary underline underline-offset-4">
-          {linkLabel}
-        </Link>
-        .
-      </Label>
-    </div>
-  );
-}
