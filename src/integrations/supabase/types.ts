@@ -286,6 +286,7 @@ export type Database = {
           created_at: string
           description: string | null
           focus_area: string | null
+          gallery_images: string[]
           highlights: string[]
           icon: string | null
           id: string
@@ -304,6 +305,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           focus_area?: string | null
+          gallery_images?: string[]
           highlights?: string[]
           icon?: string | null
           id?: string
@@ -322,6 +324,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           focus_area?: string | null
+          gallery_images?: string[]
           highlights?: string[]
           icon?: string | null
           id?: string

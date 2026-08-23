@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { BookOpen, Droplet, HeartHandshake, Package } from "lucide-react";
 
 import { PageHero } from "@/components/page-hero";
+import { ProgramDetailDialog } from "@/components/programs/program-detail-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getPrograms } from "@/lib/content.functions";
@@ -110,9 +111,12 @@ function ProgramsPage() {
                         {program.impact_label ?? program.location}
                       </p>
                     </div>
-                    <Button asChild size="sm">
-                      <Link to="/donate">Fund this program</Link>
-                    </Button>
+                    <div className="flex flex-wrap gap-2">
+                      <ProgramDetailDialog program={program} />
+                      <Button asChild size="sm">
+                        <Link to="/donate">Fund this program</Link>
+                      </Button>
+                    </div>
                   </div>
                 </article>
               );
