@@ -23,6 +23,7 @@ export type Database = {
           email: string | null
           environment: string
           id: string
+          receipt_sent_at: string | null
           status: string
           stripe_payment_intent_id: string | null
           stripe_session_id: string | null
@@ -37,6 +38,7 @@ export type Database = {
           email?: string | null
           environment?: string
           id?: string
+          receipt_sent_at?: string | null
           status?: string
           stripe_payment_intent_id?: string | null
           stripe_session_id?: string | null
@@ -51,6 +53,7 @@ export type Database = {
           email?: string | null
           environment?: string
           id?: string
+          receipt_sent_at?: string | null
           status?: string
           stripe_payment_intent_id?: string | null
           stripe_session_id?: string | null
