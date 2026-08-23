@@ -68,8 +68,15 @@ const signUpSchema = z
 
 type SignUpValues = z.infer<typeof signUpSchema>;
 
+const otpSchema = z.object({
+  token: z.string().length(6, "Enter the 6-digit code from your email"),
+});
+
 function SignUpPage() {
+  const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+  const [resending, setResending] = useState(false);
   const [sentTo, setSentTo] = useState<string | null>(null);
 
   const form = useForm<SignUpValues>({
@@ -82,6 +89,11 @@ function SignUpPage() {
       confirmPassword: "",
       acceptPolicies: false,
     },
+  });
+
+  const otpForm = useForm<z.infer<typeof otpSchema>>({
+    resolver: zodResolver(otpSchema),
+    defaultValues: { token: "" },
   });
 
   const values = form.watch();
@@ -99,7 +111,6 @@ function SignUpPage() {
       email: parsed.data.email,
       password: parsed.data.password,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth`,
         data: { full_name: parsed.data.fullName, policies_accepted: "true" },
       },
     });
@@ -114,35 +125,109 @@ function SignUpPage() {
       return;
     }
 
-    setSentTo(parsed.data.email);
     if (data.session) {
+      const roles = await fetchRoles(data.session.user.id);
       toast.success("Account created. Welcome to Hope Beyond Scarcity.");
-    } else {
-      toast.success("Account created — check your email to confirm it.");
+      navigate({ to: landingPathForRoles(roles), replace: true });
+      return;
     }
+
+    setSentTo(parsed.data.email);
+    toast.success("We emailed you a 6-digit verification code.");
+  }
+
+  async function verifyCode(vals: z.infer<typeof otpSchema>) {
+    if (!sentTo) return;
+    setVerifying(true);
+    const { data, error } = await supabase.auth.verifyOtp({
+      email: sentTo,
+      token: vals.token,
+      type: "signup",
+    });
+    setVerifying(false);
+
+    if (error || !data.user) {
+      toast.error(error?.message || "That code is invalid or has expired.");
+      return;
+    }
+
+    const roles = await fetchRoles(data.user.id);
+    toast.success("Email verified. Welcome to Hope Beyond Scarcity.");
+    navigate({ to: landingPathForRoles(roles), replace: true });
+  }
+
+  async function resendCode() {
+    if (!sentTo) return;
+    setResending(true);
+    const { error } = await supabase.auth.resend({ type: "signup", email: sentTo });
+    setResending(false);
+    if (error) {
+      toast.error(error.message || "We couldn't resend the code. Try again shortly.");
+      return;
+    }
+    toast.success("A new code is on its way.");
   }
 
   if (sentTo) {
     return (
       <AuthShell
-        title="Check your email"
-        description={`We sent a confirmation link to ${sentTo}.`}
+        title="Verify your email"
+        description={`We sent a 6-digit code to ${sentTo}. It expires in 5 minutes.`}
         footer={
-          <Link to="/auth" className="font-semibold text-primary hover:underline">
-            Back to sign in
-          </Link>
+          <button
+            type="button"
+            onClick={() => setSentTo(null)}
+            className="inline-flex items-center gap-1.5 font-semibold text-primary hover:underline"
+          >
+            <ArrowLeft className="size-3.5" aria-hidden="true" />
+            Use a different email
+          </button>
         }
       >
-        <div className="flex flex-col items-center gap-3 py-4 text-center">
-          <CheckCircle2 className="size-10 text-primary" aria-hidden="true" />
-          <p className="text-sm text-muted-foreground">
-            Click the link in that email to activate your account. You can close this tab — the link
-            brings you right back.
-          </p>
-        </div>
+        <Form {...otpForm}>
+          <form onSubmit={otpForm.handleSubmit(verifyCode)} className="space-y-5" noValidate>
+            <FormField
+              control={otpForm.control}
+              name="token"
+              render={({ field }) => (
+                <FormItem className="flex flex-col items-center">
+                  <FormLabel className="self-start">6-digit code</FormLabel>
+                  <FormControl>
+                    <InputOTP maxLength={6} value={field.value} onChange={field.onChange}>
+                      <InputOTPGroup>
+                        {[0, 1, 2, 3, 4, 5].map((index) => (
+                          <InputOTPSlot key={index} index={index} />
+                        ))}
+                      </InputOTPGroup>
+                    </InputOTP>
+                  </FormControl>
+                  <FormDescription className="self-start">
+                    Didn't get it? Check spam, or request a new code.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Button type="submit" className="w-full" disabled={verifying}>
+              {verifying ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : null}
+              {verifying ? "Verifying…" : "Verify and continue"}
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              className="w-full"
+              onClick={resendCode}
+              disabled={resending}
+            >
+              {resending ? "Sending…" : "Resend code"}
+            </Button>
+          </form>
+        </Form>
       </AuthShell>
     );
   }
+
 
   return (
     <AuthShell
