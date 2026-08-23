@@ -1,6 +1,9 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import {
   CalendarDays,
+  CircleDollarSign,
+  Repeat,
+
   HandHeart,
   HeartHandshake,
   Inbox,
