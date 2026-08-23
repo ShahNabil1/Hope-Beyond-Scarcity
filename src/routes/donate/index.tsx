@@ -303,14 +303,22 @@ function DonatePage() {
             </div>
 
             <Button
+              ref={donateButtonRef}
               type="button"
               size="lg"
               className="mt-6 w-full"
               disabled={!canDonate}
+              aria-disabled={!canDonate}
+              aria-describedby="donate-btn-help"
               onClick={() => {
                 setAmountTouched(true);
                 setCheckoutError(null);
-                if (!amountValid) return;
+                if (!amountValid) {
+                  // Move focus back to the amount field so the error is
+                  // discoverable for keyboard and screen-reader users.
+                  amountInputRef.current?.focus();
+                  return;
+                }
                 setCheckoutOpen(true);
               }}
             >
@@ -319,15 +327,24 @@ function DonatePage() {
                 ? `Give ${amountValid ? formatCad(amountInCents) : ""} monthly`
                 : `Donate ${amountValid ? formatCad(amountInCents) : ""}`}
             </Button>
+            {/* Visually-hidden live region so screen readers announce
+                checkout initialization errors even if focus is elsewhere. */}
+            <p ref={liveErrorRef} className="sr-only" aria-live="assertive" aria-atomic="true">
+              {checkoutError ?? ""}
+            </p>
             {checkoutError ? (
               <p
                 role="alert"
+                aria-live="assertive"
                 className="mt-3 rounded-xl border border-destructive/40 bg-destructive/10 p-3 text-center text-xs text-destructive"
               >
                 {checkoutError}
               </p>
             ) : null}
-            <p className="mt-3 min-h-[1rem] text-center text-xs text-muted-foreground">
+            <p
+              id="donate-btn-help"
+              className="mt-3 min-h-[1rem] text-center text-xs text-muted-foreground"
+            >
               {amountTouched && amountError
                 ? amountError
                 : policiesAccepted
