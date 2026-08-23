@@ -74,6 +74,42 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_messages: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          message: string
+          status: string
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          message: string
+          status?: string
+          subject?: string
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          message?: string
+          status?: string
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       donations: {
         Row: {
           amount_cents: number
@@ -428,6 +464,63 @@ export type Database = {
           slug?: string
           sort_order?: number
           summary?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      site_settings: {
+        Row: {
+          contact_address: string
+          contact_email: string
+          contact_hours: string
+          contact_intro: string
+          contact_map_url: string
+          contact_phone: string
+          created_at: string
+          emergency_active: boolean
+          emergency_cta_label: string
+          emergency_cta_url: string
+          emergency_ends_at: string | null
+          emergency_headline: string
+          emergency_message: string
+          emergency_starts_at: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          contact_address?: string
+          contact_email?: string
+          contact_hours?: string
+          contact_intro?: string
+          contact_map_url?: string
+          contact_phone?: string
+          created_at?: string
+          emergency_active?: boolean
+          emergency_cta_label?: string
+          emergency_cta_url?: string
+          emergency_ends_at?: string | null
+          emergency_headline?: string
+          emergency_message?: string
+          emergency_starts_at?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          contact_address?: string
+          contact_email?: string
+          contact_hours?: string
+          contact_intro?: string
+          contact_map_url?: string
+          contact_phone?: string
+          created_at?: string
+          emergency_active?: boolean
+          emergency_cta_label?: string
+          emergency_cta_url?: string
+          emergency_ends_at?: string | null
+          emergency_headline?: string
+          emergency_message?: string
+          emergency_starts_at?: string | null
+          id?: string
           updated_at?: string
         }
         Relationships: []
