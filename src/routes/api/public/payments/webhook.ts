@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
 
+import { sendDonationReceipt } from "@/lib/donation-receipt.server";
 import { type StripeEnv, verifyWebhook } from "@/lib/stripe.server";
 
 let _supabase: ReturnType<typeof createClient<any>> | null = null;
