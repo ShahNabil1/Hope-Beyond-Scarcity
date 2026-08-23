@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { CheckCircle2, Loader2, Mail } from "lucide-react";
+import { Loader2, Mail } from "lucide-react";
+import { BrandLogo } from "@/components/brand-logo";
+
 
 import { Button } from "@/components/ui/button";
 import { formatCad } from "@/lib/donation";
