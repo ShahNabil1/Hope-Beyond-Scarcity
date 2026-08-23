@@ -111,6 +111,23 @@ export function SecuritySection({ email }: { email: string }) {
             <form onSubmit={passwordForm.handleSubmit(savePassword)} className="space-y-4" noValidate>
               <FormField
                 control={passwordForm.control}
+                name="currentPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Current password</FormLabel>
+                    <FormControl>
+                      <PasswordInput
+                        autoComplete="current-password"
+                        placeholder="Enter your current password"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={passwordForm.control}
                 name="password"
                 render={({ field }) => (
                   <FormItem>
@@ -151,10 +168,8 @@ export function SecuritySection({ email }: { email: string }) {
                   ) : null}
                   {savingPassword ? "Updating…" : "Update password"}
                 </Button>
-                <Button type="button" variant="outline" onClick={sendResetLink}>
-                  Email me a verification code
-                </Button>
               </div>
+
             </form>
           </Form>
         </CardContent>
