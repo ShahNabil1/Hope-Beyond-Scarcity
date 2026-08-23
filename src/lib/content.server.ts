@@ -23,18 +23,44 @@ export async function fetchPrograms() {
   return data ?? [];
 }
 
+const NEWS_FIELDS =
+  "id,slug,title,headline,excerpt,body,category,tags,author_name,location,cover_image_url,gallery_images,video_url,read_minutes,published_at,is_featured";
+
 export async function fetchNews() {
   const { data, error } = await publicClient()
     .from("news_posts")
-    .select(
-      "id,slug,title,excerpt,body,category,author_name,location,cover_image_url,published_at,is_featured",
-    )
+    .select(NEWS_FIELDS)
     .eq("is_active", true)
     .order("is_featured", { ascending: false })
     .order("published_at", { ascending: false });
   if (error) throw new Error(error.message);
   return data ?? [];
 }
+
+export type NewsPost = Awaited<ReturnType<typeof fetchNews>>[number];
+
+export async function fetchNewsPost(slug: string) {
+  const client = publicClient();
+  const { data, error } = await client
+    .from("news_posts")
+    .select(NEWS_FIELDS)
+    .eq("is_active", true)
+    .eq("slug", slug)
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  if (!data) return null;
+
+  const { data: related } = await client
+    .from("news_posts")
+    .select("id,slug,title,excerpt,category,cover_image_url,published_at")
+    .eq("is_active", true)
+    .neq("slug", slug)
+    .order("published_at", { ascending: false })
+    .limit(3);
+
+  return { post: data, related: related ?? [] };
+}
+
 
 export async function fetchEvents() {
   const { data, error } = await publicClient()
