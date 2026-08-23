@@ -73,18 +73,18 @@ function DonatePage() {
   // and screen-reader users land on the active checkout instead of being
   // stranded on the now-disabled donate button.
   useEffect(() => {
-    if (checkoutOpen && checkoutPanelRef.current) {
-      // Slight delay lets the Stripe iframe mount before we focus.
-      const timer = window.setTimeout(() => {
-        checkoutPanelRef.current?.focus();
-      }, 150);
-      return () => window.clearTimeout(timer);
+    if (!checkoutOpen) {
+      // When checkout closes, return focus to the donate button so the user
+      // can re-enter the flow without losing their place in the tab order.
+      donateButtonRef.current?.focus();
+      return;
     }
-    // When checkout closes, return focus to the donate button so the user
-    // can re-enter the flow without losing their place in the tab order.
-    if (!checkoutOpen && donateButtonRef.current) {
-      donateButtonRef.current.focus();
-    }
+    if (!checkoutPanelRef.current) return;
+    // Slight delay lets the Stripe iframe mount before we focus.
+    const timer = window.setTimeout(() => {
+      checkoutPanelRef.current?.focus();
+    }, 150);
+    return () => window.clearTimeout(timer);
   }, [checkoutOpen]);
 
   const returnUrl =
