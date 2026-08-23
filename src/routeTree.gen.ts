@@ -28,6 +28,8 @@ import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-passw
 import { Route as AuthSignUpRouteImport } from './routes/auth/sign-up'
 import { Route as DonateIndexRouteImport } from './routes/donate/index'
 import { Route as DonateThankYouRouteImport } from './routes/donate/thank-you'
+import { Route as NewsIndexRouteImport } from './routes/news.index'
+import { Route as NewsSlugRouteImport } from './routes/news.$slug'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const IndexRoute = IndexRouteImport.update({
@@ -124,6 +126,16 @@ const DonateThankYouRoute = DonateThankYouRouteImport.update({
   path: '/donate/thank-you',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NewsIndexRoute = NewsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => NewsRoute,
+} as any)
+const NewsSlugRoute = NewsSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => NewsRoute,
+} as any)
 const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
     id: '/api/public/payments/webhook',
@@ -136,7 +148,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
-  '/news': typeof NewsRoute
+  '/news': typeof NewsRouteWithChildren
   '/privacy': typeof PrivacyRoute
   '/programs': typeof ProgramsRoute
   '/refund': typeof RefundRoute
@@ -148,8 +160,10 @@ export interface FileRoutesByFullPath {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/donate/thank-you': typeof DonateThankYouRoute
+  '/news/$slug': typeof NewsSlugRoute
   '/auth/': typeof AuthIndexRoute
   '/donate/': typeof DonateIndexRoute
+  '/news/': typeof NewsIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -157,7 +171,6 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
-  '/news': typeof NewsRoute
   '/privacy': typeof PrivacyRoute
   '/programs': typeof ProgramsRoute
   '/refund': typeof RefundRoute
@@ -169,8 +182,10 @@ export interface FileRoutesByTo {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/donate/thank-you': typeof DonateThankYouRoute
+  '/news/$slug': typeof NewsSlugRoute
   '/auth': typeof AuthIndexRoute
   '/donate': typeof DonateIndexRoute
+  '/news': typeof NewsIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
@@ -180,7 +195,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
-  '/news': typeof NewsRoute
+  '/news': typeof NewsRouteWithChildren
   '/privacy': typeof PrivacyRoute
   '/programs': typeof ProgramsRoute
   '/refund': typeof RefundRoute
@@ -192,8 +207,10 @@ export interface FileRoutesById {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/donate/thank-you': typeof DonateThankYouRoute
+  '/news/$slug': typeof NewsSlugRoute
   '/auth/': typeof AuthIndexRoute
   '/donate/': typeof DonateIndexRoute
+  '/news/': typeof NewsIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
@@ -215,8 +232,10 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/auth/sign-up'
     | '/donate/thank-you'
+    | '/news/$slug'
     | '/auth/'
     | '/donate/'
+    | '/news/'
     | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -224,7 +243,6 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/events'
-    | '/news'
     | '/privacy'
     | '/programs'
     | '/refund'
@@ -236,8 +254,10 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/auth/sign-up'
     | '/donate/thank-you'
+    | '/news/$slug'
     | '/auth'
     | '/donate'
+    | '/news'
     | '/api/public/payments/webhook'
   id:
     | '__root__'
@@ -258,8 +278,10 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/auth/sign-up'
     | '/donate/thank-you'
+    | '/news/$slug'
     | '/auth/'
     | '/donate/'
+    | '/news/'
     | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
@@ -269,7 +291,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
   EventsRoute: typeof EventsRoute
-  NewsRoute: typeof NewsRoute
+  NewsRoute: typeof NewsRouteWithChildren
   PrivacyRoute: typeof PrivacyRoute
   ProgramsRoute: typeof ProgramsRoute
   RefundRoute: typeof RefundRoute
@@ -419,6 +441,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DonateThankYouRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/news/': {
+      id: '/news/'
+      path: '/'
+      fullPath: '/news/'
+      preLoaderRoute: typeof NewsIndexRouteImport
+      parentRoute: typeof NewsRoute
+    }
+    '/news/$slug': {
+      id: '/news/$slug'
+      path: '/$slug'
+      fullPath: '/news/$slug'
+      preLoaderRoute: typeof NewsSlugRouteImport
+      parentRoute: typeof NewsRoute
+    }
     '/api/public/payments/webhook': {
       id: '/api/public/payments/webhook'
       path: '/api/public/payments/webhook'
@@ -442,13 +478,25 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface NewsRouteChildren {
+  NewsSlugRoute: typeof NewsSlugRoute
+  NewsIndexRoute: typeof NewsIndexRoute
+}
+
+const NewsRouteChildren: NewsRouteChildren = {
+  NewsSlugRoute: NewsSlugRoute,
+  NewsIndexRoute: NewsIndexRoute,
+}
+
+const NewsRouteWithChildren = NewsRoute._addFileChildren(NewsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
   EventsRoute: EventsRoute,
-  NewsRoute: NewsRoute,
+  NewsRoute: NewsRouteWithChildren,
   PrivacyRoute: PrivacyRoute,
   ProgramsRoute: ProgramsRoute,
   RefundRoute: RefundRoute,
