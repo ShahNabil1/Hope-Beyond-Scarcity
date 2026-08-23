@@ -1,20 +1,25 @@
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { AlertTriangle, X } from "lucide-react";
 
-type EmergencyBannerProps = {
-  active?: boolean;
-  headline?: string;
-  message?: string;
-};
+import { getSiteSettings } from "@/lib/content.functions";
+import { isEmergencyLive } from "@/lib/site-settings";
 
-export function EmergencyBanner({
-  active = true,
-  headline = "Emergency Appeal",
-  message = "Monsoon flooding has displaced families in southern Bangladesh. Every $50 delivers a family care package this week.",
-}: EmergencyBannerProps) {
+export function EmergencyBanner() {
+  const fetchSettings = useServerFn(getSiteSettings);
+  const { data } = useQuery({
+    queryKey: ["site-settings"],
+    queryFn: () => fetchSettings(),
+    staleTime: 60_000,
+  });
   const [dismissed, setDismissed] = useState(false);
-  if (!active || dismissed) return null;
+
+  if (dismissed || !isEmergencyLive(data ?? null)) return null;
+
+  const headline = data?.emergency_headline?.trim() || "Emergency Appeal";
+  const ctaLabel = data?.emergency_cta_label?.trim() || "Give now";
+  const ctaUrl = data?.emergency_cta_url?.trim() || "/donate";
 
   return (
     <div className="w-full bg-urgent text-urgent-foreground">
@@ -24,13 +29,13 @@ export function EmergencyBanner({
             <AlertTriangle className="size-4 shrink-0" aria-hidden="true" />
             {headline}
           </span>
-          <p className="flex-1 text-urgent-foreground/90">{message}</p>
-          <Link
-            to="/donate"
+          <p className="flex-1 text-urgent-foreground/90">{data?.emergency_message}</p>
+          <a
+            href={ctaUrl}
             className="w-fit shrink-0 rounded-full bg-urgent-foreground/15 px-4 py-1.5 font-semibold underline-offset-4 transition-colors hover:bg-urgent-foreground/25"
           >
-            Give now
-          </Link>
+            {ctaLabel}
+          </a>
         </div>
         <button
           type="button"
@@ -44,4 +49,3 @@ export function EmergencyBanner({
     </div>
   );
 }
-
