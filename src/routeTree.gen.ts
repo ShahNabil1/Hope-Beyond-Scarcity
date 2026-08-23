@@ -36,6 +36,7 @@ import { Route as AuthenticatedAdminEventsRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAdminMembersRouteImport } from './routes/_authenticated/admin.members'
 import { Route as AuthenticatedAdminMessagesRouteImport } from './routes/_authenticated/admin.messages'
 import { Route as AuthenticatedAdminNewsRouteImport } from './routes/_authenticated/admin.news'
+import { Route as AuthenticatedAdminPitchesRouteImport } from './routes/_authenticated/admin.pitches'
 import { Route as AuthenticatedAdminProgramsRouteImport } from './routes/_authenticated/admin.programs'
 import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin.settings'
 import { Route as AuthenticatedAdminVolunteersRouteImport } from './routes/_authenticated/admin.volunteers'
@@ -180,6 +181,12 @@ const AuthenticatedAdminNewsRoute = AuthenticatedAdminNewsRouteImport.update({
   path: '/news',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminPitchesRoute =
+  AuthenticatedAdminPitchesRouteImport.update({
+    id: '/pitches',
+    path: '/pitches',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminProgramsRoute =
   AuthenticatedAdminProgramsRouteImport.update({
     id: '/programs',
@@ -236,6 +243,7 @@ export interface FileRoutesByFullPath {
   '/admin/members': typeof AuthenticatedAdminMembersRoute
   '/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/admin/news': typeof AuthenticatedAdminNewsRoute
+  '/admin/pitches': typeof AuthenticatedAdminPitchesRoute
   '/admin/programs': typeof AuthenticatedAdminProgramsRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/volunteers': typeof AuthenticatedAdminVolunteersRoute
@@ -267,6 +275,7 @@ export interface FileRoutesByTo {
   '/admin/members': typeof AuthenticatedAdminMembersRoute
   '/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/admin/news': typeof AuthenticatedAdminNewsRoute
+  '/admin/pitches': typeof AuthenticatedAdminPitchesRoute
   '/admin/programs': typeof AuthenticatedAdminProgramsRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/volunteers': typeof AuthenticatedAdminVolunteersRoute
@@ -302,6 +311,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/members': typeof AuthenticatedAdminMembersRoute
   '/_authenticated/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/_authenticated/admin/news': typeof AuthenticatedAdminNewsRoute
+  '/_authenticated/admin/pitches': typeof AuthenticatedAdminPitchesRoute
   '/_authenticated/admin/programs': typeof AuthenticatedAdminProgramsRoute
   '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/_authenticated/admin/volunteers': typeof AuthenticatedAdminVolunteersRoute
@@ -337,6 +347,7 @@ export interface FileRouteTypes {
     | '/admin/members'
     | '/admin/messages'
     | '/admin/news'
+    | '/admin/pitches'
     | '/admin/programs'
     | '/admin/settings'
     | '/admin/volunteers'
@@ -368,6 +379,7 @@ export interface FileRouteTypes {
     | '/admin/members'
     | '/admin/messages'
     | '/admin/news'
+    | '/admin/pitches'
     | '/admin/programs'
     | '/admin/settings'
     | '/admin/volunteers'
@@ -402,6 +414,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/members'
     | '/_authenticated/admin/messages'
     | '/_authenticated/admin/news'
+    | '/_authenticated/admin/pitches'
     | '/_authenticated/admin/programs'
     | '/_authenticated/admin/settings'
     | '/_authenticated/admin/volunteers'
@@ -623,6 +636,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminNewsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/pitches': {
+      id: '/_authenticated/admin/pitches'
+      path: '/pitches'
+      fullPath: '/admin/pitches'
+      preLoaderRoute: typeof AuthenticatedAdminPitchesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/programs': {
       id: '/_authenticated/admin/programs'
       path: '/programs'
@@ -667,6 +687,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminMembersRoute: typeof AuthenticatedAdminMembersRoute
   AuthenticatedAdminMessagesRoute: typeof AuthenticatedAdminMessagesRoute
   AuthenticatedAdminNewsRoute: typeof AuthenticatedAdminNewsRoute
+  AuthenticatedAdminPitchesRoute: typeof AuthenticatedAdminPitchesRoute
   AuthenticatedAdminProgramsRoute: typeof AuthenticatedAdminProgramsRoute
   AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
   AuthenticatedAdminVolunteersRoute: typeof AuthenticatedAdminVolunteersRoute
@@ -679,6 +700,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminMembersRoute: AuthenticatedAdminMembersRoute,
   AuthenticatedAdminMessagesRoute: AuthenticatedAdminMessagesRoute,
   AuthenticatedAdminNewsRoute: AuthenticatedAdminNewsRoute,
+  AuthenticatedAdminPitchesRoute: AuthenticatedAdminPitchesRoute,
   AuthenticatedAdminProgramsRoute: AuthenticatedAdminProgramsRoute,
   AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
   AuthenticatedAdminVolunteersRoute: AuthenticatedAdminVolunteersRoute,

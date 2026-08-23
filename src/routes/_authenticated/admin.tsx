@@ -5,8 +5,10 @@ import {
   HeartHandshake,
   Inbox,
   LayoutDashboard,
+  Lightbulb,
   Newspaper,
   Settings,
+  Users,
 } from "lucide-react";
 
 import { RequireRole } from "@/components/auth/require-role";
@@ -21,6 +23,9 @@ const navItems: AdminNavItem[] = [
   { to: "/admin/news", label: "News", icon: <Newspaper /> },
   { to: "/admin/events", label: "Events", icon: <CalendarDays /> },
   { to: "/admin/volunteers", label: "Volunteer roles", icon: <HandHeart /> },
+  { to: "/admin/members", label: "Members", icon: <Users /> },
+  { to: "/admin/applications", label: "Applications", icon: <HandHeart /> },
+  { to: "/admin/pitches", label: "Pitches", icon: <Lightbulb /> },
   { to: "/admin/messages", label: "Messages", icon: <Inbox /> },
   { to: "/admin/settings", label: "Site settings", icon: <Settings /> },
 ];
