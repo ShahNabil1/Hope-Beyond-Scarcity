@@ -1,7 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
 
-import { recordDonationFromSession } from "@/lib/donation-record.server";
+import {
+  handleInvoicePaymentFailed,
+  recordDonationFromInvoice,
+  recordDonationFromSession,
+} from "@/lib/donation-record.server";
 import { type StripeEnv, verifyWebhook } from "@/lib/stripe.server";
 
 let _supabase: ReturnType<typeof createClient<any>> | null = null;
@@ -59,7 +63,7 @@ async function markSubscriptionCanceled(subscription: any, env: StripeEnv) {
     .eq("environment", env);
 }
 
-async function handleWebhook(req: Request, env: StripeEnv) {
+async function handleWebhook(req: Request, env: StripeEnv, origin: string) {
   const event = await verifyWebhook(req, env);
 
   switch (event.type) {
@@ -81,6 +85,13 @@ async function handleWebhook(req: Request, env: StripeEnv) {
     case "checkout.session.async_payment_failed":
       await recordDonationFromSession(event.data.object, env, "failed");
       break;
+    case "invoice.paid":
+    case "invoice.payment_succeeded":
+      await recordDonationFromInvoice(event.data.object, env);
+      break;
+    case "invoice.payment_failed":
+      await handleInvoicePaymentFailed(event.data.object, env, `${origin}/dashboard`);
+      break;
     default:
       console.log("Unhandled event:", event.type);
   }
@@ -96,7 +107,7 @@ export const Route = createFileRoute("/api/public/payments/webhook")({
           return Response.json({ received: true, ignored: "invalid env" });
         }
         try {
-          await handleWebhook(request, rawEnv);
+          await handleWebhook(request, rawEnv, new URL(request.url).origin);
           return Response.json({ received: true });
         } catch (e) {
           console.error("Webhook error:", e);
