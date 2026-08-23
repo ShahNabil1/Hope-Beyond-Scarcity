@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
 
-import { sendDonationReceipt } from "@/lib/donation-receipt.server";
+import { recordDonationFromSession } from "@/lib/donation-record.server";
 import { type StripeEnv, verifyWebhook } from "@/lib/stripe.server";
 
 let _supabase: ReturnType<typeof createClient<any>> | null = null;
@@ -59,58 +59,6 @@ async function markSubscriptionCanceled(subscription: any, env: StripeEnv) {
     .eq("environment", env);
 }
 
-async function recordDonation(session: any, env: StripeEnv, status: string) {
-  const { data } = await getSupabase()
-    .from("donations")
-    .upsert(
-      {
-        user_id: session.metadata?.userId ?? null,
-        email: session.customer_details?.email ?? null,
-        amount_cents: session.amount_total ?? 0,
-        currency: session.currency ?? "cad",
-        donation_type: session.mode === "subscription" ? "monthly" : "one_time",
-        status,
-        stripe_session_id: session.id,
-        stripe_payment_intent_id:
-          typeof session.payment_intent === "string" ? session.payment_intent : null,
-        environment: env,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: "stripe_session_id" },
-    )
-    .select("id, receipt_sent_at, created_at")
-    .maybeSingle();
-
-  if (status !== "paid" || !data || data.receipt_sent_at) return;
-
-  const email = session.customer_details?.email;
-  if (!email) {
-    console.error("Paid donation without an email; skipping receipt", session.id);
-    return;
-  }
-
-  const result = await sendDonationReceipt({
-    receiptNumber: `HBS-${String(session.id).slice(-10).toUpperCase()}`,
-    donorName: session.customer_details?.name ?? undefined,
-    donorEmail: email,
-    amountCents: session.amount_total ?? 0,
-    currency: session.currency ?? "cad",
-    donationType: session.mode === "subscription" ? "monthly" : "one_time",
-    dateIso: data.created_at ?? new Date().toISOString(),
-    environment: env,
-  });
-
-  if (result.sent) {
-    await getSupabase()
-      .from("donations")
-      .update({ receipt_sent_at: new Date().toISOString() })
-      .eq("id", data.id);
-  } else {
-    console.error("Receipt email failed:", result.error);
-  }
-}
-
-
 async function handleWebhook(req: Request, env: StripeEnv) {
   const event = await verifyWebhook(req, env);
 
@@ -124,14 +72,14 @@ async function handleWebhook(req: Request, env: StripeEnv) {
       break;
     case "checkout.session.completed": {
       const session = event.data.object;
-      await recordDonation(session, env, session.payment_status === "unpaid" ? "pending" : "paid");
+      await recordDonationFromSession(session, env, session.payment_status === "unpaid" ? "pending" : "paid");
       break;
     }
     case "checkout.session.async_payment_succeeded":
-      await recordDonation(event.data.object, env, "paid");
+      await recordDonationFromSession(event.data.object, env, "paid");
       break;
     case "checkout.session.async_payment_failed":
-      await recordDonation(event.data.object, env, "failed");
+      await recordDonationFromSession(event.data.object, env, "failed");
       break;
     default:
       console.log("Unhandled event:", event.type);
