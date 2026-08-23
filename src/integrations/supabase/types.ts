@@ -14,6 +14,66 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_deletion_requests: {
+        Row: {
+          completed_at: string | null
+          email: string | null
+          id: string
+          requested_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          email?: string | null
+          id?: string
+          requested_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          email?: string | null
+          id?: string
+          requested_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      care_package_pitches: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          description: string | null
+          estimated_cost_cents: number | null
+          id: string
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          description?: string | null
+          estimated_cost_cents?: number | null
+          id?: string
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          description?: string | null
+          estimated_cost_cents?: number | null
+          id?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       donations: {
         Row: {
           amount_cents: number
@@ -69,6 +129,8 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          location: string | null
+          phone: string | null
           policies_accepted_at: string | null
           updated_at: string
         }
@@ -78,6 +140,8 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id: string
+          location?: string | null
+          phone?: string | null
           policies_accepted_at?: string | null
           updated_at?: string
         }
@@ -87,6 +151,8 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          location?: string | null
+          phone?: string | null
           policies_accepted_at?: string | null
           updated_at?: string
         }
@@ -167,6 +233,48 @@ export type Database = {
         }
         Relationships: []
       }
+      volunteer_applications: {
+        Row: {
+          admin_notes: string | null
+          availability: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          interest_area: string
+          message: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          availability?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          interest_area: string
+          message?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          availability?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          interest_area?: string
+          message?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -179,6 +287,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      purge_account_data: { Args: { _user_id: string }; Returns: undefined }
     }
     Enums: {
       app_role: "admin" | "editor" | "donor"
