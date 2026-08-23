@@ -352,36 +352,3 @@ function FrequencyOption({
   );
 }
 
-function PolicyCheckbox({
-  id,
-  checked,
-  onChange,
-  label,
-  linkLabel,
-  to,
-}: {
-  id: string;
-  checked: boolean;
-  onChange: (next: boolean) => void;
-  label: string;
-  linkLabel: string;
-  to: "/terms" | "/privacy" | "/refund";
-}) {
-  return (
-    <div className="flex items-start gap-3">
-      <Checkbox
-        id={id}
-        checked={checked}
-        onCheckedChange={(value) => onChange(value === true)}
-        className="mt-0.5"
-      />
-      <Label htmlFor={id} className="text-sm font-normal leading-relaxed text-muted-foreground">
-        {label}{" "}
-        <Link to={to} className="font-medium text-primary underline underline-offset-4">
-          {linkLabel}
-        </Link>
-        .
-      </Label>
-    </div>
-  );
-}
