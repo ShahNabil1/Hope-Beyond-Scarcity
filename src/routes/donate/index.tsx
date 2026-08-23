@@ -87,7 +87,7 @@ function DonatePage() {
           <PaymentTestModeBanner />
 
           {/* Frequency */}
-          <div className="rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-soft)]">
+          <div className="rounded-2xl border border-border bg-card p-5 shadow-[var(--shadow-soft)] sm:p-6">
             <h2 className="text-lg font-semibold text-foreground">1. Choose your giving rhythm</h2>
             <div className="mt-4 grid grid-cols-2 gap-3">
               <FrequencyOption
@@ -134,7 +134,7 @@ function DonatePage() {
           </div>
 
           {/* Amount */}
-          <div className="rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-soft)]">
+          <div className="rounded-2xl border border-border bg-card p-5 shadow-[var(--shadow-soft)] sm:p-6">
             <h2 className="text-lg font-semibold text-foreground">2. Choose your amount (CAD)</h2>
             <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
               {PRESET_AMOUNTS_CAD.map((amount) => (
@@ -217,7 +217,7 @@ function DonatePage() {
           </div>
 
           {/* Legal */}
-          <div className="rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-soft)]">
+          <div className="rounded-2xl border border-border bg-card p-5 shadow-[var(--shadow-soft)] sm:p-6">
             <h2 className="text-lg font-semibold text-foreground">3. Confirm and give</h2>
 
             <div className="mt-4 rounded-xl border border-border bg-muted/50 p-4 text-xs leading-relaxed text-muted-foreground">
