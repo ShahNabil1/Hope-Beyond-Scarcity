@@ -23,7 +23,7 @@ const title = "Donate | Hope Beyond Scarcity";
 const description =
   "Give once or monthly in Canadian dollars to deliver care packages, clean water, and health support to families living in scarcity.";
 
-export const Route = createFileRoute("/donate")({
+export const Route = createFileRoute("/donate/")({
   head: () => ({
     meta: [
       { title },
