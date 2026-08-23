@@ -44,14 +44,20 @@ function AdminMessages() {
 
   async function patch(id: string, values: { status?: (typeof STATUSES)[number]; admin_notes?: string }) {
     const result = await updateMessage({ data: { id, ...values } });
-    if ("error" in result) return toast.error(result.error);
+    if ("error" in result) {
+      toast.error(result.error);
+      return;
+    }
     toast.success("Message updated");
     refresh();
   }
 
   async function remove(id: string) {
     const result = await deleteMessage({ data: { id } });
-    if ("error" in result) return toast.error(result.error);
+    if ("error" in result) {
+      toast.error(result.error);
+      return;
+    }
     toast.success("Message deleted");
     refresh();
   }

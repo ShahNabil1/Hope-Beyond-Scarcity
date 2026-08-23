@@ -31,6 +31,7 @@ import { Route as DonateThankYouRouteImport } from './routes/donate/thank-you'
 import { Route as NewsIndexRouteImport } from './routes/news.index'
 import { Route as NewsSlugRouteImport } from './routes/news.$slug'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as AuthenticatedAdminMessagesRouteImport } from './routes/_authenticated/admin.messages'
 import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin.settings'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
@@ -143,6 +144,12 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminMessagesRoute =
+  AuthenticatedAdminMessagesRouteImport.update({
+    id: '/messages',
+    path: '/messages',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminSettingsRoute =
   AuthenticatedAdminSettingsRouteImport.update({
     id: '/settings',
@@ -177,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/auth/': typeof AuthIndexRoute
   '/donate/': typeof DonateIndexRoute
   '/news/': typeof NewsIndexRoute
+  '/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -200,6 +208,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthIndexRoute
   '/donate': typeof DonateIndexRoute
   '/news': typeof NewsIndexRoute
+  '/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -227,6 +236,7 @@ export interface FileRoutesById {
   '/auth/': typeof AuthIndexRoute
   '/donate/': typeof DonateIndexRoute
   '/news/': typeof NewsIndexRoute
+  '/_authenticated/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -254,6 +264,7 @@ export interface FileRouteTypes {
     | '/auth/'
     | '/donate/'
     | '/news/'
+    | '/admin/messages'
     | '/admin/settings'
     | '/admin/'
     | '/api/public/payments/webhook'
@@ -277,6 +288,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/donate'
     | '/news'
+    | '/admin/messages'
     | '/admin/settings'
     | '/admin'
     | '/api/public/payments/webhook'
@@ -303,6 +315,7 @@ export interface FileRouteTypes {
     | '/auth/'
     | '/donate/'
     | '/news/'
+    | '/_authenticated/admin/messages'
     | '/_authenticated/admin/settings'
     | '/_authenticated/admin/'
     | '/api/public/payments/webhook'
@@ -485,6 +498,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/messages': {
+      id: '/_authenticated/admin/messages'
+      path: '/messages'
+      fullPath: '/admin/messages'
+      preLoaderRoute: typeof AuthenticatedAdminMessagesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/settings': {
       id: '/_authenticated/admin/settings'
       path: '/settings'
@@ -503,11 +523,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminMessagesRoute: typeof AuthenticatedAdminMessagesRoute
   AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminMessagesRoute: AuthenticatedAdminMessagesRoute,
   AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
