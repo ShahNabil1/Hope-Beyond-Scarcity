@@ -122,9 +122,9 @@ export const adminUpdateApplication = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { requireStaff } = await import("@/lib/admin.server");
     const { admin } = await requireStaff(context.supabase, context.userId);
-    const patch: Record<string, unknown> = {};
-    if (data.status !== undefined) patch["status"] = data.status;
-    if (data.admin_notes !== undefined) patch["admin_notes"] = data.admin_notes;
+    const patch: { status?: string; admin_notes?: string | null } = {};
+    if (data.status !== undefined) patch.status = data.status;
+    if (data.admin_notes !== undefined) patch.admin_notes = data.admin_notes;
     const { error } = await admin.from("volunteer_applications").update(patch).eq("id", data.id);
     if (error) return { error: error.message };
     return { ok: true as const };
@@ -170,9 +170,9 @@ export const adminUpdatePitch = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { requireStaff } = await import("@/lib/admin.server");
     const { admin } = await requireStaff(context.supabase, context.userId);
-    const patch: Record<string, unknown> = {};
-    if (data.status !== undefined) patch["status"] = data.status;
-    if (data.admin_notes !== undefined) patch["admin_notes"] = data.admin_notes;
+    const patch: { status?: string; admin_notes?: string | null } = {};
+    if (data.status !== undefined) patch.status = data.status;
+    if (data.admin_notes !== undefined) patch.admin_notes = data.admin_notes;
     const { error } = await admin.from("care_package_pitches").update(patch).eq("id", data.id);
     if (error) return { error: error.message };
     return { ok: true as const };
