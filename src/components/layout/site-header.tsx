@@ -75,13 +75,14 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <div className="ml-auto flex items-center gap-2 lg:ml-4">
+        <div className="ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2 lg:ml-4">
           <Button asChild variant="outline" className="hidden sm:inline-flex">
             <Link to="/volunteer">Get Involved</Link>
           </Button>
-          <Button asChild className="shadow-sm">
-            <Link to="/donate">Donate Now</Link>
+          <Button asChild size="sm" className="shadow-sm sm:h-10 sm:px-4 sm:text-sm">
+            <Link to="/donate">Donate</Link>
           </Button>
+
 
           {isAuthenticated ? (
             <DropdownMenu>
