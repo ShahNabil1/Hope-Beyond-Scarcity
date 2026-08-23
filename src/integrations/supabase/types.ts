@@ -191,6 +191,50 @@ export type Database = {
         }
         Relationships: []
       }
+      news_comments: {
+        Row: {
+          author_avatar_url: string | null
+          author_name: string
+          body: string
+          created_at: string
+          id: string
+          is_hidden: boolean
+          post_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          author_avatar_url?: string | null
+          author_name?: string
+          body: string
+          created_at?: string
+          id?: string
+          is_hidden?: boolean
+          post_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          author_avatar_url?: string | null
+          author_name?: string
+          body?: string
+          created_at?: string
+          id?: string
+          is_hidden?: boolean
+          post_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "news_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "news_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       news_posts: {
         Row: {
           author_name: string | null
@@ -199,15 +243,20 @@ export type Database = {
           cover_image_url: string | null
           created_at: string
           excerpt: string
+          gallery_images: string[]
+          headline: string | null
           id: string
           is_active: boolean
           is_featured: boolean
           location: string | null
           published_at: string
+          read_minutes: number
           slug: string
           sort_order: number
+          tags: string[]
           title: string
           updated_at: string
+          video_url: string | null
         }
         Insert: {
           author_name?: string | null
@@ -216,15 +265,20 @@ export type Database = {
           cover_image_url?: string | null
           created_at?: string
           excerpt: string
+          gallery_images?: string[]
+          headline?: string | null
           id?: string
           is_active?: boolean
           is_featured?: boolean
           location?: string | null
           published_at?: string
+          read_minutes?: number
           slug: string
           sort_order?: number
+          tags?: string[]
           title: string
           updated_at?: string
+          video_url?: string | null
         }
         Update: {
           author_name?: string | null
@@ -233,17 +287,54 @@ export type Database = {
           cover_image_url?: string | null
           created_at?: string
           excerpt?: string
+          gallery_images?: string[]
+          headline?: string | null
           id?: string
           is_active?: boolean
           is_featured?: boolean
           location?: string | null
           published_at?: string
+          read_minutes?: number
           slug?: string
           sort_order?: number
+          tags?: string[]
           title?: string
           updated_at?: string
+          video_url?: string | null
         }
         Relationships: []
+      }
+      news_reactions: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string
+          reaction: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id: string
+          reaction: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string
+          reaction?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "news_reactions_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "news_posts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
