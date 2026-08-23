@@ -47,6 +47,11 @@ function DonatePage() {
   const [amountTouched, setAmountTouched] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
+  const amountInputRef = useRef<HTMLInputElement>(null);
+  const donateButtonRef = useRef<HTMLButtonElement>(null);
+  const checkoutPanelRef = useRef<HTMLDivElement>(null);
+  const liveErrorRef = useRef<HTMLParagraphElement>(null);
+
   const parsedAmount = useMemo(() => parseCadAmountToCents(customAmount), [customAmount]);
   const amountInCents = "cents" in parsedAmount ? parsedAmount.cents : 0;
   const amountError = "error" in parsedAmount ? parsedAmount.error : null;
@@ -56,6 +61,31 @@ function DonatePage() {
   const amountValid = amountError === null;
   const policiesAccepted = acceptedPolicies;
   const canDonate = amountValid && policiesAccepted && !needsAccount && !checkoutOpen;
+
+  // Announce amount errors to screen readers once the field has been touched.
+  useEffect(() => {
+    if (amountTouched && amountError && liveErrorRef.current) {
+      liveErrorRef.current.textContent = amountError;
+    }
+  }, [amountTouched, amountError]);
+
+  // Move focus to the secure-payment panel when checkout opens so keyboard
+  // and screen-reader users land on the active checkout instead of being
+  // stranded on the now-disabled donate button.
+  useEffect(() => {
+    if (checkoutOpen && checkoutPanelRef.current) {
+      // Slight delay lets the Stripe iframe mount before we focus.
+      const timer = window.setTimeout(() => {
+        checkoutPanelRef.current?.focus();
+      }, 150);
+      return () => window.clearTimeout(timer);
+    }
+    // When checkout closes, return focus to the donate button so the user
+    // can re-enter the flow without losing their place in the tab order.
+    if (!checkoutOpen && donateButtonRef.current) {
+      donateButtonRef.current.focus();
+    }
+  }, [checkoutOpen]);
 
   const returnUrl =
     typeof window === "undefined"
