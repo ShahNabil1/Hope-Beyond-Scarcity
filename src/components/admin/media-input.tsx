@@ -5,17 +5,9 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/lib/supabase";
+import { MEDIA_BUCKET as BUCKET, mediaUrl } from "@/lib/media";
 
-const BUCKET = "program-images";
-
-/** Public URL for a stored object, served through the media proxy route. */
-export function mediaUrl(value: string) {
-  if (!value) return "";
-  if (/^(https?:)?\/\//.test(value) || value.startsWith("data:") || value.startsWith("/")) {
-    return value;
-  }
-  return `/api/public/media/${BUCKET}/${value}`;
-}
+export { mediaUrl };
 
 async function uploadFile(file: File, folder: string) {
   if (!file.type.startsWith("image/")) throw new Error(`${file.name} is not an image`);

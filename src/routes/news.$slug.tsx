@@ -1,3 +1,4 @@
+import { mediaUrl } from "@/lib/media";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, CalendarDays, Clock, MapPin, UserRound } from "lucide-react";
 
@@ -111,7 +112,7 @@ function ArticlePage() {
         {post.cover_image_url ? (
           <figure className="overflow-hidden rounded-3xl border border-border bg-muted">
             <img
-              src={post.cover_image_url}
+              src={mediaUrl(post.cover_image_url)}
               alt={post.title}
               width={1600}
               height={900}
@@ -221,7 +222,7 @@ function ArticlePage() {
                   >
                     {item.cover_image_url ? (
                       <img
-                        src={item.cover_image_url}
+                        src={mediaUrl(item.cover_image_url)}
                         alt={item.title}
                         loading="lazy"
                         className="size-full object-cover transition duration-500 group-hover:scale-[1.04]"

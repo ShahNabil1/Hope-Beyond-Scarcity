@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { mediaUrl } from "@/lib/media";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, CalendarDays, Clock, MapPin, PlayCircle } from "lucide-react";
 
@@ -112,7 +113,7 @@ function NewsIndexPage() {
             >
               {lead.cover_image_url ? (
                 <img
-                  src={lead.cover_image_url}
+                  src={mediaUrl(lead.cover_image_url)}
                   alt={lead.title}
                   width={1600}
                   height={900}
@@ -183,7 +184,7 @@ function NewsIndexPage() {
                   >
                     {post.cover_image_url ? (
                       <img
-                        src={post.cover_image_url}
+                        src={mediaUrl(post.cover_image_url)}
                         alt={post.title}
                         loading="lazy"
                         width={1600}
