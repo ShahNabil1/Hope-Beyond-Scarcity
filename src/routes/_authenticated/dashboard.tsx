@@ -40,6 +40,7 @@ const TABS = [
 
 function DonorPortalPage() {
   const { user, loading } = useAuth();
+  const [tab, setTab] = useState<string>("profile");
 
   return (
     <>
@@ -49,15 +50,15 @@ function DonorPortalPage() {
         description="Your profile, giving history, monthly support, volunteer work and account settings — all in one place."
       />
 
-      <section className="mx-auto w-full max-w-5xl px-4 py-10 sm:py-14">
+      <section className="mx-auto w-full max-w-5xl px-4 py-10 pb-28 sm:py-14 md:pb-14">
         {loading || !user ? (
           <div className="space-y-4">
             <Skeleton className="h-12 w-full" />
             <Skeleton className="h-64 w-full" />
           </div>
         ) : (
-          <Tabs defaultValue="profile" className="w-full">
-            <div className="-mx-4 overflow-x-auto px-4 pb-2">
+          <Tabs value={tab} onValueChange={setTab} className="w-full">
+            <div className="-mx-4 hidden overflow-x-auto px-4 pb-2 md:block">
               <TabsList className="inline-flex h-auto w-max gap-1 p-1">
                 {TABS.map((tab) => (
                   <TabsTrigger key={tab.value} value={tab.value} className="gap-2 whitespace-nowrap">
@@ -67,6 +68,7 @@ function DonorPortalPage() {
                 ))}
               </TabsList>
             </div>
+
 
             <TabsContent value="profile" className="mt-6">
               <ProfileSection userId={user.id} email={user.email ?? ""} />
