@@ -41,17 +41,16 @@ function DonatePage() {
   const { user, isAuthenticated } = useAuth();
   const [frequency, setFrequency] = useState<DonationFrequency>("one_time");
   const [presetAmount, setPresetAmount] = useState<number | null>(50);
-  const [customAmount, setCustomAmount] = useState("");
+  const [customAmount, setCustomAmount] = useState("50");
   const [email, setEmail] = useState("");
   const [acceptedPolicies, setAcceptedPolicies] = useState(false);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
 
   const amountInCents = useMemo(() => {
-    if (presetAmount !== null) return presetAmount * 100;
     const parsed = Number.parseFloat(customAmount);
     if (!Number.isFinite(parsed)) return 0;
     return Math.round(parsed * 100);
-  }, [presetAmount, customAmount]);
+  }, [customAmount]);
 
   const donorEmail = user?.email ?? (email.trim() || undefined);
   const needsAccount = frequency === "monthly" && !isAuthenticated;
@@ -139,7 +138,7 @@ function DonatePage() {
                   type="button"
                   onClick={() => {
                     setPresetAmount(amount);
-                    setCustomAmount("");
+                    setCustomAmount(String(amount));
                     setCheckoutOpen(false);
                   }}
                   className={cn(
