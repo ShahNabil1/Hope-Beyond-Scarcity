@@ -28,6 +28,7 @@ import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-passw
 import { Route as AuthSignUpRouteImport } from './routes/auth/sign-up'
 import { Route as DonateIndexRouteImport } from './routes/donate/index'
 import { Route as DonateThankYouRouteImport } from './routes/donate/thank-you'
+import { Route as LegalSlugRouteImport } from './routes/legal.$slug'
 import { Route as NewsIndexRouteImport } from './routes/news.index'
 import { Route as NewsSlugRouteImport } from './routes/news.$slug'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
@@ -139,6 +140,11 @@ const DonateThankYouRoute = DonateThankYouRouteImport.update({
   path: '/donate/thank-you',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LegalSlugRoute = LegalSlugRouteImport.update({
+  id: '/legal/$slug',
+  path: '/legal/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NewsIndexRoute = NewsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -248,6 +254,7 @@ export interface FileRoutesByFullPath {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/donate/thank-you': typeof DonateThankYouRoute
+  '/legal/$slug': typeof LegalSlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/auth/': typeof AuthIndexRoute
   '/donate/': typeof DonateIndexRoute
@@ -282,6 +289,7 @@ export interface FileRoutesByTo {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/donate/thank-you': typeof DonateThankYouRoute
+  '/legal/$slug': typeof LegalSlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/auth': typeof AuthIndexRoute
   '/donate': typeof DonateIndexRoute
@@ -320,6 +328,7 @@ export interface FileRoutesById {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/donate/thank-you': typeof DonateThankYouRoute
+  '/legal/$slug': typeof LegalSlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/auth/': typeof AuthIndexRoute
   '/donate/': typeof DonateIndexRoute
@@ -358,6 +367,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/auth/sign-up'
     | '/donate/thank-you'
+    | '/legal/$slug'
     | '/news/$slug'
     | '/auth/'
     | '/donate/'
@@ -392,6 +402,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/auth/sign-up'
     | '/donate/thank-you'
+    | '/legal/$slug'
     | '/news/$slug'
     | '/auth'
     | '/donate'
@@ -429,6 +440,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/auth/sign-up'
     | '/donate/thank-you'
+    | '/legal/$slug'
     | '/news/$slug'
     | '/auth/'
     | '/donate/'
@@ -465,6 +477,7 @@ export interface RootRouteChildren {
   AuthResetPasswordRoute: typeof AuthResetPasswordRoute
   AuthSignUpRoute: typeof AuthSignUpRoute
   DonateThankYouRoute: typeof DonateThankYouRoute
+  LegalSlugRoute: typeof LegalSlugRoute
   AuthIndexRoute: typeof AuthIndexRoute
   DonateIndexRoute: typeof DonateIndexRoute
   ApiPublicMediaSplatRoute: typeof ApiPublicMediaSplatRoute
@@ -604,6 +617,13 @@ declare module '@tanstack/react-router' {
       path: '/donate/thank-you'
       fullPath: '/donate/thank-you'
       preLoaderRoute: typeof DonateThankYouRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/$slug': {
+      id: '/legal/$slug'
+      path: '/legal/$slug'
+      fullPath: '/legal/$slug'
+      preLoaderRoute: typeof LegalSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/news/': {
@@ -795,6 +815,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthResetPasswordRoute: AuthResetPasswordRoute,
   AuthSignUpRoute: AuthSignUpRoute,
   DonateThankYouRoute: DonateThankYouRoute,
+  LegalSlugRoute: LegalSlugRoute,
   AuthIndexRoute: AuthIndexRoute,
   DonateIndexRoute: DonateIndexRoute,
   ApiPublicMediaSplatRoute: ApiPublicMediaSplatRoute,

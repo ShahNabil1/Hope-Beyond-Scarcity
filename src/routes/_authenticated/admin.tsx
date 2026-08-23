@@ -10,6 +10,7 @@ import {
   LayoutDashboard,
   Lightbulb,
   Newspaper,
+  ScrollText,
   Settings,
   Users,
 } from "lucide-react";
@@ -32,6 +33,7 @@ const navItems: AdminNavItem[] = [
   { to: "/admin/donations", label: "Donations", icon: <CircleDollarSign /> },
   { to: "/admin/recurring", label: "Recurring gifts", icon: <Repeat /> },
 
+  { to: "/admin/legal", label: "Legal pages", icon: <ScrollText /> },
   { to: "/admin/messages", label: "Messages", icon: <Inbox /> },
   { to: "/admin/settings", label: "Site settings", icon: <Settings /> },
 ];
