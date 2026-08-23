@@ -144,9 +144,10 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  // On the donate page, the footer is hidden on mobile to keep the checkout
-  // flow focused and reduce scrolling on small screens.
-  const hideFooterOnMobile = pathname.startsWith("/donate");
+  // On the donate and dashboard pages, the footer is hidden on mobile to keep
+  // the flows focused and reduce scrolling on small screens (native-app feel).
+  const hideFooterOnMobile =
+    pathname.startsWith("/donate") || pathname.startsWith("/dashboard");
 
   return (
     <QueryClientProvider client={queryClient}>
