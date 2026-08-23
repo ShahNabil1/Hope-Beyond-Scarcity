@@ -53,7 +53,8 @@ export const adminSaveContent = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { requireStaff } = await import("@/lib/admin.server");
-    const { admin } = await requireStaff(context.supabase, context.userId);
+    const { admin: staffClient } = await requireStaff(context.supabase, context.userId);
+    const admin = staffClient as any;
     const values = sanitize(data.table, data.values);
     if (Object.keys(values).length === 0) return { error: "Nothing to save." };
 
@@ -99,7 +100,8 @@ export const adminToggleContent = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { requireStaff } = await import("@/lib/admin.server");
-    const { admin } = await requireStaff(context.supabase, context.userId);
+    const { admin: staffClient } = await requireStaff(context.supabase, context.userId);
+    const admin = staffClient as any;
     const { error } = await admin
       .from(data.table)
       .update({ [data.field]: data.value })
