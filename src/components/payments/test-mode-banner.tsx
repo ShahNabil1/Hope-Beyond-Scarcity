@@ -10,8 +10,8 @@ export function PaymentTestModeBanner() {
   }
   if (clientToken.startsWith("pk_test_")) {
     return (
-      <div className="w-full border-b border-warning/40 bg-warning/15 px-4 py-2 text-center text-sm text-warning-foreground">
-        Test mode — all donations made in the preview are simulated. No real money is charged.
+      <div className="rounded-xl border border-accent/40 bg-accent/15 px-4 py-2 text-center text-sm text-accent-foreground">
+        Test mode — donations made here are simulated. No real money is charged.
       </div>
     );
   }
