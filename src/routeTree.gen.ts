@@ -31,9 +31,12 @@ import { Route as DonateThankYouRouteImport } from './routes/donate/thank-you'
 import { Route as NewsIndexRouteImport } from './routes/news.index'
 import { Route as NewsSlugRouteImport } from './routes/news.$slug'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as AuthenticatedAdminApplicationsRouteImport } from './routes/_authenticated/admin.applications'
 import { Route as AuthenticatedAdminEventsRouteImport } from './routes/_authenticated/admin.events'
+import { Route as AuthenticatedAdminMembersRouteImport } from './routes/_authenticated/admin.members'
 import { Route as AuthenticatedAdminMessagesRouteImport } from './routes/_authenticated/admin.messages'
 import { Route as AuthenticatedAdminNewsRouteImport } from './routes/_authenticated/admin.news'
+import { Route as AuthenticatedAdminPitchesRouteImport } from './routes/_authenticated/admin.pitches'
 import { Route as AuthenticatedAdminProgramsRouteImport } from './routes/_authenticated/admin.programs'
 import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin.settings'
 import { Route as AuthenticatedAdminVolunteersRouteImport } from './routes/_authenticated/admin.volunteers'
@@ -149,10 +152,22 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminApplicationsRoute =
+  AuthenticatedAdminApplicationsRouteImport.update({
+    id: '/applications',
+    path: '/applications',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminEventsRoute =
   AuthenticatedAdminEventsRouteImport.update({
     id: '/events',
     path: '/events',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminMembersRoute =
+  AuthenticatedAdminMembersRouteImport.update({
+    id: '/members',
+    path: '/members',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminMessagesRoute =
@@ -166,6 +181,12 @@ const AuthenticatedAdminNewsRoute = AuthenticatedAdminNewsRouteImport.update({
   path: '/news',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminPitchesRoute =
+  AuthenticatedAdminPitchesRouteImport.update({
+    id: '/pitches',
+    path: '/pitches',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminProgramsRoute =
   AuthenticatedAdminProgramsRouteImport.update({
     id: '/programs',
@@ -217,9 +238,12 @@ export interface FileRoutesByFullPath {
   '/auth/': typeof AuthIndexRoute
   '/donate/': typeof DonateIndexRoute
   '/news/': typeof NewsIndexRoute
+  '/admin/applications': typeof AuthenticatedAdminApplicationsRoute
   '/admin/events': typeof AuthenticatedAdminEventsRoute
+  '/admin/members': typeof AuthenticatedAdminMembersRoute
   '/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/admin/news': typeof AuthenticatedAdminNewsRoute
+  '/admin/pitches': typeof AuthenticatedAdminPitchesRoute
   '/admin/programs': typeof AuthenticatedAdminProgramsRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/volunteers': typeof AuthenticatedAdminVolunteersRoute
@@ -246,9 +270,12 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthIndexRoute
   '/donate': typeof DonateIndexRoute
   '/news': typeof NewsIndexRoute
+  '/admin/applications': typeof AuthenticatedAdminApplicationsRoute
   '/admin/events': typeof AuthenticatedAdminEventsRoute
+  '/admin/members': typeof AuthenticatedAdminMembersRoute
   '/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/admin/news': typeof AuthenticatedAdminNewsRoute
+  '/admin/pitches': typeof AuthenticatedAdminPitchesRoute
   '/admin/programs': typeof AuthenticatedAdminProgramsRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/volunteers': typeof AuthenticatedAdminVolunteersRoute
@@ -279,9 +306,12 @@ export interface FileRoutesById {
   '/auth/': typeof AuthIndexRoute
   '/donate/': typeof DonateIndexRoute
   '/news/': typeof NewsIndexRoute
+  '/_authenticated/admin/applications': typeof AuthenticatedAdminApplicationsRoute
   '/_authenticated/admin/events': typeof AuthenticatedAdminEventsRoute
+  '/_authenticated/admin/members': typeof AuthenticatedAdminMembersRoute
   '/_authenticated/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/_authenticated/admin/news': typeof AuthenticatedAdminNewsRoute
+  '/_authenticated/admin/pitches': typeof AuthenticatedAdminPitchesRoute
   '/_authenticated/admin/programs': typeof AuthenticatedAdminProgramsRoute
   '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/_authenticated/admin/volunteers': typeof AuthenticatedAdminVolunteersRoute
@@ -312,9 +342,12 @@ export interface FileRouteTypes {
     | '/auth/'
     | '/donate/'
     | '/news/'
+    | '/admin/applications'
     | '/admin/events'
+    | '/admin/members'
     | '/admin/messages'
     | '/admin/news'
+    | '/admin/pitches'
     | '/admin/programs'
     | '/admin/settings'
     | '/admin/volunteers'
@@ -341,9 +374,12 @@ export interface FileRouteTypes {
     | '/auth'
     | '/donate'
     | '/news'
+    | '/admin/applications'
     | '/admin/events'
+    | '/admin/members'
     | '/admin/messages'
     | '/admin/news'
+    | '/admin/pitches'
     | '/admin/programs'
     | '/admin/settings'
     | '/admin/volunteers'
@@ -373,9 +409,12 @@ export interface FileRouteTypes {
     | '/auth/'
     | '/donate/'
     | '/news/'
+    | '/_authenticated/admin/applications'
     | '/_authenticated/admin/events'
+    | '/_authenticated/admin/members'
     | '/_authenticated/admin/messages'
     | '/_authenticated/admin/news'
+    | '/_authenticated/admin/pitches'
     | '/_authenticated/admin/programs'
     | '/_authenticated/admin/settings'
     | '/_authenticated/admin/volunteers'
@@ -562,11 +601,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/applications': {
+      id: '/_authenticated/admin/applications'
+      path: '/applications'
+      fullPath: '/admin/applications'
+      preLoaderRoute: typeof AuthenticatedAdminApplicationsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/events': {
       id: '/_authenticated/admin/events'
       path: '/events'
       fullPath: '/admin/events'
       preLoaderRoute: typeof AuthenticatedAdminEventsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/members': {
+      id: '/_authenticated/admin/members'
+      path: '/members'
+      fullPath: '/admin/members'
+      preLoaderRoute: typeof AuthenticatedAdminMembersRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/messages': {
@@ -581,6 +634,13 @@ declare module '@tanstack/react-router' {
       path: '/news'
       fullPath: '/admin/news'
       preLoaderRoute: typeof AuthenticatedAdminNewsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/pitches': {
+      id: '/_authenticated/admin/pitches'
+      path: '/pitches'
+      fullPath: '/admin/pitches'
+      preLoaderRoute: typeof AuthenticatedAdminPitchesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/programs': {
@@ -622,9 +682,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminApplicationsRoute: typeof AuthenticatedAdminApplicationsRoute
   AuthenticatedAdminEventsRoute: typeof AuthenticatedAdminEventsRoute
+  AuthenticatedAdminMembersRoute: typeof AuthenticatedAdminMembersRoute
   AuthenticatedAdminMessagesRoute: typeof AuthenticatedAdminMessagesRoute
   AuthenticatedAdminNewsRoute: typeof AuthenticatedAdminNewsRoute
+  AuthenticatedAdminPitchesRoute: typeof AuthenticatedAdminPitchesRoute
   AuthenticatedAdminProgramsRoute: typeof AuthenticatedAdminProgramsRoute
   AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
   AuthenticatedAdminVolunteersRoute: typeof AuthenticatedAdminVolunteersRoute
@@ -632,9 +695,12 @@ interface AuthenticatedAdminRouteChildren {
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminApplicationsRoute: AuthenticatedAdminApplicationsRoute,
   AuthenticatedAdminEventsRoute: AuthenticatedAdminEventsRoute,
+  AuthenticatedAdminMembersRoute: AuthenticatedAdminMembersRoute,
   AuthenticatedAdminMessagesRoute: AuthenticatedAdminMessagesRoute,
   AuthenticatedAdminNewsRoute: AuthenticatedAdminNewsRoute,
+  AuthenticatedAdminPitchesRoute: AuthenticatedAdminPitchesRoute,
   AuthenticatedAdminProgramsRoute: AuthenticatedAdminProgramsRoute,
   AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
   AuthenticatedAdminVolunteersRoute: AuthenticatedAdminVolunteersRoute,
