@@ -48,7 +48,7 @@ function formatDate(value: string) {
 }
 
 function NewsPage() {
-  const posts = Route.useLoaderData();
+  const posts = Route.useLoaderData() ?? [];
   const [featured, ...rest] = posts;
 
   return (

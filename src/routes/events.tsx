@@ -53,7 +53,7 @@ const timeFmt = new Intl.DateTimeFormat("en-CA", {
 });
 
 function EventsPage() {
-  const events = Route.useLoaderData();
+  const events = Route.useLoaderData() ?? [];
   const now = Date.now();
   const upcoming = events.filter((event) => new Date(event.starts_at).getTime() >= now);
   const past = events.filter((event) => new Date(event.starts_at).getTime() < now).reverse();
