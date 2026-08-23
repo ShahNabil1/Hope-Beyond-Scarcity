@@ -39,6 +39,7 @@ import { Route as AuthenticatedAdminMessagesRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminNewsRouteImport } from './routes/_authenticated/admin.news'
 import { Route as AuthenticatedAdminPitchesRouteImport } from './routes/_authenticated/admin.pitches'
 import { Route as AuthenticatedAdminProgramsRouteImport } from './routes/_authenticated/admin.programs'
+import { Route as AuthenticatedAdminRecurringRouteImport } from './routes/_authenticated/admin.recurring'
 import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin.settings'
 import { Route as AuthenticatedAdminVolunteersRouteImport } from './routes/_authenticated/admin.volunteers'
 import { Route as ApiPublicMediaSplatRouteImport } from './routes/api/public/media/$'
@@ -200,6 +201,12 @@ const AuthenticatedAdminProgramsRoute =
     path: '/programs',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminRecurringRoute =
+  AuthenticatedAdminRecurringRouteImport.update({
+    id: '/recurring',
+    path: '/recurring',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminSettingsRoute =
   AuthenticatedAdminSettingsRouteImport.update({
     id: '/settings',
@@ -253,6 +260,7 @@ export interface FileRoutesByFullPath {
   '/admin/news': typeof AuthenticatedAdminNewsRoute
   '/admin/pitches': typeof AuthenticatedAdminPitchesRoute
   '/admin/programs': typeof AuthenticatedAdminProgramsRoute
+  '/admin/recurring': typeof AuthenticatedAdminRecurringRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/volunteers': typeof AuthenticatedAdminVolunteersRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
@@ -286,6 +294,7 @@ export interface FileRoutesByTo {
   '/admin/news': typeof AuthenticatedAdminNewsRoute
   '/admin/pitches': typeof AuthenticatedAdminPitchesRoute
   '/admin/programs': typeof AuthenticatedAdminProgramsRoute
+  '/admin/recurring': typeof AuthenticatedAdminRecurringRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/volunteers': typeof AuthenticatedAdminVolunteersRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
@@ -323,6 +332,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/news': typeof AuthenticatedAdminNewsRoute
   '/_authenticated/admin/pitches': typeof AuthenticatedAdminPitchesRoute
   '/_authenticated/admin/programs': typeof AuthenticatedAdminProgramsRoute
+  '/_authenticated/admin/recurring': typeof AuthenticatedAdminRecurringRoute
   '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/_authenticated/admin/volunteers': typeof AuthenticatedAdminVolunteersRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
@@ -360,6 +370,7 @@ export interface FileRouteTypes {
     | '/admin/news'
     | '/admin/pitches'
     | '/admin/programs'
+    | '/admin/recurring'
     | '/admin/settings'
     | '/admin/volunteers'
     | '/admin/'
@@ -393,6 +404,7 @@ export interface FileRouteTypes {
     | '/admin/news'
     | '/admin/pitches'
     | '/admin/programs'
+    | '/admin/recurring'
     | '/admin/settings'
     | '/admin/volunteers'
     | '/admin'
@@ -429,6 +441,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/news'
     | '/_authenticated/admin/pitches'
     | '/_authenticated/admin/programs'
+    | '/_authenticated/admin/recurring'
     | '/_authenticated/admin/settings'
     | '/_authenticated/admin/volunteers'
     | '/_authenticated/admin/'
@@ -670,6 +683,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminProgramsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/recurring': {
+      id: '/_authenticated/admin/recurring'
+      path: '/recurring'
+      fullPath: '/admin/recurring'
+      preLoaderRoute: typeof AuthenticatedAdminRecurringRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/settings': {
       id: '/_authenticated/admin/settings'
       path: '/settings'
@@ -710,6 +730,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminNewsRoute: typeof AuthenticatedAdminNewsRoute
   AuthenticatedAdminPitchesRoute: typeof AuthenticatedAdminPitchesRoute
   AuthenticatedAdminProgramsRoute: typeof AuthenticatedAdminProgramsRoute
+  AuthenticatedAdminRecurringRoute: typeof AuthenticatedAdminRecurringRoute
   AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
   AuthenticatedAdminVolunteersRoute: typeof AuthenticatedAdminVolunteersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
@@ -724,6 +745,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminNewsRoute: AuthenticatedAdminNewsRoute,
   AuthenticatedAdminPitchesRoute: AuthenticatedAdminPitchesRoute,
   AuthenticatedAdminProgramsRoute: AuthenticatedAdminProgramsRoute,
+  AuthenticatedAdminRecurringRoute: AuthenticatedAdminRecurringRoute,
   AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
   AuthenticatedAdminVolunteersRoute: AuthenticatedAdminVolunteersRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
