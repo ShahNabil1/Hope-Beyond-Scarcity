@@ -74,18 +74,22 @@ export function SiteFooter() {
             A Canadian Not-for-Profit Corporation working alongside families to build dignity,
             health, and lasting hope beyond scarcity.
           </p>
-          <div className="mt-5 flex gap-2">
-            {socials.map(({ label, Icon }) => (
-              <a
-                key={label}
-                href="#"
-                aria-label={label}
-                className="flex size-9 items-center justify-center rounded-full bg-primary-foreground/10 transition-colors hover:bg-primary-foreground/20"
-              >
-                <Icon className="size-4" aria-hidden="true" />
-              </a>
-            ))}
-          </div>
+          {links.length > 0 ? (
+            <div className="mt-5 flex flex-wrap gap-2">
+              {links.map(({ label, Icon, href }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  aria-label={label}
+                  className="flex size-9 items-center justify-center rounded-full bg-primary-foreground/10 transition-colors hover:bg-primary-foreground/20"
+                >
+                  <Icon className="size-4" aria-hidden="true" />
+                </a>
+              ))}
+            </div>
+          ) : null}
         </div>
 
         {columns.map((column) => (
