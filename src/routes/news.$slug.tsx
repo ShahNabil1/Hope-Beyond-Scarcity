@@ -24,6 +24,8 @@ export const Route = createFileRoute("/news/$slug")({
     }
     const { post } = loaderData;
     const summary = post.headline ?? post.excerpt;
+    const url = `${SITE_URL}/news/${post.slug}`;
+    const image = absoluteMediaUrl(post.cover_image_url) || `${SITE_URL}/og-image.jpg`;
     return {
       meta: [
         { title: `${post.title} | Hope Beyond Scarcity` },
@@ -31,7 +33,35 @@ export const Route = createFileRoute("/news/$slug")({
         { property: "og:title", content: post.title },
         { property: "og:description", content: summary.slice(0, 155) },
         { property: "og:type", content: "article" },
+        { property: "og:url", content: url },
+        { property: "og:image", content: image },
         { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:image", content: image },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "NewsArticle",
+            headline: post.title,
+            description: summary,
+            image: [image],
+            datePublished: post.published_at,
+            dateModified: post.updated_at ?? post.published_at,
+            mainEntityOfPage: url,
+            author: {
+              "@type": post.author_name ? "Person" : "Organization",
+              name: post.author_name ?? "Hope Beyond Scarcity",
+            },
+            publisher: {
+              "@type": "Organization",
+              name: "Hope Beyond Scarcity",
+              logo: { "@type": "ImageObject", url: `${SITE_URL}/web-app-manifest-512x512.png` },
+            },
+          }),
+        },
       ],
     };
   },
