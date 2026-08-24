@@ -29,7 +29,7 @@ const navLinks = [
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
-  const { isAuthenticated, user, roles, homePath, signOut } = useAuth();
+  const { isAuthenticated, user, roles, homePath, displayName, signOut } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
