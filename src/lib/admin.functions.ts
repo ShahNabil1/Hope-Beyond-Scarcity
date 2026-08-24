@@ -17,6 +17,13 @@ const settingsSchema = z.object({
   contact_phone: z.string().trim().max(80),
   contact_hours: z.string().trim().max(200),
   contact_map_url: z.string().trim().max(500),
+  social_facebook: z.string().trim().max(300),
+  social_instagram: z.string().trim().max(300),
+  social_linkedin: z.string().trim().max(300),
+  social_youtube: z.string().trim().max(300),
+  social_x: z.string().trim().max(300),
+  social_tiktok: z.string().trim().max(300),
+  social_whatsapp: z.string().trim().max(300),
 });
 
 /** Staff view of the site settings singleton. */

@@ -87,7 +87,7 @@ export async function fetchVolunteerRoles() {
 }
 
 const SITE_SETTINGS_FIELDS =
-  "id,emergency_active,emergency_headline,emergency_message,emergency_cta_label,emergency_cta_url,emergency_starts_at,emergency_ends_at,contact_intro,contact_address,contact_email,contact_phone,contact_hours,contact_map_url";
+  "id,emergency_active,emergency_headline,emergency_message,emergency_cta_label,emergency_cta_url,emergency_starts_at,emergency_ends_at,contact_intro,contact_address,contact_email,contact_phone,contact_hours,contact_map_url,social_facebook,social_instagram,social_linkedin,social_youtube,social_x,social_tiktok,social_whatsapp";
 
 export async function fetchSiteSettings() {
   const { data, error } = await publicClient()

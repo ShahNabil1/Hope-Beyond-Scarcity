@@ -1,7 +1,21 @@
 import { Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 
 import { BrandLogo } from "@/components/brand-logo";
-import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Youtube } from "lucide-react";
+import { getSiteSettings } from "@/lib/content.functions";
+import {
+  Facebook,
+  Instagram,
+  Linkedin,
+  Mail,
+  MapPin,
+  MessageCircle,
+  Music2,
+  Phone,
+  Twitter,
+  Youtube,
+} from "lucide-react";
 
 const columns = [
   {
@@ -25,13 +39,31 @@ const columns = [
 ] as const;
 
 const socials = [
-  { label: "Facebook", Icon: Facebook },
-  { label: "Instagram", Icon: Instagram },
-  { label: "LinkedIn", Icon: Linkedin },
-  { label: "YouTube", Icon: Youtube },
-];
+  { key: "social_facebook", label: "Facebook", Icon: Facebook },
+  { key: "social_instagram", label: "Instagram", Icon: Instagram },
+  { key: "social_linkedin", label: "LinkedIn", Icon: Linkedin },
+  { key: "social_youtube", label: "YouTube", Icon: Youtube },
+  { key: "social_x", label: "X (Twitter)", Icon: Twitter },
+  { key: "social_tiktok", label: "TikTok", Icon: Music2 },
+  { key: "social_whatsapp", label: "WhatsApp", Icon: MessageCircle },
+] as const;
 
 export function SiteFooter() {
+  const fetchSettings = useServerFn(getSiteSettings);
+  const { data: settings } = useQuery({
+    queryKey: ["site-settings"],
+    queryFn: () => fetchSettings(),
+    staleTime: 60_000,
+  });
+
+  const links = socials
+    .map((s) => ({ ...s, href: (settings?.[s.key] ?? "").trim() }))
+    .filter((s) => s.href.length > 0);
+
+  const address = settings?.contact_address?.trim() || "Toronto, Ontario, Canada";
+  const email = settings?.contact_email?.trim() || "info@hopebeyondscarcity.com";
+  const phone = settings?.contact_phone?.trim() || "Phone number coming soon";
+
   return (
     <footer className="mt-24 border-t border-border bg-primary-deep text-primary-foreground">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-2 lg:grid-cols-4 lg:px-8">
@@ -42,18 +74,22 @@ export function SiteFooter() {
             A Canadian Not-for-Profit Corporation working alongside families to build dignity,
             health, and lasting hope beyond scarcity.
           </p>
-          <div className="mt-5 flex gap-2">
-            {socials.map(({ label, Icon }) => (
-              <a
-                key={label}
-                href="#"
-                aria-label={label}
-                className="flex size-9 items-center justify-center rounded-full bg-primary-foreground/10 transition-colors hover:bg-primary-foreground/20"
-              >
-                <Icon className="size-4" aria-hidden="true" />
-              </a>
-            ))}
-          </div>
+          {links.length > 0 ? (
+            <div className="mt-5 flex flex-wrap gap-2">
+              {links.map(({ label, Icon, href }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  aria-label={label}
+                  className="flex size-9 items-center justify-center rounded-full bg-primary-foreground/10 transition-colors hover:bg-primary-foreground/20"
+                >
+                  <Icon className="size-4" aria-hidden="true" />
+                </a>
+              ))}
+            </div>
+          ) : null}
         </div>
 
         {columns.map((column) => (
@@ -83,17 +119,17 @@ export function SiteFooter() {
           <ul className="mt-4 space-y-3 text-sm text-primary-foreground/85">
             <li className="flex gap-2.5">
               <MapPin className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-              <span>Toronto, Ontario, Canada</span>
+              <span>{address}</span>
             </li>
             <li className="flex gap-2.5">
               <Mail className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-              <a href="mailto:info@hopebeyondscarcity.com" className="hover:underline">
-                info@hopebeyondscarcity.com
+              <a href={`mailto:${email}`} className="hover:underline">
+                {email}
               </a>
             </li>
             <li className="flex gap-2.5">
               <Phone className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-              <span>Phone number coming soon</span>
+              <span>{phone}</span>
             </li>
           </ul>
         </div>

@@ -13,7 +13,12 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import { adminGetSettings, adminSaveSettings } from "@/lib/admin.functions";
-import { fromLocalInput, isEmergencyLive, toLocalInput } from "@/lib/site-settings";
+import {
+  SOCIAL_FIELDS,
+  fromLocalInput,
+  isEmergencyLive,
+  toLocalInput,
+} from "@/lib/site-settings";
 
 export const Route = createFileRoute("/_authenticated/admin/settings")({
   component: AdminSettings,
@@ -33,6 +38,13 @@ type FormState = {
   contact_phone: string;
   contact_hours: string;
   contact_map_url: string;
+  social_facebook: string;
+  social_instagram: string;
+  social_linkedin: string;
+  social_youtube: string;
+  social_x: string;
+  social_tiktok: string;
+  social_whatsapp: string;
 };
 
 function AdminSettings() {
@@ -62,6 +74,13 @@ function AdminSettings() {
       contact_phone: data.contact_phone,
       contact_hours: data.contact_hours,
       contact_map_url: data.contact_map_url,
+      social_facebook: data.social_facebook ?? "",
+      social_instagram: data.social_instagram ?? "",
+      social_linkedin: data.social_linkedin ?? "",
+      social_youtube: data.social_youtube ?? "",
+      social_x: data.social_x ?? "",
+      social_tiktok: data.social_tiktok ?? "",
+      social_whatsapp: data.social_whatsapp ?? "",
     });
   }, [data]);
 
@@ -261,6 +280,28 @@ function AdminSettings() {
                 placeholder="https://www.google.com/maps/embed?..."
               />
             </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Social media links</CardTitle>
+            <CardDescription>
+              Shown as icons in the footer. Leave a field empty to hide that icon.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-4 sm:grid-cols-2">
+            {SOCIAL_FIELDS.map((field) => (
+              <div key={field.key} className="space-y-2">
+                <Label htmlFor={field.key}>{field.label}</Label>
+                <Input
+                  id={field.key}
+                  value={form[field.key]}
+                  onChange={(e) => set(field.key, e.target.value)}
+                  placeholder={field.placeholder}
+                />
+              </div>
+            ))}
           </CardContent>
         </Card>
 

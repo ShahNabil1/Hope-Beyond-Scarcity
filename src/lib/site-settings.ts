@@ -13,7 +13,33 @@ export type SiteSettings = {
   contact_phone: string;
   contact_hours: string;
   contact_map_url: string;
+  social_facebook: string;
+  social_instagram: string;
+  social_linkedin: string;
+  social_youtube: string;
+  social_x: string;
+  social_tiktok: string;
+  social_whatsapp: string;
 };
+
+export type SocialKey =
+  | "social_facebook"
+  | "social_instagram"
+  | "social_linkedin"
+  | "social_youtube"
+  | "social_x"
+  | "social_tiktok"
+  | "social_whatsapp";
+
+export const SOCIAL_FIELDS: { key: SocialKey; label: string; placeholder: string }[] = [
+  { key: "social_facebook", label: "Facebook", placeholder: "https://facebook.com/…" },
+  { key: "social_instagram", label: "Instagram", placeholder: "https://instagram.com/…" },
+  { key: "social_linkedin", label: "LinkedIn", placeholder: "https://linkedin.com/company/…" },
+  { key: "social_youtube", label: "YouTube", placeholder: "https://youtube.com/@…" },
+  { key: "social_x", label: "X (Twitter)", placeholder: "https://x.com/…" },
+  { key: "social_tiktok", label: "TikTok", placeholder: "https://tiktok.com/@…" },
+  { key: "social_whatsapp", label: "WhatsApp", placeholder: "https://wa.me/1…" },
+];
 
 /** The appeal shows only when it is switched on AND inside its scheduled window. */
 export function isEmergencyLive(
