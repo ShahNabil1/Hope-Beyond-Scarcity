@@ -23,19 +23,18 @@ const description = "Internal content management for programs, news, events, and
 
 const navItems: AdminNavItem[] = [
   { to: "/admin", label: "Overview", icon: <LayoutDashboard />, exact: true },
-  { to: "/admin/programs", label: "Programs", icon: <HeartHandshake /> },
-  { to: "/admin/news", label: "News", icon: <Newspaper /> },
-  { to: "/admin/events", label: "Events", icon: <CalendarDays /> },
-  { to: "/admin/volunteers", label: "Volunteer roles", icon: <HandHeart /> },
-  { to: "/admin/members", label: "Members", icon: <Users /> },
-  { to: "/admin/applications", label: "Applications", icon: <HandHeart /> },
-  { to: "/admin/pitches", label: "Pitches", icon: <Lightbulb /> },
-  { to: "/admin/donations", label: "Donations", icon: <CircleDollarSign /> },
-  { to: "/admin/recurring", label: "Recurring gifts", icon: <Repeat /> },
-
-  { to: "/admin/legal", label: "Legal pages", icon: <ScrollText /> },
-  { to: "/admin/messages", label: "Messages", icon: <Inbox /> },
-  { to: "/admin/settings", label: "Site settings", icon: <Settings /> },
+  { to: "/admin/programs", label: "Programs", icon: <HeartHandshake />, group: "Content" },
+  { to: "/admin/news", label: "News", icon: <Newspaper />, group: "Content" },
+  { to: "/admin/events", label: "Events", icon: <CalendarDays />, group: "Content" },
+  { to: "/admin/volunteers", label: "Volunteer roles", icon: <HandHeart />, group: "Content" },
+  { to: "/admin/legal", label: "Legal pages", icon: <ScrollText />, group: "Content" },
+  { to: "/admin/members", label: "Members", icon: <Users />, group: "People" },
+  { to: "/admin/applications", label: "Applications", icon: <HandHeart />, group: "People" },
+  { to: "/admin/pitches", label: "Pitches", icon: <Lightbulb />, group: "People" },
+  { to: "/admin/messages", label: "Messages", icon: <Inbox />, group: "People" },
+  { to: "/admin/donations", label: "Donations", icon: <CircleDollarSign />, group: "Finance" },
+  { to: "/admin/recurring", label: "Recurring gifts", icon: <Repeat />, group: "Finance" },
+  { to: "/admin/settings", label: "Site settings", icon: <Settings />, group: "System" },
 ];
 
 export const Route = createFileRoute("/_authenticated/admin")({
