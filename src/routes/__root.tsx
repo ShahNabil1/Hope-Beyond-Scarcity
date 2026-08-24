@@ -168,7 +168,7 @@ function RootComponent() {
       <AuthProvider>
         <ConfirmProvider>
         <AnalyticsBridge />
-        <div className="flex min-h-screen flex-col font-sans antialiased">
+        <div className="flex min-h-screen w-full flex-col overflow-x-hidden font-sans antialiased">
           {isAdmin ? null : <SiteHeader />}
           {isAdmin || isHome ? null : <PageBackBar />}
           <main className="flex-1">

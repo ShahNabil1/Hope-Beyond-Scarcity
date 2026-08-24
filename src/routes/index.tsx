@@ -163,7 +163,7 @@ function Index() {
 
       {/* Mission preview */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-        <div className="grid items-center gap-12 lg:grid-cols-2">
+        <div className="grid grid-cols-[minmax(0,1fr)] items-center gap-10 sm:gap-12 lg:grid-cols-2">
           <Reveal from="left">
             <div
               className="group overflow-hidden rounded-3xl"
