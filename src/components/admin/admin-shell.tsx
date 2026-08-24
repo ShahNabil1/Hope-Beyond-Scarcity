@@ -201,11 +201,19 @@ export function AdminShell({ items, children }: { items: AdminNavItem[]; childre
         />
 
         <div className="relative flex min-h-screen">
+          {/* Spacer keeps the flow width in sync with the fixed sidebar */}
+          <motion.div
+            aria-hidden
+            initial={false}
+            animate={{ width: collapsed ? 76 : 256 }}
+            transition={spring}
+            className="hidden shrink-0 lg:block"
+          />
           <motion.aside
             initial={false}
             animate={{ width: collapsed ? 76 : 256 }}
             transition={spring}
-            className="sticky top-0 hidden h-screen shrink-0 border-r border-border/70 bg-background/80 p-3 backdrop-blur-xl lg:block"
+            className="fixed inset-y-0 left-0 z-40 hidden h-screen shrink-0 border-r border-border/70 bg-background/80 p-3 backdrop-blur-xl lg:block"
           >
             <SidebarBody items={items} collapsed={collapsed} />
             <button
@@ -219,6 +227,7 @@ export function AdminShell({ items, children }: { items: AdminNavItem[]; childre
               />
             </button>
           </motion.aside>
+
 
           <div className="flex min-w-0 flex-1 flex-col">
             <header className="sticky top-0 z-40 flex h-16 items-center gap-3 border-b border-border/70 bg-background/80 px-4 backdrop-blur-xl sm:px-6">
