@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, CalendarDays, ShieldCheck } from "lucide-react";
+import { ArrowRight, CalendarDays, HeartHandshake, ShieldCheck } from "lucide-react";
 
 import { BrandLogo } from "@/components/brand-logo";
 import { ImpactStats } from "@/components/impact-stats";
