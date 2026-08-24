@@ -27,7 +27,14 @@ export const Route = createFileRoute("/")({
       { name: "description", content: description },
       { property: "og:title", content: title },
       { property: "og:description", content: description },
+      { property: "og:url", content: "https://hopebeyondscarcity.com/" },
+      { property: "og:image", content: "https://hopebeyondscarcity.com/og-image.jpg" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: title },
+      { name: "twitter:description", content: description },
+      { name: "twitter:image", content: "https://hopebeyondscarcity.com/og-image.jpg" },
     ],
+    links: [{ rel: "canonical", href: "https://hopebeyondscarcity.com/" }],
   }),
   loader: ({ context }) => {
     // Warm the cache, but never let a transient content failure blank the page:
