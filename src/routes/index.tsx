@@ -1,23 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import {
-  ArrowRight,
-  CalendarDays,
-  HeartHandshake,
-  MapPin,
-  Package,
-  ShieldCheck,
-  Stethoscope,
-  Users,
-} from "lucide-react";
+import { ArrowRight, CalendarDays, HeartHandshake, ShieldCheck } from "lucide-react";
 
 import { BrandLogo } from "@/components/brand-logo";
+import { ImpactStats } from "@/components/impact-stats";
 
 import heroImage from "@/assets/hero-children.jpg";
 import missionImage from "@/assets/mission-founders.jpg";
 import campaignImage from "@/assets/campaign-spotlight.jpg";
 import { EmergencyBanner } from "@/components/emergency-banner";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+
 
 const title = "Hope Beyond Scarcity | Dignity, Care and Lasting Change";
 const description =
@@ -35,12 +27,8 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const stats = [
-  { icon: MapPin, value: "24", label: "Villages Supported" },
-  { icon: Package, value: "8,400+", label: "Care Packages Distributed" },
-  { icon: Users, value: "3,100", label: "Children Reached" },
-  { icon: Stethoscope, value: "12", label: "Health Camps Hosted" },
-];
+
+
 
 const partners = [
   "Prioom Nath's Clinic Initiative",
@@ -146,31 +134,8 @@ function Index() {
       </section>
 
       {/* Live impact statistics */}
-      <section className="bg-primary-soft py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="max-w-2xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-              Live Impact
-            </p>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              Generosity, measured in real lives
-            </h2>
-          </div>
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {stats.map(({ icon: Icon, value, label }) => (
-              <Card key={label} className="border-border/70 bg-card">
-                <CardContent className="p-6">
-                  <span className="flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                    <Icon className="size-5" aria-hidden="true" />
-                  </span>
-                  <p className="mt-5 text-4xl font-bold tracking-tight text-foreground">{value}</p>
-                  <p className="mt-1 text-sm font-medium text-muted-foreground">{label}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
+      <ImpactStats />
+
 
       {/* Campaign spotlight */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
