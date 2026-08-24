@@ -38,6 +38,126 @@ export type Database = {
         }
         Relationships: []
       }
+      analytics_daily_dim_visitors: {
+        Row: {
+          day: string
+          kind: string
+          value: string
+          visitor_id: string
+        }
+        Insert: {
+          day: string
+          kind: string
+          value: string
+          visitor_id: string
+        }
+        Update: {
+          day?: string
+          kind?: string
+          value?: string
+          visitor_id?: string
+        }
+        Relationships: []
+      }
+      analytics_daily_dims: {
+        Row: {
+          day: string
+          events: number
+          kind: string
+          page_views: number
+          value: string
+        }
+        Insert: {
+          day: string
+          events?: number
+          kind: string
+          page_views?: number
+          value: string
+        }
+        Update: {
+          day?: string
+          events?: number
+          kind?: string
+          page_views?: number
+          value?: string
+        }
+        Relationships: []
+      }
+      analytics_daily_sessions: {
+        Row: {
+          day: string
+          events: number
+          session_id: string
+        }
+        Insert: {
+          day: string
+          events?: number
+          session_id: string
+        }
+        Update: {
+          day?: string
+          events?: number
+          session_id?: string
+        }
+        Relationships: []
+      }
+      analytics_daily_totals: {
+        Row: {
+          day: string
+          donate_clicks: number
+          events: number
+          page_views: number
+          sign_ins: number
+          sign_ups: number
+        }
+        Insert: {
+          day: string
+          donate_clicks?: number
+          events?: number
+          page_views?: number
+          sign_ins?: number
+          sign_ups?: number
+        }
+        Update: {
+          day?: string
+          donate_clicks?: number
+          events?: number
+          page_views?: number
+          sign_ins?: number
+          sign_ups?: number
+        }
+        Relationships: []
+      }
+      analytics_daily_users: {
+        Row: {
+          day: string
+          user_id: string
+        }
+        Insert: {
+          day: string
+          user_id: string
+        }
+        Update: {
+          day?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      analytics_daily_visitors: {
+        Row: {
+          day: string
+          visitor_id: string
+        }
+        Insert: {
+          day: string
+          visitor_id: string
+        }
+        Update: {
+          day?: string
+          visitor_id?: string
+        }
+        Relationships: []
+      }
       analytics_events: {
         Row: {
           browser: string | null
