@@ -18,6 +18,8 @@ import { ConfirmProvider } from "../components/ui/confirm-dialog";
 import { SiteHeader } from "../components/layout/site-header";
 import { SiteFooter } from "../components/layout/site-footer";
 import { usePersistedPublicCache } from "../lib/query-persist";
+import { CookieConsent } from "../components/cookie-consent";
+import { useAnalytics } from "../hooks/use-analytics";
 
 
 function NotFoundComponent() {
@@ -143,6 +145,12 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function AnalyticsBridge() {
+  // Lives inside AuthProvider so events can carry the signed-in member id.
+  useAnalytics();
+  return null;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   usePersistedPublicCache(queryClient);
@@ -158,6 +166,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <ConfirmProvider>
+        <AnalyticsBridge />
         <div className="flex min-h-screen flex-col font-sans antialiased">
           {isAdmin ? null : <SiteHeader />}
           <main className="flex-1">
@@ -170,6 +179,7 @@ function RootComponent() {
             </div>
           )}
         </div>
+        {isAdmin ? null : <CookieConsent />}
         <Toaster richColors position="top-center" />
         </ConfirmProvider>
       </AuthProvider>
