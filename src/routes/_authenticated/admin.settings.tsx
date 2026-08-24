@@ -588,6 +588,7 @@ function AdminSettings() {
           </TabsContent>
         ))}
       </Tabs>
-    </>
+    </FormCtx.Provider>
+
   );
 }
