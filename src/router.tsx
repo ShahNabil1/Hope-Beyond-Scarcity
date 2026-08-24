@@ -1,6 +1,7 @@
 import { QueryClient } from "@tanstack/react-query";
 import { createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
+import { BrandLoader } from "./components/ui/brand-loader";
 
 export const getRouter = () => {
   const queryClient = new QueryClient({
@@ -21,6 +22,13 @@ export const getRouter = () => {
     defaultPreload: "intent",
     defaultPreloadDelay: 40,
     defaultPreloadStaleTime: 30_000,
+    defaultPendingMs: 300,
+    defaultPendingMinMs: 300,
+    defaultPendingComponent: () => (
+      <div className="grid min-h-[50vh] place-items-center">
+        <BrandLoader size="lg" />
+      </div>
+    ),
   });
 
   return router;

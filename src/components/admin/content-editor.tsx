@@ -22,6 +22,8 @@ import {
   type FieldDef,
 } from "@/lib/admin-content";
 import { adminListContent, adminSaveContent } from "@/lib/admin-content.functions";
+import { withRetry } from "@/lib/retry";
+import { BrandLoader } from "@/components/ui/brand-loader";
 
 type Row = Record<string, any>;
 
@@ -120,16 +122,44 @@ export function ContentEditorPage({
       }
     }
 
+    const published = Boolean(values["is_active"]);
     setSaving(true);
-    const result = await saveContent({
-      data: { table, id: id ?? null, values: payload as any },
-    });
-    setSaving(false);
-    if ("error" in result) {
-      toast.error(result.error);
+    const toastId = toast.loading(
+      published ? `Publishing ${config.singular.toLowerCase()}…` : `Saving ${config.singular.toLowerCase()}…`,
+    );
+
+    let result: Awaited<ReturnType<typeof saveContent>>;
+    try {
+      result = await withRetry(
+        () => saveContent({ data: { table, id: id ?? null, values: payload as any } }),
+        {
+          retries: 2,
+          onRetry: (attempt) =>
+            toast.loading(`Connection hiccup — retrying (${attempt}/2)…`, { id: toastId }),
+        },
+      );
+    } catch (error) {
+      setSaving(false);
+      toast.error("Could not reach the server", {
+        id: toastId,
+        description: error instanceof Error ? error.message : "Please check your connection and try again.",
+      });
       return;
     }
-    toast.success(`${config.singular} saved`);
+    setSaving(false);
+    if ("error" in result) {
+      toast.error(`Could not save this ${config.singular.toLowerCase()}`, {
+        id: toastId,
+        description: result.error,
+      });
+      return;
+    }
+    toast.success(
+      published
+        ? `${config.singular} published — it is live on the site now`
+        : `${config.singular} saved as a draft`,
+      { id: toastId },
+    );
     queryClient.invalidateQueries({ queryKey: ["admin", "content", table] });
     queryClient.invalidateQueries({ queryKey: ["admin", "overview"] });
     goBack();
@@ -169,10 +199,15 @@ export function ContentEditorPage({
       <Card>
         <CardContent className="py-6">
           {loading ? (
-            <div className="grid gap-4 sm:grid-cols-2">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <Skeleton key={i} className="h-16 rounded-lg" />
-              ))}
+            <div className="relative">
+              <div className="grid gap-4 sm:grid-cols-2">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <Skeleton key={i} className="h-16 rounded-lg" />
+                ))}
+              </div>
+              <div className="pointer-events-none absolute inset-0 grid place-items-center">
+                <BrandLoader label={`Loading ${config.singular.toLowerCase()}…`} />
+              </div>
             </div>
           ) : (
             <div className="grid gap-5 sm:grid-cols-2">
