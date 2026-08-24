@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, CalendarDays, HeartHandshake, ShieldCheck } from "lucide-react";
 
 import { BrandLogo } from "@/components/brand-logo";
@@ -30,7 +30,9 @@ export const Route = createFileRoute("/")({
     ],
   }),
   loader: ({ context }) => {
-    void context.queryClient.ensureQueryData(homeContentQueryOptions);
+    // Warm the cache, but never let a transient content failure blank the page:
+    // the component renders with built-in fallback copy while data arrives.
+    void context.queryClient.ensureQueryData(homeContentQueryOptions).catch(() => undefined);
   },
   errorComponent: ({ error }) => (
     <div role="alert" className="mx-auto max-w-3xl px-4 py-24 text-center">
@@ -50,10 +52,10 @@ export const Route = createFileRoute("/")({
 
 
 function Index() {
-  const { data } = useSuspenseQuery(homeContentQueryOptions);
-  const settings = data.settings;
+  const { data } = useQuery(homeContentQueryOptions);
+  const settings = data?.settings ?? null;
   const t = (key: Parameters<typeof homeText>[1]) => homeText(settings, key);
-  const partners = data.partners ?? [];
+  const partners = data?.partners ?? [];
   const heroSrc = settings?.hero_image_url ? mediaUrl(settings.hero_image_url) : heroImage;
   const missionSrc = settings?.mission_image_url
     ? mediaUrl(settings.mission_image_url)
@@ -203,7 +205,7 @@ function Index() {
       </section>
 
       {/* Live impact statistics */}
-      <ImpactStats settings={settings} stats={data.stats} />
+      <ImpactStats settings={settings} stats={data?.stats ?? []} />
 
 
       {/* Campaign spotlight */}
