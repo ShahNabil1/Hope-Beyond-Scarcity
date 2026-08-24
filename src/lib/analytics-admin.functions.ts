@@ -37,22 +37,6 @@ export type AnalyticsOverview = {
   }[];
 };
 
-type EventRow = {
-  id: string;
-  event_name: string;
-  page_path: string;
-  referrer: string | null;
-  visitor_id: string;
-  session_id: string;
-  user_id: string | null;
-  is_authenticated: boolean;
-  country: string | null;
-  device_category: string | null;
-  browser: string | null;
-  utm_source: string | null;
-  created_at: string;
-};
-
 function rank(map: Map<string, number>, limit = 8) {
   return [...map.entries()]
     .sort((a, b) => b[1] - a[1])
@@ -73,89 +57,104 @@ export const adminGetAnalytics = createServerFn({ method: "POST" })
     ]);
     if (!isAdmin && !isEditor) throw new Error("Forbidden");
 
-    const since = new Date(Date.now() - data.days * 24 * 60 * 60 * 1000).toISOString();
+    const sinceDate = new Date(Date.now() - (data.days - 1) * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .slice(0, 10);
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: rows, error } = await supabaseAdmin
-      .from("analytics_events")
-      .select(
-        "id,event_name,page_path,referrer,visitor_id,session_id,user_id,is_authenticated,country,device_category,browser,utm_source,created_at",
-      )
-      .gte("created_at", since)
-      .order("created_at", { ascending: false })
-      .limit(50000);
-    if (error) throw new Error(error.message);
 
-    const events = (rows ?? []) as EventRow[];
+    const [totalsRes, dimsRes, visitorsRes, usersRes, sessionsRes, dimVisitorsRes, recentRes] =
+      await Promise.all([
+        supabaseAdmin.from("analytics_daily_totals").select("*").gte("day", sinceDate),
+        supabaseAdmin.from("analytics_daily_dims").select("*").gte("day", sinceDate).limit(20000),
+        supabaseAdmin.from("analytics_daily_visitors").select("*").gte("day", sinceDate).limit(50000),
+        supabaseAdmin.from("analytics_daily_users").select("*").gte("day", sinceDate).limit(50000),
+        supabaseAdmin.from("analytics_daily_sessions").select("*").gte("day", sinceDate).limit(50000),
+        supabaseAdmin
+          .from("analytics_daily_dim_visitors")
+          .select("*")
+          .gte("day", sinceDate)
+          .limit(50000),
+        supabaseAdmin
+          .from("analytics_events")
+          .select("id,event_name,page_path,country,device_category,is_authenticated,created_at")
+          .order("created_at", { ascending: false })
+          .limit(100),
+      ]);
 
-    const visitors = new Set<string>();
-    const signedIn = new Set<string>();
+    const firstError =
+      totalsRes.error ??
+      dimsRes.error ??
+      visitorsRes.error ??
+      usersRes.error ??
+      sessionsRes.error ??
+      dimVisitorsRes.error ??
+      recentRes.error;
+    if (firstError) throw new Error(firstError.message);
+
+    const totalsRows = totalsRes.data ?? [];
+    const dimRows = dimsRes.data ?? [];
+    const sessionRows = sessionsRes.data ?? [];
+    const dimVisitorRows = dimVisitorsRes.data ?? [];
+
+    const totals = totalsRows.reduce(
+      (acc, row) => ({
+        events: acc.events + row.events,
+        pageViews: acc.pageViews + row.page_views,
+        signUps: acc.signUps + row.sign_ups,
+        signIns: acc.signIns + row.sign_ins,
+        donateClicks: acc.donateClicks + row.donate_clicks,
+      }),
+      { events: 0, pageViews: 0, signUps: 0, signIns: 0, donateClicks: 0 },
+    );
+
+    const uniqueVisitors = new Set((visitorsRes.data ?? []).map((row) => row.visitor_id));
+    const uniqueUsers = new Set((usersRes.data ?? []).map((row) => row.user_id));
     const sessions = new Map<string, number>();
-    const daily = new Map<string, { views: number; visitors: Set<string> }>();
-    const pages = new Map<string, { views: number; visitors: Set<string> }>();
-    const countries = new Map<string, { views: number; visitors: Set<string> }>();
-    const devices = new Map<string, number>();
-    const browsers = new Map<string, number>();
-    const referrers = new Map<string, number>();
-    const sources = new Map<string, number>();
-    const eventCounts = new Map<string, number>();
-
-    let pageViews = 0;
-    let signUps = 0;
-    let signIns = 0;
-    let donateClicks = 0;
-
-    for (const row of events) {
-      visitors.add(row.visitor_id);
-      if (row.is_authenticated && row.user_id) signedIn.add(row.user_id);
-      sessions.set(row.session_id, (sessions.get(row.session_id) ?? 0) + 1);
-      eventCounts.set(row.event_name, (eventCounts.get(row.event_name) ?? 0) + 1);
-      devices.set(row.device_category ?? "unknown", (devices.get(row.device_category ?? "unknown") ?? 0) + 1);
-      browsers.set(row.browser ?? "unknown", (browsers.get(row.browser ?? "unknown") ?? 0) + 1);
-
-      if (row.event_name === "sign_up") signUps += 1;
-      if (row.event_name === "login" || row.event_name === "sign_in") signIns += 1;
-      if (row.event_name === "donate_cta_click") donateClicks += 1;
-
-      if (row.event_name !== "page_view") continue;
-
-      pageViews += 1;
-      const day = row.created_at.slice(0, 10);
-      const dayBucket = daily.get(day) ?? { views: 0, visitors: new Set<string>() };
-      dayBucket.views += 1;
-      dayBucket.visitors.add(row.visitor_id);
-      daily.set(day, dayBucket);
-
-      const pageBucket = pages.get(row.page_path) ?? { views: 0, visitors: new Set<string>() };
-      pageBucket.views += 1;
-      pageBucket.visitors.add(row.visitor_id);
-      pages.set(row.page_path, pageBucket);
-
-      const code = row.country ?? "Unknown";
-      const countryBucket = countries.get(code) ?? { views: 0, visitors: new Set<string>() };
-      countryBucket.views += 1;
-      countryBucket.visitors.add(row.visitor_id);
-      countries.set(code, countryBucket);
-
-      const host = (() => {
-        if (!row.referrer) return "Direct";
-        try {
-          const url = new URL(row.referrer);
-          return url.hostname.replace(/^www\./, "");
-        } catch {
-          return "Direct";
-        }
-      })();
-      referrers.set(host, (referrers.get(host) ?? 0) + 1);
-      const source = row.utm_source ?? (host === "Direct" ? "direct" : host);
-      sources.set(source, (sources.get(source) ?? 0) + 1);
+    for (const row of sessionRows) {
+      sessions.set(row.session_id, (sessions.get(row.session_id) ?? 0) + row.events);
     }
+
+    const dailyViews = new Map<string, number>();
+    for (const row of totalsRows) dailyViews.set(row.day, row.page_views);
+    const dailyVisitors = new Map<string, Set<string>>();
+    for (const row of dimVisitorRows) {
+      if (row.kind !== "page") continue;
+      const bucket = dailyVisitors.get(row.day) ?? new Set<string>();
+      bucket.add(row.visitor_id);
+      dailyVisitors.set(row.day, bucket);
+    }
+
+    const byKind = (kind: string) => dimRows.filter((row) => row.kind === kind);
+    const sumBy = (kind: string, field: "events" | "page_views") => {
+      const map = new Map<string, number>();
+      for (const row of byKind(kind)) map.set(row.value, (map.get(row.value) ?? 0) + row[field]);
+      return map;
+    };
+    const visitorsBy = (kind: string) => {
+      const map = new Map<string, Set<string>>();
+      for (const row of dimVisitorRows) {
+        if (row.kind !== kind) continue;
+        const bucket = map.get(row.value) ?? new Set<string>();
+        bucket.add(row.visitor_id);
+        map.set(row.value, bucket);
+      }
+      return map;
+    };
+
+    const pageViewsByPage = sumBy("page", "page_views");
+    const pageVisitors = visitorsBy("page");
+    const countryViews = sumBy("country", "page_views");
+    const countryVisitors = visitorsBy("country");
 
     const days: { date: string; pageViews: number; visitors: number }[] = [];
     for (let i = data.days - 1; i >= 0; i -= 1) {
       const date = new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
-      const bucket = daily.get(date);
-      days.push({ date, pageViews: bucket?.views ?? 0, visitors: bucket?.visitors.size ?? 0 });
+      days.push({
+        date,
+        pageViews: dailyViews.get(date) ?? 0,
+        visitors: dailyVisitors.get(date)?.size ?? 0,
+      });
     }
 
     const sessionCount = sessions.size;
@@ -164,32 +163,40 @@ export const adminGetAnalytics = createServerFn({ method: "POST" })
     return {
       range: data.days,
       totals: {
-        events: events.length,
-        pageViews,
-        visitors: visitors.size,
+        events: totals.events,
+        pageViews: totals.pageViews,
+        visitors: uniqueVisitors.size,
         sessions: sessionCount,
-        signedInVisitors: signedIn.size,
-        signUps,
-        signIns,
-        donateClicks,
-        avgEventsPerSession: sessionCount ? Math.round((events.length / sessionCount) * 10) / 10 : 0,
+        signedInVisitors: uniqueUsers.size,
+        signUps: totals.signUps,
+        signIns: totals.signIns,
+        donateClicks: totals.donateClicks,
+        avgEventsPerSession: sessionCount ? Math.round((totals.events / sessionCount) * 10) / 10 : 0,
         bounceRate: sessionCount ? Math.round((singleEventSessions / sessionCount) * 100) : 0,
       },
       daily: days,
-      topPages: [...pages.entries()]
-        .sort((a, b) => b[1].views - a[1].views)
+      topPages: [...pageViewsByPage.entries()]
+        .sort((a, b) => b[1] - a[1])
         .slice(0, 10)
-        .map(([page_path, value]) => ({ page_path, views: value.views, visitors: value.visitors.size })),
-      countries: [...countries.entries()]
-        .sort((a, b) => b[1].visitors.size - a[1].visitors.size)
+        .map(([page_path, views]) => ({
+          page_path,
+          views,
+          visitors: pageVisitors.get(page_path)?.size ?? 0,
+        })),
+      countries: [...countryViews.entries()]
+        .sort((a, b) => (countryVisitors.get(b[0])?.size ?? 0) - (countryVisitors.get(a[0])?.size ?? 0))
         .slice(0, 10)
-        .map(([country, value]) => ({ country, visitors: value.visitors.size, views: value.views })),
-      devices: rank(devices, 5),
-      browsers: rank(browsers, 6),
-      referrers: rank(referrers, 8),
-      sources: rank(sources, 8),
-      events: rank(eventCounts, 12),
-      recent: events.slice(0, 25).map((row) => ({
+        .map(([country, views]) => ({
+          country,
+          views,
+          visitors: countryVisitors.get(country)?.size ?? 0,
+        })),
+      devices: rank(sumBy("device", "events"), 5),
+      browsers: rank(sumBy("browser", "events"), 6),
+      referrers: rank(sumBy("referrer", "page_views"), 8),
+      sources: rank(sumBy("source", "page_views"), 8),
+      events: rank(sumBy("event", "events"), 12),
+      recent: (recentRes.data ?? []).map((row) => ({
         id: row.id,
         event_name: row.event_name,
         page_path: row.page_path,
