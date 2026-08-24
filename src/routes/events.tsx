@@ -11,20 +11,64 @@ const title = "Events | Hope Beyond Scarcity";
 const description =
   "Fundraisers, distribution drives, and community gatherings hosted by Hope Beyond Scarcity.";
 
+const SITE_URL = "https://hopebeyondscarcity.com";
+
 export const Route = createFileRoute("/events")({
-  loader: ({ context }) => {
-    void context.queryClient.ensureQueryData(eventsQueryOptions);
+  loader: ({ context }) => context.queryClient.ensureQueryData(eventsQueryOptions),
+  head: ({ loaderData }) => {
+    const events = (loaderData ?? []).slice(0, 25);
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: `${SITE_URL}/events` },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+      links: [{ rel: "canonical", href: `${SITE_URL}/events` }],
+      scripts: events.length
+        ? [
+            {
+              type: "application/ld+json",
+              children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "ItemList",
+                itemListElement: events.map((event, index) => ({
+                  "@type": "ListItem",
+                  position: index + 1,
+                  item: {
+                    "@type": "Event",
+                    name: event.title,
+                    description: event.summary,
+                    startDate: event.starts_at,
+                    ...(event.ends_at ? { endDate: event.ends_at } : {}),
+                    eventAttendanceMode: event.is_virtual
+                      ? "https://schema.org/OnlineEventAttendanceMode"
+                      : "https://schema.org/OfflineEventAttendanceMode",
+                    eventStatus: "https://schema.org/EventScheduled",
+                    url: event.registration_url ?? `${SITE_URL}/events`,
+                    location: event.is_virtual
+                      ? { "@type": "VirtualLocation", url: event.registration_url ?? `${SITE_URL}/events` }
+                      : {
+                          "@type": "Place",
+                          name: event.venue ?? "Hope Beyond Scarcity",
+                          address: {
+                            "@type": "PostalAddress",
+                            addressLocality: event.city ?? "Toronto",
+                            addressCountry: "CA",
+                          },
+                        },
+                    organizer: { "@type": "Organization", name: "Hope Beyond Scarcity", url: SITE_URL },
+                  },
+                })),
+              }),
+            },
+          ]
+        : undefined,
+    };
   },
-  head: () => ({
-    meta: [
-      { title },
-      { name: "description", content: description },
-      { property: "og:title", content: title },
-      { property: "og:description", content: description },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
   errorComponent: () => (
     <EventsFallback note="We couldn't load the event calendar right now. Please refresh in a moment." />
   ),
