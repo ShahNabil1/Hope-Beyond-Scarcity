@@ -86,15 +86,19 @@ export const adminSaveSettings = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { requireStaff } = await import("@/lib/admin.server");
     const { admin } = await requireStaff(context.supabase, context.userId);
-    const patch = Object.fromEntries(
-      Object.entries(data).filter(([, value]) => value !== undefined),
-    );
+    const version = Date.now();
+    const patch = {
+      ...Object.fromEntries(Object.entries(data).filter(([, value]) => value !== undefined)),
+      // Bumping the version invalidates every visitor's cached copy, on any device.
+      content_version: version,
+    };
     const { error } = await admin
       .from("site_settings")
       .update(patch as never)
       .eq("id", "default");
     if (error) return { error: error.message };
-    return { ok: true as const };
+    return { ok: true as const, version };
+
   });
 
 /** Counts and totals for the admin overview dashboard. */
@@ -248,4 +252,22 @@ export const submitContactMessage = createServerFn({ method: "POST" })
     const { error } = await client.from("contact_messages").insert(data);
     if (error) return { error: "Your message could not be sent. Please try again." };
     return { ok: true as const };
+  });
+
+/**
+ * Bumps the global content version so every browser and device drops its
+ * persisted public cache on the next page load.
+ */
+export const adminBumpContentVersion = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { requireStaff } = await import("@/lib/admin.server");
+    const { admin } = await requireStaff(context.supabase, context.userId);
+    const version = Date.now();
+    const { error } = await (admin as any)
+      .from("site_settings")
+      .update({ content_version: version })
+      .eq("id", "default");
+    if (error) return { error: error.message };
+    return { ok: true as const, version };
   });

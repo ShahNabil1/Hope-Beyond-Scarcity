@@ -1,4 +1,13 @@
-import { useEffect, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
+
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -10,6 +19,7 @@ import {
   Home,
   Mail,
   Megaphone,
+  RefreshCw,
   Share2,
   Sparkles,
   Target,
@@ -27,11 +37,17 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { BrandSkeleton } from "@/components/ui/brand-loader";
-import { adminGetSettings, adminSaveSettings } from "@/lib/admin.functions";
+import {
+  adminBumpContentVersion,
+  adminGetSettings,
+  adminSaveSettings,
+} from "@/lib/admin.functions";
+import { SETTINGS_RULES, validateField, validateForm } from "@/lib/cms-validation";
 import { HOME_FALLBACK, type HomeTextKey } from "@/lib/home-content";
 import { clearPersistedPublicCache } from "@/lib/query-persist";
 import { withRetry } from "@/lib/retry";
 import { fromLocalInput, isEmergencyLive, toLocalInput } from "@/lib/site-settings";
+
 
 export const Route = createFileRoute("/_authenticated/admin/settings")({
   component: AdminSettings,
@@ -75,9 +91,127 @@ function buildForm(data: Record<string, any>): Form {
   return form;
 }
 
+/** Shared form state so the field components below can stay stable (no remounts). */
+const FormCtx = createContext<{
+  text: (key: string) => string;
+  set: (key: string, value: string | boolean) => void;
+  errors: Record<string, string>;
+}>({ text: () => "", set: () => {}, errors: {} });
+
+function FieldError({ message }: { message?: string | undefined }) {
+  if (!message) return null;
+  return (
+    <p role="alert" className="text-xs font-medium text-destructive">
+      {message}
+    </p>
+  );
+}
+
+function Field({
+  name,
+  label,
+  kind = "input",
+  rows = 3,
+  full,
+  help,
+}: {
+  name: string;
+  label: string;
+  kind?: "input" | "textarea" | "datetime";
+  rows?: number;
+  full?: boolean;
+  help?: string;
+}) {
+  const { text, set, errors } = useContext(FormCtx);
+  const error = errors[name];
+  const rule = SETTINGS_RULES[name];
+  const invalid = Boolean(error);
+  const ring = invalid ? "border-destructive focus-visible:ring-destructive" : "";
+
+  return (
+    <div className={`space-y-2 ${full ? "sm:col-span-2" : ""}`}>
+      <Label htmlFor={name}>
+        {label}
+        {rule?.required ? <span className="ml-1 text-destructive">*</span> : null}
+      </Label>
+      {kind === "textarea" ? (
+        <Textarea
+          id={name}
+          rows={rows}
+          value={text(name)}
+          aria-invalid={invalid}
+          aria-describedby={invalid ? `${name}-error` : undefined}
+          className={ring}
+          placeholder={String(HOME_FALLBACK[name as HomeTextKey] ?? "")}
+          onChange={(e) => set(name, e.target.value)}
+        />
+      ) : (
+        <Input
+          id={name}
+          type={kind === "datetime" ? "datetime-local" : "text"}
+          value={text(name)}
+          aria-invalid={invalid}
+          aria-describedby={invalid ? `${name}-error` : undefined}
+          className={ring}
+          placeholder={String(HOME_FALLBACK[name as HomeTextKey] ?? "")}
+          onChange={(e) => set(name, e.target.value)}
+        />
+      )}
+      <span id={`${name}-error`}>
+        <FieldError message={error} />
+      </span>
+      {help && !error ? <p className="text-xs text-muted-foreground">{help}</p> : null}
+    </div>
+  );
+}
+
+function ImageField({ name, label }: { name: string; label: string }) {
+  const { text, set, errors } = useContext(FormCtx);
+  return (
+    <div className="space-y-2 sm:col-span-2">
+      <Label>{label}</Label>
+      <ImageInput value={text(name)} folder="site" onChange={(next) => set(name, next)} />
+      <FieldError message={errors[name]} />
+    </div>
+  );
+}
+
+function Section({
+  title,
+  description,
+  children,
+}: {
+  title: string;
+  description: string;
+  children: ReactNode;
+}) {
+  return (
+    <Card className="overflow-hidden border-border/70">
+      <CardHeader className="bg-gradient-to-r from-primary/10 via-transparent to-transparent">
+        <CardTitle className="text-base">{title}</CardTitle>
+        <CardDescription>{description}</CardDescription>
+      </CardHeader>
+      <CardContent className="grid gap-4 pt-6 sm:grid-cols-2">{children}</CardContent>
+    </Card>
+  );
+}
+
+const TAB_OF_FIELD: Record<string, string> = {
+  hero: "Hero",
+  mission: "Mission",
+  impact: "Impact",
+  campaign: "Campaign",
+  partners: "Partners",
+  cta: "Call to action",
+  emergency: "Emergency",
+  contact: "Contact",
+  social: "Social",
+};
+
 function AdminSettings() {
   const fetchSettings = useServerFn(adminGetSettings);
   const saveSettings = useServerFn(adminSaveSettings);
+  const bumpVersion = useServerFn(adminBumpContentVersion);
   const queryClient = useQueryClient();
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "settings"],
@@ -85,17 +219,50 @@ function AdminSettings() {
   });
   const [form, setForm] = useState<Form | null>(null);
   const [saving, setSaving] = useState(false);
+  const [clearing, setClearing] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (data) setForm(buildForm(data as Record<string, any>));
   }, [data]);
 
-  function set(key: string, value: string | boolean) {
+  const set = useCallback((key: string, value: string | boolean) => {
     setForm((prev) => (prev ? { ...prev, [key]: value } : prev));
-  }
+    setErrors((prev) => {
+      if (!prev[key]) return prev;
+      const rule = SETTINGS_RULES[key];
+      const message = rule && typeof value === "string" ? validateField(value, rule) : null;
+      if (message === prev[key]) return prev;
+      const next = { ...prev };
+      if (message) next[key] = message;
+      else delete next[key];
+      return next;
+    });
+  }, []);
+
+  const text = useCallback((key: string) => String(form?.[key] ?? ""), [form]);
+  const ctx = useMemo(() => ({ text, set, errors }), [text, set, errors]);
 
   async function handleSave() {
     if (!form) return;
+
+    const found = validateForm(form as Record<string, unknown>, SETTINGS_RULES);
+    setErrors(found);
+    const count = Object.keys(found).length;
+    if (count > 0) {
+      const sections = [
+        ...new Set(
+          Object.keys(found).map(
+            (key) => TAB_OF_FIELD[key.split("_")[0] ?? ""] ?? "Site settings",
+          ),
+        ),
+      ];
+      toast.error(`${count} field${count > 1 ? "s need" : " needs"} attention`, {
+        description: `Check: ${sections.join(", ")}. Nothing was saved.`,
+      });
+      return;
+    }
+
     setSaving(true);
     const payload = {
       ...form,
@@ -113,11 +280,11 @@ function AdminSettings() {
         toast.error("Could not save", { id: toastId, description: result.error });
         return;
       }
-      toast.success("Saved — the public site updates right away", { id: toastId });
+      toast.success("Saved — every device refreshes on next load", { id: toastId });
       queryClient.invalidateQueries({ queryKey: ["admin", "settings"] });
       queryClient.invalidateQueries({ queryKey: ["site-settings"] });
       queryClient.invalidateQueries({ queryKey: ["home-content"] });
-      clearPersistedPublicCache();
+      clearPersistedPublicCache((result as { version?: number }).version);
     } catch (error) {
       toast.error("Could not reach the server", {
         id: toastId,
@@ -125,6 +292,31 @@ function AdminSettings() {
       });
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleClearCache() {
+    setClearing(true);
+    const toastId = toast.loading("Clearing cached content everywhere…");
+    try {
+      const result = await withRetry(() => bumpVersion(), { retries: 2 });
+      if ("error" in result) {
+        toast.error("Could not clear the cache", { id: toastId, description: result.error });
+        return;
+      }
+      clearPersistedPublicCache(result.version);
+      await queryClient.invalidateQueries();
+      toast.success("Cache cleared", {
+        id: toastId,
+        description: `Version ${result.version} — other tabs and devices refresh on next load.`,
+      });
+    } catch (error) {
+      toast.error("Could not reach the server", {
+        id: toastId,
+        description: error instanceof Error ? error.message : "Please try again.",
+      });
+    } finally {
+      setClearing(false);
     }
   }
 
@@ -137,77 +329,12 @@ function AdminSettings() {
     );
   }
 
-  const text = (key: string) => String(form[key] ?? "");
-
   const emergencyLive = isEmergencyLive({
     emergency_active: Boolean(form["emergency_active"]),
     emergency_message: text("emergency_message"),
     emergency_starts_at: fromLocalInput(text("emergency_starts_at")),
     emergency_ends_at: fromLocalInput(text("emergency_ends_at")),
   });
-
-  const Field = ({
-    name,
-    label,
-    kind = "input",
-    rows = 3,
-    full,
-    help,
-  }: {
-    name: string;
-    label: string;
-    kind?: "input" | "textarea" | "datetime";
-    rows?: number;
-    full?: boolean;
-    help?: string;
-  }) => (
-    <div className={`space-y-2 ${full ? "sm:col-span-2" : ""}`}>
-      <Label htmlFor={name}>{label}</Label>
-      {kind === "textarea" ? (
-        <Textarea
-          id={name}
-          rows={rows}
-          value={text(name)}
-          placeholder={String(HOME_FALLBACK[name as HomeTextKey] ?? "")}
-          onChange={(e) => set(name, e.target.value)}
-        />
-      ) : (
-        <Input
-          id={name}
-          type={kind === "datetime" ? "datetime-local" : "text"}
-          value={text(name)}
-          placeholder={String(HOME_FALLBACK[name as HomeTextKey] ?? "")}
-          onChange={(e) => set(name, e.target.value)}
-        />
-      )}
-      {help ? <p className="text-xs text-muted-foreground">{help}</p> : null}
-    </div>
-  );
-
-  const ImageField = ({ name, label }: { name: string; label: string }) => (
-    <div className="space-y-2 sm:col-span-2">
-      <Label>{label}</Label>
-      <ImageInput value={text(name)} folder="site" onChange={(next) => set(name, next)} />
-    </div>
-  );
-
-  const Section = ({
-    title,
-    description,
-    children,
-  }: {
-    title: string;
-    description: string;
-    children: ReactNode;
-  }) => (
-    <Card className="overflow-hidden border-border/70">
-      <CardHeader className="bg-gradient-to-r from-primary/10 via-transparent to-transparent">
-        <CardTitle className="text-base">{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
-      </CardHeader>
-      <CardContent className="grid gap-4 pt-6 sm:grid-cols-2">{children}</CardContent>
-    </Card>
-  );
 
   const tabs = [
     { value: "hero", label: "Hero", icon: Home },
@@ -221,17 +348,42 @@ function AdminSettings() {
     { value: "social", label: "Social", icon: Share2 },
   ];
 
+  const errorCount = Object.keys(errors).length;
+
   return (
-    <>
+    <FormCtx.Provider value={ctx}>
       <AdminPageHeader
         title="Site settings"
         description="Every word, image, icon and link on the homepage and across the site — editable here."
         action={
-          <Button onClick={handleSave} disabled={saving}>
-            {saving ? "Saving…" : "Save changes"}
-          </Button>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleClearCache}
+              disabled={clearing}
+              title="Force every browser and device to reload the latest content"
+            >
+              <RefreshCw className={`size-4 ${clearing ? "animate-spin" : ""}`} aria-hidden="true" />
+              {clearing ? "Clearing…" : "Clear cache now"}
+            </Button>
+            <Button onClick={handleSave} disabled={saving}>
+              {saving ? "Saving…" : "Save changes"}
+            </Button>
+          </div>
         }
       />
+
+      {errorCount > 0 ? (
+        <div
+          role="alert"
+          className="mb-4 rounded-xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+        >
+          {errorCount} field{errorCount > 1 ? "s" : ""} need fixing before this can be published.
+          Invalid entries are highlighted in their tab.
+        </div>
+      ) : null}
+
 
       <Tabs defaultValue="hero" className="space-y-6">
         <div className="-mx-1 overflow-x-auto px-1 pb-1">
@@ -445,6 +597,7 @@ function AdminSettings() {
           </TabsContent>
         ))}
       </Tabs>
-    </>
+    </FormCtx.Provider>
+
   );
 }

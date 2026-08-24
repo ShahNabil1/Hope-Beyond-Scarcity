@@ -603,6 +603,7 @@ export type Database = {
           contact_intro: string
           contact_map_url: string
           contact_phone: string
+          content_version: number
           created_at: string
           cta_body: string
           cta_primary_label: string
@@ -667,6 +668,7 @@ export type Database = {
           contact_intro?: string
           contact_map_url?: string
           contact_phone?: string
+          content_version?: number
           created_at?: string
           cta_body?: string
           cta_primary_label?: string
@@ -731,6 +733,7 @@ export type Database = {
           contact_intro?: string
           contact_map_url?: string
           contact_phone?: string
+          content_version?: number
           created_at?: string
           cta_body?: string
           cta_primary_label?: string
