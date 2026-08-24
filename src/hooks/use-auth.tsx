@@ -122,6 +122,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       user: session?.user ?? null,
       session,
       roles,
+      displayName: displayName ?? session?.user?.email ?? "",
       loading,
       isAuthenticated: Boolean(session?.user),
       hasRole,
@@ -130,7 +131,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       refreshRoles,
       signOut,
     };
-  }, [session, roles, loading, refreshRoles, signOut]);
+  }, [session, roles, displayName, loading, refreshRoles, signOut]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
