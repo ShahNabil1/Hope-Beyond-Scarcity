@@ -9,6 +9,8 @@ export type AuthState = {
   user: User | null;
   session: Session | null;
   roles: AppRole[];
+  /** Display name from the profiles table; falls back to email. */
+  displayName: string;
   loading: boolean;
   isAuthenticated: boolean;
   hasRole: (role: AppRole) => boolean;
@@ -27,6 +29,17 @@ export async function fetchRoles(userId: string): Promise<AppRole[]> {
   return data.map((row) => row.role as AppRole);
 }
 
+/** Reads the profile full_name (RLS-scoped to the signed-in user's own row). */
+export async function fetchDisplayName(userId: string): Promise<string | null> {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("full_name")
+    .eq("id", userId)
+    .maybeSingle();
+  if (error || !data) return null;
+  return (data.full_name as string | null)?.trim() || null;
+}
+
 export function landingPathForRoles(roles: AppRole[]): "/admin" | "/dashboard" {
   return roles.includes("admin") || roles.includes("editor") ? "/admin" : "/dashboard";
 }
@@ -34,6 +47,7 @@ export function landingPathForRoles(roles: AppRole[]): "/admin" | "/dashboard" {
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [roles, setRoles] = useState<AppRole[]>([]);
+  const [displayName, setDisplayName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -44,6 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(nextSession);
       if (!nextSession?.user) {
         setRoles([]);
+        setDisplayName(null);
         setLoading(false);
         return;
       }
@@ -52,9 +67,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(true);
       // Defer the Supabase call out of the auth callback to avoid deadlocks.
       setTimeout(() => {
-        fetchRoles(nextSession.user.id)
-          .then((next) => {
-            if (active) setRoles(next);
+        Promise.all([fetchRoles(nextSession.user.id), fetchDisplayName(nextSession.user.id)])
+          .then(([nextRoles, name]) => {
+            if (!active) return;
+            setRoles(nextRoles);
+            setDisplayName(name);
           })
           .finally(() => {
             if (active) setLoading(false);
@@ -66,8 +83,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!active) return;
       setSession(data.session);
       if (data.session?.user) {
-        const next = await fetchRoles(data.session.user.id);
-        if (active) setRoles(next);
+        const [next, name] = await Promise.all([
+          fetchRoles(data.session.user.id),
+          fetchDisplayName(data.session.user.id),
+        ]);
+        if (active) {
+          setRoles(next);
+          setDisplayName(name);
+        }
       }
       if (active) setLoading(false);
     });
@@ -89,6 +112,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
     setRoles([]);
+    setDisplayName(null);
     setSession(null);
   }, []);
 
@@ -98,6 +122,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       user: session?.user ?? null,
       session,
       roles,
+      displayName: displayName ?? session?.user?.email ?? "",
       loading,
       isAuthenticated: Boolean(session?.user),
       hasRole,
@@ -106,7 +131,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       refreshRoles,
       signOut,
     };
-  }, [session, roles, loading, refreshRoles, signOut]);
+  }, [session, roles, displayName, loading, refreshRoles, signOut]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

@@ -29,7 +29,7 @@ const navLinks = [
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
-  const { isAuthenticated, user, roles, homePath, signOut } = useAuth();
+  const { isAuthenticated, user, roles, homePath, displayName, signOut } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -95,8 +95,13 @@ export function SiteHeader() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel className="truncate">
-                  {user?.email}
+                <DropdownMenuLabel className="px-2 py-1.5">
+                  <span className="block truncate text-sm font-semibold text-foreground">
+                    {displayName || "Member"}
+                  </span>
+                  <span className="mt-0.5 block truncate text-[11px] font-normal text-muted-foreground">
+                    {user?.email}
+                  </span>
                   <span className="mt-0.5 block text-[11px] font-medium uppercase tracking-widest text-muted-foreground">
                     {roles.length ? roles.join(" · ") : "member"}
                   </span>
