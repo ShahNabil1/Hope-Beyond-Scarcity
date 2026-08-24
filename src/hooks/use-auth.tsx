@@ -29,6 +29,17 @@ export async function fetchRoles(userId: string): Promise<AppRole[]> {
   return data.map((row) => row.role as AppRole);
 }
 
+/** Reads the profile full_name (RLS-scoped to the signed-in user's own row). */
+export async function fetchDisplayName(userId: string): Promise<string | null> {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("full_name")
+    .eq("id", userId)
+    .maybeSingle();
+  if (error || !data) return null;
+  return (data.full_name as string | null)?.trim() || null;
+}
+
 export function landingPathForRoles(roles: AppRole[]): "/admin" | "/dashboard" {
   return roles.includes("admin") || roles.includes("editor") ? "/admin" : "/dashboard";
 }
@@ -36,6 +47,7 @@ export function landingPathForRoles(roles: AppRole[]): "/admin" | "/dashboard" {
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [roles, setRoles] = useState<AppRole[]>([]);
+  const [displayName, setDisplayName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
