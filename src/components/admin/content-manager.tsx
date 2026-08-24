@@ -141,15 +141,39 @@ export function ContentManager({
     }
 
     setSaving(true);
-    const result = await saveContent({
-      data: { table, id: editing.row?.["id"] ?? null, values: payload as any },
-    });
-    setSaving(false);
-    if ("error" in result) {
-      toast.error(result.error);
+    const toastId = toast.loading(`Saving ${config.singular.toLowerCase()}…`);
+    let result: Awaited<ReturnType<typeof saveContent>>;
+    try {
+      result = await withRetry(
+        () => saveContent({ data: { table, id: editing.row?.["id"] ?? null, values: payload as any } }),
+        {
+          retries: 2,
+          onRetry: (attempt) =>
+            toast.loading(`Connection hiccup — retrying (${attempt}/2)…`, { id: toastId }),
+        },
+      );
+    } catch (error) {
+      setSaving(false);
+      toast.error("Could not reach the server", {
+        id: toastId,
+        description: error instanceof Error ? error.message : "Please try again.",
+      });
       return;
     }
-    toast.success(`${config.singular} saved`);
+    setSaving(false);
+    if ("error" in result) {
+      toast.error(`Could not save this ${config.singular.toLowerCase()}`, {
+        id: toastId,
+        description: result.error,
+      });
+      return;
+    }
+    toast.success(
+      editing.values["is_active"]
+        ? `${config.singular} published — live on the site now`
+        : `${config.singular} saved as a draft`,
+      { id: toastId },
+    );
     setEditing(null);
     refresh();
   }
