@@ -74,6 +74,13 @@ function AdminSettings() {
       contact_phone: data.contact_phone,
       contact_hours: data.contact_hours,
       contact_map_url: data.contact_map_url,
+      social_facebook: data.social_facebook ?? "",
+      social_instagram: data.social_instagram ?? "",
+      social_linkedin: data.social_linkedin ?? "",
+      social_youtube: data.social_youtube ?? "",
+      social_x: data.social_x ?? "",
+      social_tiktok: data.social_tiktok ?? "",
+      social_whatsapp: data.social_whatsapp ?? "",
     });
   }, [data]);
 
