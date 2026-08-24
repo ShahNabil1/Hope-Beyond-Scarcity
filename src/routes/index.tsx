@@ -27,12 +27,8 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const stats = [
-  { icon: MapPin, value: "24", label: "Villages Supported" },
-  { icon: Package, value: "8,400+", label: "Care Packages Distributed" },
-  { icon: Users, value: "3,100", label: "Children Reached" },
-  { icon: Stethoscope, value: "12", label: "Health Camps Hosted" },
-];
+
+
 
 const partners = [
   "Prioom Nath's Clinic Initiative",
