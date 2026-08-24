@@ -47,14 +47,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setLoading(false);
         return;
       }
+      // Roles are unknown until fetched — stay in `loading` so consumers never
+      // act on an empty role list (which would redirect admins to /dashboard).
+      setLoading(true);
       // Defer the Supabase call out of the auth callback to avoid deadlocks.
       setTimeout(() => {
-        fetchRoles(nextSession.user.id).then((next) => {
-          if (active) {
-            setRoles(next);
-            setLoading(false);
-          }
-        });
+        fetchRoles(nextSession.user.id)
+          .then((next) => {
+            if (active) setRoles(next);
+          })
+          .finally(() => {
+            if (active) setLoading(false);
+          });
       }, 0);
     });
 
