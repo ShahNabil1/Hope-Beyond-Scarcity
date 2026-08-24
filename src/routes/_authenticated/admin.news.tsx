@@ -1,7 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
-
-import { ContentManager } from "@/components/admin/content-manager";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authenticated/admin/news")({
-  component: () => <ContentManager table="news_posts" />,
+  component: () => <Outlet />,
 });

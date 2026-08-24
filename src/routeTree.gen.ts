@@ -44,6 +44,9 @@ import { Route as AuthenticatedAdminProgramsRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminRecurringRouteImport } from './routes/_authenticated/admin.recurring'
 import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin.settings'
 import { Route as AuthenticatedAdminVolunteersRouteImport } from './routes/_authenticated/admin.volunteers'
+import { Route as AuthenticatedAdminNewsIndexRouteImport } from './routes/_authenticated/admin.news.index'
+import { Route as AuthenticatedAdminNewsIdRouteImport } from './routes/_authenticated/admin.news.$id'
+import { Route as AuthenticatedAdminNewsNewRouteImport } from './routes/_authenticated/admin.news.new'
 import { Route as ApiPublicMediaSplatRouteImport } from './routes/api/public/media/$'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
@@ -231,6 +234,24 @@ const AuthenticatedAdminVolunteersRoute =
     path: '/volunteers',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminNewsIndexRoute =
+  AuthenticatedAdminNewsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAdminNewsRoute,
+  } as any)
+const AuthenticatedAdminNewsIdRoute =
+  AuthenticatedAdminNewsIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedAdminNewsRoute,
+  } as any)
+const AuthenticatedAdminNewsNewRoute =
+  AuthenticatedAdminNewsNewRouteImport.update({
+    id: '/new',
+    path: '/new',
+    getParentRoute: () => AuthenticatedAdminNewsRoute,
+  } as any)
 const ApiPublicMediaSplatRoute = ApiPublicMediaSplatRouteImport.update({
   id: '/api/public/media/$',
   path: '/api/public/media/$',
@@ -271,15 +292,18 @@ export interface FileRoutesByFullPath {
   '/admin/legal': typeof AuthenticatedAdminLegalRoute
   '/admin/members': typeof AuthenticatedAdminMembersRoute
   '/admin/messages': typeof AuthenticatedAdminMessagesRoute
-  '/admin/news': typeof AuthenticatedAdminNewsRoute
+  '/admin/news': typeof AuthenticatedAdminNewsRouteWithChildren
   '/admin/pitches': typeof AuthenticatedAdminPitchesRoute
   '/admin/programs': typeof AuthenticatedAdminProgramsRoute
   '/admin/recurring': typeof AuthenticatedAdminRecurringRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/volunteers': typeof AuthenticatedAdminVolunteersRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/admin/news/$id': typeof AuthenticatedAdminNewsIdRoute
+  '/admin/news/new': typeof AuthenticatedAdminNewsNewRoute
   '/api/public/media/$': typeof ApiPublicMediaSplatRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
+  '/admin/news/': typeof AuthenticatedAdminNewsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -307,15 +331,17 @@ export interface FileRoutesByTo {
   '/admin/legal': typeof AuthenticatedAdminLegalRoute
   '/admin/members': typeof AuthenticatedAdminMembersRoute
   '/admin/messages': typeof AuthenticatedAdminMessagesRoute
-  '/admin/news': typeof AuthenticatedAdminNewsRoute
   '/admin/pitches': typeof AuthenticatedAdminPitchesRoute
   '/admin/programs': typeof AuthenticatedAdminProgramsRoute
   '/admin/recurring': typeof AuthenticatedAdminRecurringRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/volunteers': typeof AuthenticatedAdminVolunteersRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/admin/news/$id': typeof AuthenticatedAdminNewsIdRoute
+  '/admin/news/new': typeof AuthenticatedAdminNewsNewRoute
   '/api/public/media/$': typeof ApiPublicMediaSplatRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
+  '/admin/news': typeof AuthenticatedAdminNewsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -347,15 +373,18 @@ export interface FileRoutesById {
   '/_authenticated/admin/legal': typeof AuthenticatedAdminLegalRoute
   '/_authenticated/admin/members': typeof AuthenticatedAdminMembersRoute
   '/_authenticated/admin/messages': typeof AuthenticatedAdminMessagesRoute
-  '/_authenticated/admin/news': typeof AuthenticatedAdminNewsRoute
+  '/_authenticated/admin/news': typeof AuthenticatedAdminNewsRouteWithChildren
   '/_authenticated/admin/pitches': typeof AuthenticatedAdminPitchesRoute
   '/_authenticated/admin/programs': typeof AuthenticatedAdminProgramsRoute
   '/_authenticated/admin/recurring': typeof AuthenticatedAdminRecurringRoute
   '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/_authenticated/admin/volunteers': typeof AuthenticatedAdminVolunteersRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/admin/news/$id': typeof AuthenticatedAdminNewsIdRoute
+  '/_authenticated/admin/news/new': typeof AuthenticatedAdminNewsNewRoute
   '/api/public/media/$': typeof ApiPublicMediaSplatRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
+  '/_authenticated/admin/news/': typeof AuthenticatedAdminNewsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -394,8 +423,11 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/volunteers'
     | '/admin/'
+    | '/admin/news/$id'
+    | '/admin/news/new'
     | '/api/public/media/$'
     | '/api/public/payments/webhook'
+    | '/admin/news/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -423,15 +455,17 @@ export interface FileRouteTypes {
     | '/admin/legal'
     | '/admin/members'
     | '/admin/messages'
-    | '/admin/news'
     | '/admin/pitches'
     | '/admin/programs'
     | '/admin/recurring'
     | '/admin/settings'
     | '/admin/volunteers'
     | '/admin'
+    | '/admin/news/$id'
+    | '/admin/news/new'
     | '/api/public/media/$'
     | '/api/public/payments/webhook'
+    | '/admin/news'
   id:
     | '__root__'
     | '/'
@@ -469,8 +503,11 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/settings'
     | '/_authenticated/admin/volunteers'
     | '/_authenticated/admin/'
+    | '/_authenticated/admin/news/$id'
+    | '/_authenticated/admin/news/new'
     | '/api/public/media/$'
     | '/api/public/payments/webhook'
+    | '/_authenticated/admin/news/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -743,6 +780,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminVolunteersRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/news/': {
+      id: '/_authenticated/admin/news/'
+      path: '/'
+      fullPath: '/admin/news/'
+      preLoaderRoute: typeof AuthenticatedAdminNewsIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminNewsRoute
+    }
+    '/_authenticated/admin/news/$id': {
+      id: '/_authenticated/admin/news/$id'
+      path: '/$id'
+      fullPath: '/admin/news/$id'
+      preLoaderRoute: typeof AuthenticatedAdminNewsIdRouteImport
+      parentRoute: typeof AuthenticatedAdminNewsRoute
+    }
+    '/_authenticated/admin/news/new': {
+      id: '/_authenticated/admin/news/new'
+      path: '/new'
+      fullPath: '/admin/news/new'
+      preLoaderRoute: typeof AuthenticatedAdminNewsNewRouteImport
+      parentRoute: typeof AuthenticatedAdminNewsRoute
+    }
     '/api/public/media/$': {
       id: '/api/public/media/$'
       path: '/api/public/media/$'
@@ -760,6 +818,24 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedAdminNewsRouteChildren {
+  AuthenticatedAdminNewsIdRoute: typeof AuthenticatedAdminNewsIdRoute
+  AuthenticatedAdminNewsNewRoute: typeof AuthenticatedAdminNewsNewRoute
+  AuthenticatedAdminNewsIndexRoute: typeof AuthenticatedAdminNewsIndexRoute
+}
+
+const AuthenticatedAdminNewsRouteChildren: AuthenticatedAdminNewsRouteChildren =
+  {
+    AuthenticatedAdminNewsIdRoute: AuthenticatedAdminNewsIdRoute,
+    AuthenticatedAdminNewsNewRoute: AuthenticatedAdminNewsNewRoute,
+    AuthenticatedAdminNewsIndexRoute: AuthenticatedAdminNewsIndexRoute,
+  }
+
+const AuthenticatedAdminNewsRouteWithChildren =
+  AuthenticatedAdminNewsRoute._addFileChildren(
+    AuthenticatedAdminNewsRouteChildren,
+  )
+
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminApplicationsRoute: typeof AuthenticatedAdminApplicationsRoute
   AuthenticatedAdminDonationsRoute: typeof AuthenticatedAdminDonationsRoute
@@ -767,7 +843,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminLegalRoute: typeof AuthenticatedAdminLegalRoute
   AuthenticatedAdminMembersRoute: typeof AuthenticatedAdminMembersRoute
   AuthenticatedAdminMessagesRoute: typeof AuthenticatedAdminMessagesRoute
-  AuthenticatedAdminNewsRoute: typeof AuthenticatedAdminNewsRoute
+  AuthenticatedAdminNewsRoute: typeof AuthenticatedAdminNewsRouteWithChildren
   AuthenticatedAdminPitchesRoute: typeof AuthenticatedAdminPitchesRoute
   AuthenticatedAdminProgramsRoute: typeof AuthenticatedAdminProgramsRoute
   AuthenticatedAdminRecurringRoute: typeof AuthenticatedAdminRecurringRoute
@@ -783,7 +859,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminLegalRoute: AuthenticatedAdminLegalRoute,
   AuthenticatedAdminMembersRoute: AuthenticatedAdminMembersRoute,
   AuthenticatedAdminMessagesRoute: AuthenticatedAdminMessagesRoute,
-  AuthenticatedAdminNewsRoute: AuthenticatedAdminNewsRoute,
+  AuthenticatedAdminNewsRoute: AuthenticatedAdminNewsRouteWithChildren,
   AuthenticatedAdminPitchesRoute: AuthenticatedAdminPitchesRoute,
   AuthenticatedAdminProgramsRoute: AuthenticatedAdminProgramsRoute,
   AuthenticatedAdminRecurringRoute: AuthenticatedAdminRecurringRoute,
