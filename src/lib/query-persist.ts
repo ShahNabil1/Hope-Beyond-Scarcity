@@ -104,14 +104,17 @@ export function usePersistedPublicCache(queryClient: QueryClient) {
         const remote = await getContentVersion();
         if (cancelled) return;
         const next = String(remote.version ?? 1);
-        if (readLocalVersion() !== next) {
-          writeLocalVersion(next);
-          drop();
-        }
+        const current = readLocalVersion();
+        writeLocalVersion(next);
+        // Only throw the cache away when this browser previously knew a
+        // *different* version. On a first visit there is nothing stale, and
+        // invalidating here would trigger an extra refetch on every cold load.
+        if (current !== null && current !== next) drop();
       } catch {
         // Offline or unreachable — keep serving the cached copy.
       }
     })();
+
 
     // 3. Cross-tab invalidation: another tab cleared or bumped the cache
     const onStorage = (event: StorageEvent) => {
