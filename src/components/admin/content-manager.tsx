@@ -216,60 +216,68 @@ export function ContentManager({
             const cover = row["image_url"] ?? row["cover_image_url"] ?? "";
             return (
               <Card key={row["id"]}>
-                <CardContent className="flex flex-wrap items-center gap-4 py-4">
-                  {cover ? (
-                    <img
-                      src={mediaUrl(String(cover))}
-                      alt=""
-                      className="size-16 shrink-0 rounded-lg object-cover"
-                      loading="lazy"
-                    />
-                  ) : null}
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <p className="font-semibold text-foreground">{row[config.titleField]}</p>
-                      {row["is_featured"] ? (
-                        <Badge variant="secondary" className="gap-1">
-                          <Star className="size-3" /> Featured
+                <CardContent className="flex flex-col gap-4 py-4 sm:flex-row sm:items-center">
+                  <div className="flex min-w-0 items-start gap-3 sm:flex-1 sm:items-center">
+                    {cover ? (
+                      <img
+                        src={mediaUrl(String(cover))}
+                        alt=""
+                        className="size-14 shrink-0 rounded-lg object-cover sm:size-16"
+                        loading="lazy"
+                      />
+                    ) : null}
+                    <div className="min-w-0 flex-1">
+                      <p className="break-words font-semibold text-foreground">
+                        {row[config.titleField]}
+                      </p>
+                      <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                        {row["is_featured"] ? (
+                          <Badge variant="secondary" className="gap-1">
+                            <Star className="size-3" /> Featured
+                          </Badge>
+                        ) : null}
+                        <Badge variant={row["is_active"] ? "default" : "outline"}>
+                          {row["is_active"] ? "Published" : "Draft"}
                         </Badge>
-                      ) : null}
-                      <Badge variant={row["is_active"] ? "default" : "outline"}>
-                        {row["is_active"] ? "Published" : "Draft"}
-                      </Badge>
+                      </div>
+                      <p className="mt-1.5 line-clamp-2 text-sm text-muted-foreground">
+                        {row[config.subtitleField]}
+                      </p>
                     </div>
-                    <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
-                      {row[config.subtitleField]}
-                    </p>
                   </div>
-                  <div className="flex items-center gap-3">
-                    {hasFeatured ? (
+                  <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-3 sm:justify-end sm:border-0 sm:pt-0">
+                    <div className="flex items-center gap-3">
+                      {hasFeatured ? (
+                        <label className="flex items-center gap-2 text-xs text-muted-foreground">
+                          Featured
+                          <Switch
+                            checked={Boolean(row["is_featured"])}
+                            onCheckedChange={(v) => handleToggle(row, "is_featured", v)}
+                          />
+                        </label>
+                      ) : null}
                       <label className="flex items-center gap-2 text-xs text-muted-foreground">
-                        Featured
+                        Live
                         <Switch
-                          checked={Boolean(row["is_featured"])}
-                          onCheckedChange={(v) => handleToggle(row, "is_featured", v)}
+                          checked={Boolean(row["is_active"])}
+                          onCheckedChange={(v) => handleToggle(row, "is_active", v)}
                         />
                       </label>
-                    ) : null}
-                    <label className="flex items-center gap-2 text-xs text-muted-foreground">
-                      Live
-                      <Switch
-                        checked={Boolean(row["is_active"])}
-                        onCheckedChange={(v) => handleToggle(row, "is_active", v)}
-                      />
-                    </label>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() =>
-                        onEdit ? onEdit(row) : setEditing({ row, values: initialValues(config, row) })
-                      }
-                    >
-                      <Pencil className="size-4" />
-                    </Button>
-                    <Button variant="outline" size="icon" onClick={() => handleDelete(row)}>
-                      <Trash2 className="size-4 text-destructive" />
-                    </Button>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() =>
+                          onEdit ? onEdit(row) : setEditing({ row, values: initialValues(config, row) })
+                        }
+                      >
+                        <Pencil className="size-4" />
+                      </Button>
+                      <Button variant="outline" size="icon" onClick={() => handleDelete(row)}>
+                        <Trash2 className="size-4 text-destructive" />
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
