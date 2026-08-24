@@ -28,7 +28,7 @@ function NavList({
 }: {
   items: AdminNavItem[];
   collapsed?: boolean;
-  onNavigate?: () => void;
+  onNavigate?: (() => void) | undefined;
 }) {
   const groups = useMemo(() => {
     const map = new Map<string, AdminNavItem[]>();
@@ -100,7 +100,7 @@ function SidebarBody({
 }: {
   items: AdminNavItem[];
   collapsed: boolean;
-  onNavigate?: () => void;
+  onNavigate?: (() => void) | undefined;
 }) {
   return (
     <div className="flex h-full flex-col gap-4">
