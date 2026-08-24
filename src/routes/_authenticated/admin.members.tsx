@@ -30,6 +30,8 @@ function AdminMembers() {
   const setRole = useServerFn(adminSetMemberRole);
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
+  const [openMember, setOpenMember] = useState<string | null>(null);
+
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "members"],
