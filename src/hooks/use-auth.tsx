@@ -83,8 +83,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!active) return;
       setSession(data.session);
       if (data.session?.user) {
-        const next = await fetchRoles(data.session.user.id);
-        if (active) setRoles(next);
+        const [next, name] = await Promise.all([
+          fetchRoles(data.session.user.id),
+          fetchDisplayName(data.session.user.id),
+        ]);
+        if (active) {
+          setRoles(next);
+          setDisplayName(name);
+        }
       }
       if (active) setLoading(false);
     });
