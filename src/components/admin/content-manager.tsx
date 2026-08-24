@@ -38,6 +38,7 @@ import {
   adminSaveContent,
   adminToggleContent,
 } from "@/lib/admin-content.functions";
+import { invalidatePublicContent } from "@/lib/query-persist";
 
 type Row = Record<string, any>;
 
@@ -92,9 +93,12 @@ export function ContentManager({
     queryFn: () => listContent({ data: { table } }),
   });
 
-  const refresh = () => {
-    queryClient.invalidateQueries({ queryKey: ["admin", "content", table] });
-    queryClient.invalidateQueries({ queryKey: ["admin", "overview"] });
+  const refresh = (version?: number | string) => {
+    void Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["admin", "content", table] }),
+      queryClient.invalidateQueries({ queryKey: ["admin", "overview"] }),
+      invalidatePublicContent(queryClient, table, version),
+    ]);
   };
 
   const rows = useMemo(() => {
@@ -176,7 +180,7 @@ export function ContentManager({
       { id: toastId },
     );
     setEditing(null);
-    refresh();
+    refresh(result.version);
   }
 
   async function handleDelete(row: Row) {
@@ -194,7 +198,7 @@ export function ContentManager({
       return;
     }
     toast.success(`${config.singular} deleted`);
-    refresh();
+    refresh(result.version);
   }
 
   async function handleToggle(row: Row, field: "is_active" | "is_featured", value: boolean) {

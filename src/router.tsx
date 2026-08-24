@@ -21,7 +21,9 @@ export const getRouter = () => {
     scrollRestoration: true,
     defaultPreload: "intent",
     defaultPreloadDelay: 40,
-    defaultPreloadStaleTime: 30_000,
+    // TanStack Query is the single cache owner. A second router freshness
+    // window can otherwise prevent a newly invalidated query from refetching.
+    defaultPreloadStaleTime: 0,
     defaultPendingMs: 300,
     defaultPendingMinMs: 300,
     defaultPendingComponent: () => (

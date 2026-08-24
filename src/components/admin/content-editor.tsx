@@ -25,6 +25,7 @@ import {
 import { adminListContent, adminSaveContent } from "@/lib/admin-content.functions";
 import { withRetry } from "@/lib/retry";
 import { BrandLoader } from "@/components/ui/brand-loader";
+import { invalidatePublicContent } from "@/lib/query-persist";
 
 type Row = Record<string, any>;
 
@@ -161,8 +162,11 @@ export function ContentEditorPage({
         : `${config.singular} saved as a draft`,
       { id: toastId },
     );
-    queryClient.invalidateQueries({ queryKey: ["admin", "content", table] });
-    queryClient.invalidateQueries({ queryKey: ["admin", "overview"] });
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["admin", "content", table] }),
+      queryClient.invalidateQueries({ queryKey: ["admin", "overview"] }),
+      invalidatePublicContent(queryClient, table, result.version),
+    ]);
     goBack();
   }
 

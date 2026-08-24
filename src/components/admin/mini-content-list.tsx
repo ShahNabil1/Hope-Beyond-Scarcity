@@ -27,7 +27,7 @@ import {
   adminToggleContent,
 } from "@/lib/admin-content.functions";
 import { resolveIcon } from "@/lib/icon-map";
-import { clearPersistedPublicCache } from "@/lib/query-persist";
+import { invalidatePublicContent } from "@/lib/query-persist";
 import { withRetry } from "@/lib/retry";
 
 type Row = Record<string, any>;
@@ -54,10 +54,11 @@ export function MiniContentList({ table }: { table: ContentTable }) {
 
   const rows = data ?? [];
 
-  function refresh() {
-    queryClient.invalidateQueries({ queryKey: ["admin", "content", table] });
-    queryClient.invalidateQueries({ queryKey: ["home-content"] });
-    clearPersistedPublicCache();
+  function refresh(version?: number | string) {
+    void Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["admin", "content", table] }),
+      invalidatePublicContent(queryClient, table, version),
+    ]);
   }
 
   function setValue(name: string, value: unknown) {
@@ -105,7 +106,7 @@ export function MiniContentList({ table }: { table: ContentTable }) {
       }
       toast.success(`${config.singular} saved — live on the site now`, { id: toastId });
       setEditing(null);
-      refresh();
+      refresh(result.version);
     } catch (error) {
       toast.error("Could not reach the server", {
         id: toastId,
@@ -131,7 +132,7 @@ export function MiniContentList({ table }: { table: ContentTable }) {
       return;
     }
     toast.success(`${config.singular} deleted`);
-    refresh();
+    refresh(result.version);
   }
 
   async function handleToggle(row: Row, value: boolean) {
@@ -143,7 +144,7 @@ export function MiniContentList({ table }: { table: ContentTable }) {
       return;
     }
     toast.success(value ? `${config.singular} is live` : `${config.singular} hidden`);
-    refresh();
+    refresh(result.version);
   }
 
   async function move(row: Row, direction: -1 | 1) {

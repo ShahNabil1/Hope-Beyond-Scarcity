@@ -13,9 +13,7 @@ const description =
   "Field updates, impact stories, and announcements from Hope Beyond Scarcity's work in Bangladesh and Canada.";
 
 export const Route = createFileRoute("/news/")({
-  loader: ({ context }) => {
-    void context.queryClient.ensureQueryData(newsQueryOptions);
-  },
+  loader: ({ context }) => context.queryClient.ensureQueryData(newsQueryOptions),
   head: () => ({
     meta: [
       { title },

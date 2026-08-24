@@ -61,7 +61,13 @@ export const adminSaveContent = createServerFn({ method: "POST" })
     if (data.id) {
       const { error } = await admin.from(data.table).update(values).eq("id", data.id);
       if (error) return { error: error.message };
-      return { ok: true as const, id: data.id };
+      const version = Date.now();
+      const { error: versionError } = await admin
+        .from("site_settings")
+        .update({ content_version: version })
+        .eq("id", "default");
+      if (versionError) return { error: versionError.message };
+      return { ok: true as const, id: data.id, version };
     }
 
     const { data: created, error } = await admin
@@ -70,7 +76,13 @@ export const adminSaveContent = createServerFn({ method: "POST" })
       .select("id")
       .single();
     if (error) return { error: error.message };
-    return { ok: true as const, id: created?.id as string };
+    const version = Date.now();
+    const { error: versionError } = await admin
+      .from("site_settings")
+      .update({ content_version: version })
+      .eq("id", "default");
+    if (versionError) return { error: versionError.message };
+    return { ok: true as const, id: created?.id as string, version };
   });
 
 export const adminDeleteContent = createServerFn({ method: "POST" })
@@ -83,7 +95,13 @@ export const adminDeleteContent = createServerFn({ method: "POST" })
     const { admin } = await requireStaff(context.supabase, context.userId);
     const { error } = await admin.from(data.table).delete().eq("id", data.id);
     if (error) return { error: error.message };
-    return { ok: true as const };
+    const version = Date.now();
+    const { error: versionError } = await admin
+      .from("site_settings")
+      .update({ content_version: version })
+      .eq("id", "default");
+    if (versionError) return { error: versionError.message };
+    return { ok: true as const, version };
   });
 
 export const adminToggleContent = createServerFn({ method: "POST" })
@@ -107,5 +125,11 @@ export const adminToggleContent = createServerFn({ method: "POST" })
       .update({ [data.field]: data.value })
       .eq("id", data.id);
     if (error) return { error: error.message };
-    return { ok: true as const };
+    const version = Date.now();
+    const { error: versionError } = await admin
+      .from("site_settings")
+      .update({ content_version: version })
+      .eq("id", "default");
+    if (versionError) return { error: versionError.message };
+    return { ok: true as const, version };
   });
