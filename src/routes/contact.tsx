@@ -13,6 +13,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { getSiteSettings } from "@/lib/content.functions";
 import { submitContactMessage } from "@/lib/admin.functions";
+import { Turnstile, useTurnstile } from "@/components/turnstile";
+import { verifyTurnstile } from "@/lib/turnstile.functions";
 
 const title = "Contact | Hope Beyond Scarcity";
 const description =
@@ -41,11 +43,19 @@ function ContactPage() {
 
   const [form, setForm] = useState({ full_name: "", email: "", subject: "", message: "" });
   const [sending, setSending] = useState(false);
+  const captcha = useTurnstile();
+  const checkCaptcha = useServerFn(verifyTurnstile);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSending(true);
     try {
+      const check = await checkCaptcha({ data: { token: captcha.token } });
+      if (!check.ok) {
+        captcha.reset();
+        toast.error("Please complete the security check and try again.");
+        return;
+      }
       const result = await sendMessage({ data: form });
       if ("error" in result) {
         toast.error(result.error);
@@ -53,6 +63,7 @@ function ContactPage() {
       }
       toast.success("Thank you — we'll reply within two business days.");
       setForm({ full_name: "", email: "", subject: "", message: "" });
+      captcha.reset();
     } catch {
       toast.error("Please check your details and try again.");
     } finally {
@@ -155,7 +166,13 @@ function ContactPage() {
                   onChange={(e) => setForm({ ...form, message: e.target.value })}
                 />
               </div>
-              <Button type="submit" disabled={sending} className="w-full sm:w-auto">
+              <Turnstile onToken={captcha.setToken} handleRef={captcha.ref} action="contact" />
+
+              <Button
+                type="submit"
+                disabled={sending || !captcha.ready}
+                className="w-full sm:w-auto"
+              >
                 {sending ? "Sending…" : "Send message"}
               </Button>
             </form>
