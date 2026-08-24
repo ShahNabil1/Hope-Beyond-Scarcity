@@ -50,3 +50,8 @@ export const getHomeContent = createServerFn({ method: "GET" }).handler(async ()
   const { fetchHomeContent } = await import("./content.server");
   return fetchHomeContent();
 });
+
+export const getContentVersion = createServerFn({ method: "GET" }).handler(async () => {
+  const { fetchContentVersion } = await import("./content.server");
+  return fetchContentVersion();
+});

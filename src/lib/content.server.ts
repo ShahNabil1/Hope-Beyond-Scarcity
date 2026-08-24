@@ -150,3 +150,14 @@ export async function fetchLegalPage(slug: string) {
 }
 
 export type LegalPage = NonNullable<Awaited<ReturnType<typeof fetchLegalPage>>>;
+
+/** Monotonic marker bumped whenever staff publish content — drives cache busting. */
+export async function fetchContentVersion() {
+  const { data, error } = await publicClient()
+    .from("site_settings")
+    .select("content_version,updated_at")
+    .eq("id", "default")
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  return { version: Number(data?.content_version ?? 1), updatedAt: data?.updated_at ?? null };
+}
