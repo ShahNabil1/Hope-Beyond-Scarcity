@@ -96,6 +96,7 @@ export function Turnstile({
   const widgetIdRef = useRef<string | null>(null);
   const onTokenRef = useRef(onToken);
   const [status, setStatus] = useState<"idle" | "ready" | "error">("idle");
+  const [attempt, setAttempt] = useState(0);
   const domId = useId();
 
   useEffect(() => {
