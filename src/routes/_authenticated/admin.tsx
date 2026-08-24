@@ -23,6 +23,7 @@ const description = "Internal content management for programs, news, events, and
 
 const navItems: AdminNavItem[] = [
   { to: "/admin", label: "Overview", icon: <LayoutDashboard />, exact: true },
+  { to: "/admin/analytics", label: "Analytics", icon: <BarChart3 /> },
   { to: "/admin/programs", label: "Programs", icon: <HeartHandshake />, group: "Content" },
   { to: "/admin/news", label: "News", icon: <Newspaper />, group: "Content" },
   { to: "/admin/events", label: "Events", icon: <CalendarDays />, group: "Content" },
