@@ -136,12 +136,40 @@ export function SiteFooter() {
       </div>
 
       <div className="border-t border-primary-foreground/15">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-6 text-xs text-primary-foreground/70 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
-          <p>
+        <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-4 py-6 text-xs text-primary-foreground/70 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
+          <p className="order-2 md:order-1">
             &copy; {new Date().getFullYear()} Hope Beyond Scarcity. Canadian Not-for-Profit
             Corporation. Charitable registration pending.
           </p>
-          <nav className="flex flex-wrap gap-4" aria-label="Legal">
+
+          <a
+            href="https://brantatech.com/"
+            target="_blank"
+            rel="noreferrer noopener"
+            className="order-1 md:order-2 group inline-flex items-center gap-2 rounded-full border border-primary-foreground/20 bg-primary-foreground/5 px-4 py-1.5 text-[11px] font-medium tracking-wide text-primary-foreground/80 transition-all hover:border-primary-foreground/40 hover:bg-primary-foreground/10 hover:text-primary-foreground"
+            aria-label="Website engineered by Branta Tech — visit brantatech.com"
+          >
+            <span className="inline-flex items-center gap-1.5">
+              <span className="size-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px] shadow-emerald-400/70 transition-shadow group-hover:shadow-emerald-400" />
+              Crafted with care by
+            </span>
+            <span className="font-semibold text-primary-foreground">Branta Tech</span>
+            <svg
+              className="size-3.5 opacity-60 transition-transform group-hover:translate-x-0.5 group-hover:opacity-100"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M7 17 17 7" />
+              <path d="M7 7h10v10" />
+            </svg>
+          </a>
+
+          <nav className="order-3 flex flex-wrap gap-4 md:order-3" aria-label="Legal">
             <Link to="/terms" className="hover:text-primary-foreground">
               Terms of Use
             </Link>
@@ -150,9 +178,6 @@ export function SiteFooter() {
             </Link>
             <Link to="/refund" className="hover:text-primary-foreground">
               Refund Policy
-            </Link>
-            <Link to="/admin" className="hover:text-primary-foreground">
-              Admin
             </Link>
           </nav>
         </div>
