@@ -53,6 +53,10 @@ const signInSchema = z.object({
 
 function SignInPage() {
   const navigate = useNavigate();
+  // Guards against duplicate redirects: the auth-state effect owns post-login
+  // navigation, and firing it twice can interrupt the router mid-transition
+  // (which rendered a blank /admin until a manual refresh).
+  const redirectedRef = useRef(false);
   const { isAuthenticated, loading, homePath } = useAuth();
   const [submitting, setSubmitting] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
@@ -63,7 +67,8 @@ function SignInPage() {
   });
 
   useEffect(() => {
-    if (loading || !isAuthenticated) return;
+    if (loading || !isAuthenticated || redirectedRef.current) return;
+    redirectedRef.current = true;
     let cancelled = false;
     (async () => {
       let registered = true;
@@ -75,6 +80,7 @@ function SignInPage() {
       }
       if (cancelled) return;
       if (!registered) {
+        redirectedRef.current = false;
         await supabase.auth.signOut();
         toast.error("No account found for that Google address. Please create an account first.");
         navigate({ to: "/auth/sign-up", replace: true });
@@ -105,9 +111,9 @@ function SignInPage() {
       return;
     }
 
-    const roles = await fetchRoles(data.user.id);
+    // Do NOT navigate here — the auth-state effect above performs the single
+    // post-login redirect once roles have loaded.
     toast.success("Welcome back.");
-    navigate({ to: landingPathForRoles(roles), replace: true });
   }
 
   async function signInWithGoogle() {
