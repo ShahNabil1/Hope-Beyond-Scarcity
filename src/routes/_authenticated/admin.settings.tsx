@@ -38,6 +38,13 @@ type FormState = {
   contact_phone: string;
   contact_hours: string;
   contact_map_url: string;
+  social_facebook: string;
+  social_instagram: string;
+  social_linkedin: string;
+  social_youtube: string;
+  social_x: string;
+  social_tiktok: string;
+  social_whatsapp: string;
 };
 
 function AdminSettings() {
