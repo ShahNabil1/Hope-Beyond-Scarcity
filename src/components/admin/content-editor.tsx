@@ -92,7 +92,7 @@ export function ContentEditorPage({
   }
 
   function goBack() {
-    navigate({ to: backTo });
+    navigate({ to: backTo as never });
   }
 
   async function handleSave() {

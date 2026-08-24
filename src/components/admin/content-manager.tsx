@@ -64,7 +64,15 @@ function initialValues(config: (typeof CONTENT_CONFIG)[ContentTable], row?: Row)
   return values;
 }
 
-export function ContentManager({ table }: { table: ContentTable }) {
+export function ContentManager({
+  table,
+  onNew,
+  onEdit,
+}: {
+  table: ContentTable;
+  onNew?: () => void;
+  onEdit?: (row: Row) => void;
+}) {
   const config = CONTENT_CONFIG[table];
   const listContent = useServerFn(adminListContent);
   const saveContent = useServerFn(adminSaveContent);
@@ -187,7 +195,7 @@ export function ContentManager({ table }: { table: ContentTable }) {
               placeholder="Search…"
               className="w-44"
             />
-            <Button onClick={() => setEditing({ values: initialValues(config) })}>
+            <Button onClick={() => (onNew ? onNew() : setEditing({ values: initialValues(config) }))}>
               <Plus className="size-4" /> New
             </Button>
           </div>
@@ -253,7 +261,9 @@ export function ContentManager({ table }: { table: ContentTable }) {
                     <Button
                       variant="outline"
                       size="icon"
-                      onClick={() => setEditing({ row, values: initialValues(config, row) })}
+                      onClick={() =>
+                        onEdit ? onEdit(row) : setEditing({ row, values: initialValues(config, row) })
+                      }
                     >
                       <Pencil className="size-4" />
                     </Button>
