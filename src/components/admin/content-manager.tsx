@@ -71,6 +71,7 @@ export function ContentManager({ table }: { table: ContentTable }) {
   const deleteContent = useServerFn(adminDeleteContent);
   const toggleContent = useServerFn(adminToggleContent);
   const queryClient = useQueryClient();
+  const confirm = useConfirm();
 
   const [search, setSearch] = useState("");
   const [editing, setEditing] = useState<{ row?: Row; values: Record<string, unknown> } | null>(null);
