@@ -111,7 +111,7 @@ export const Route = createFileRoute("/api/public/track")({
             utm_campaign: str(body["utm_campaign"], 120),
             utm_term: str(body["utm_term"], 120),
             utm_content: str(body["utm_content"], 120),
-            params: params as Record<string, unknown>,
+            params: params as never,
           });
 
           if (error) throw new Error(error.message);

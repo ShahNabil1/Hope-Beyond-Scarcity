@@ -44,6 +44,7 @@ import { Route as AuthenticatedAdminProgramsRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminRecurringRouteImport } from './routes/_authenticated/admin.recurring'
 import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin.settings'
 import { Route as AuthenticatedAdminVolunteersRouteImport } from './routes/_authenticated/admin.volunteers'
+import { Route as ApiPublicTrackRouteImport } from './routes/api/public/track'
 import { Route as AuthenticatedAdminNewsIndexRouteImport } from './routes/_authenticated/admin.news.index'
 import { Route as AuthenticatedAdminNewsIdRouteImport } from './routes/_authenticated/admin.news.$id'
 import { Route as AuthenticatedAdminNewsNewRouteImport } from './routes/_authenticated/admin.news.new'
@@ -234,6 +235,11 @@ const AuthenticatedAdminVolunteersRoute =
     path: '/volunteers',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const ApiPublicTrackRoute = ApiPublicTrackRouteImport.update({
+  id: '/api/public/track',
+  path: '/api/public/track',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminNewsIndexRoute =
   AuthenticatedAdminNewsIndexRouteImport.update({
     id: '/',
@@ -298,6 +304,7 @@ export interface FileRoutesByFullPath {
   '/admin/recurring': typeof AuthenticatedAdminRecurringRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/volunteers': typeof AuthenticatedAdminVolunteersRoute
+  '/api/public/track': typeof ApiPublicTrackRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/admin/news/$id': typeof AuthenticatedAdminNewsIdRoute
   '/admin/news/new': typeof AuthenticatedAdminNewsNewRoute
@@ -336,6 +343,7 @@ export interface FileRoutesByTo {
   '/admin/recurring': typeof AuthenticatedAdminRecurringRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/volunteers': typeof AuthenticatedAdminVolunteersRoute
+  '/api/public/track': typeof ApiPublicTrackRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/news/$id': typeof AuthenticatedAdminNewsIdRoute
   '/admin/news/new': typeof AuthenticatedAdminNewsNewRoute
@@ -379,6 +387,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/recurring': typeof AuthenticatedAdminRecurringRoute
   '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/_authenticated/admin/volunteers': typeof AuthenticatedAdminVolunteersRoute
+  '/api/public/track': typeof ApiPublicTrackRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/admin/news/$id': typeof AuthenticatedAdminNewsIdRoute
   '/_authenticated/admin/news/new': typeof AuthenticatedAdminNewsNewRoute
@@ -422,6 +431,7 @@ export interface FileRouteTypes {
     | '/admin/recurring'
     | '/admin/settings'
     | '/admin/volunteers'
+    | '/api/public/track'
     | '/admin/'
     | '/admin/news/$id'
     | '/admin/news/new'
@@ -460,6 +470,7 @@ export interface FileRouteTypes {
     | '/admin/recurring'
     | '/admin/settings'
     | '/admin/volunteers'
+    | '/api/public/track'
     | '/admin'
     | '/admin/news/$id'
     | '/admin/news/new'
@@ -502,6 +513,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/recurring'
     | '/_authenticated/admin/settings'
     | '/_authenticated/admin/volunteers'
+    | '/api/public/track'
     | '/_authenticated/admin/'
     | '/_authenticated/admin/news/$id'
     | '/_authenticated/admin/news/new'
@@ -529,6 +541,7 @@ export interface RootRouteChildren {
   LegalSlugRoute: typeof LegalSlugRoute
   AuthIndexRoute: typeof AuthIndexRoute
   DonateIndexRoute: typeof DonateIndexRoute
+  ApiPublicTrackRoute: typeof ApiPublicTrackRoute
   ApiPublicMediaSplatRoute: typeof ApiPublicMediaSplatRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
@@ -780,6 +793,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminVolunteersRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/api/public/track': {
+      id: '/api/public/track'
+      path: '/api/public/track'
+      fullPath: '/api/public/track'
+      preLoaderRoute: typeof ApiPublicTrackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/admin/news/': {
       id: '/_authenticated/admin/news/'
       path: '/'
@@ -915,6 +935,7 @@ const rootRouteChildren: RootRouteChildren = {
   LegalSlugRoute: LegalSlugRoute,
   AuthIndexRoute: AuthIndexRoute,
   DonateIndexRoute: DonateIndexRoute,
+  ApiPublicTrackRoute: ApiPublicTrackRoute,
   ApiPublicMediaSplatRoute: ApiPublicMediaSplatRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
