@@ -106,6 +106,7 @@ export function Turnstile({
   useEffect(() => {
     if (!siteKey || !containerRef.current) return;
     let cancelled = false;
+    setStatus("idle");
     const el = containerRef.current;
 
     loadTurnstileScript()
