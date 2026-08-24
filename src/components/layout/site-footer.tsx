@@ -1,7 +1,21 @@
 import { Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 
 import { BrandLogo } from "@/components/brand-logo";
-import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Youtube } from "lucide-react";
+import { getSiteSettings } from "@/lib/content.functions";
+import {
+  Facebook,
+  Instagram,
+  Linkedin,
+  Mail,
+  MapPin,
+  MessageCircle,
+  Music2,
+  Phone,
+  Twitter,
+  Youtube,
+} from "lucide-react";
 
 const columns = [
   {
