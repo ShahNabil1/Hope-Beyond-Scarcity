@@ -177,9 +177,22 @@ export function Turnstile({
           status === "error" && "border-destructive/50",
         )}
       />
-      <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+      <p className="flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground">
         <ShieldCheck className="size-3.5 text-primary" aria-hidden="true" />
-        {status === "error" ? "Security check unavailable — please refresh." : label}
+        {status === "error" ? (
+          <>
+            <span>Security check couldn&apos;t load on this domain.</span>
+            <button
+              type="button"
+              onClick={() => setAttempt((n) => n + 1)}
+              className="font-medium text-primary underline underline-offset-2"
+            >
+              Try again
+            </button>
+          </>
+        ) : (
+          label
+        )}
       </p>
     </div>
   );
