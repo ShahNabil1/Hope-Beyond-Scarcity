@@ -9,6 +9,8 @@ export type AuthState = {
   user: User | null;
   session: Session | null;
   roles: AppRole[];
+  /** Display name from the profiles table; falls back to email. */
+  displayName: string;
   loading: boolean;
   isAuthenticated: boolean;
   hasRole: (role: AppRole) => boolean;
