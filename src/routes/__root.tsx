@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider } from "../hooks/use-auth";
 import { Toaster } from "../components/ui/sonner";
+import { ConfirmProvider } from "../components/ui/confirm-dialog";
 import { SiteHeader } from "../components/layout/site-header";
 import { SiteFooter } from "../components/layout/site-footer";
 
@@ -152,6 +153,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
+        <ConfirmProvider>
         <div className="flex min-h-screen flex-col font-sans antialiased">
           <SiteHeader />
           <main className="flex-1">
@@ -163,6 +165,7 @@ function RootComponent() {
           </div>
         </div>
         <Toaster richColors position="top-center" />
+        </ConfirmProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

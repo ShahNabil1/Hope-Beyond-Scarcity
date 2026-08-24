@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Pencil, Plus, Star, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { useConfirm } from "@/components/ui/confirm-dialog";
 
 import { AdminPageHeader } from "@/components/admin/admin-shell";
 import { GalleryInput, ImageInput, mediaUrl } from "@/components/admin/media-input";
@@ -70,6 +71,7 @@ export function ContentManager({ table }: { table: ContentTable }) {
   const deleteContent = useServerFn(adminDeleteContent);
   const toggleContent = useServerFn(adminToggleContent);
   const queryClient = useQueryClient();
+  const confirm = useConfirm();
 
   const [search, setSearch] = useState("");
   const [editing, setEditing] = useState<{ row?: Row; values: Record<string, unknown> } | null>(null);
@@ -144,7 +146,14 @@ export function ContentManager({ table }: { table: ContentTable }) {
   }
 
   async function handleDelete(row: Row) {
-    if (!window.confirm(`Delete “${row[config.titleField]}”? This cannot be undone.`)) return;
+    const ok = await confirm({
+      title: `Delete this ${config.singular.toLowerCase()}?`,
+      description: "This permanently removes the item and its content from the live site. This action cannot be undone.",
+      detail: String(row[config.titleField] ?? ""),
+      confirmLabel: "Delete permanently",
+      cancelLabel: "Keep it",
+    });
+    if (!ok) return;
     const result = await deleteContent({ data: { table, id: row["id"] } });
     if ("error" in result) {
       toast.error(result.error);
