@@ -17,6 +17,7 @@ import { Toaster } from "../components/ui/sonner";
 import { ConfirmProvider } from "../components/ui/confirm-dialog";
 import { SiteHeader } from "../components/layout/site-header";
 import { SiteFooter } from "../components/layout/site-footer";
+import { PageBackBar } from "../components/layout/page-back-bar";
 import { usePersistedPublicCache } from "../lib/query-persist";
 import { CookieConsent } from "../components/cookie-consent";
 import { useAnalytics } from "../hooks/use-analytics";
@@ -155,10 +156,10 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   usePersistedPublicCache(queryClient);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  // On the donate and dashboard pages, the footer is hidden on mobile to keep
-  // the flows focused and reduce scrolling on small screens (native-app feel).
-  const hideFooterOnMobile =
-    pathname.startsWith("/donate") || pathname.startsWith("/dashboard");
+  // On mobile the footer only appears on the home page; every other page gets a
+  // compact back/home bar instead, so visitors can always escape a deep page.
+  const isHome = pathname === "/";
+  const hideFooterOnMobile = !isHome;
   // The admin CMS renders its own full-screen chrome (sidebar + topbar).
   const isAdmin = pathname.startsWith("/admin");
 
@@ -169,12 +170,13 @@ function RootComponent() {
         <AnalyticsBridge />
         <div className="flex min-h-screen flex-col font-sans antialiased">
           {isAdmin ? null : <SiteHeader />}
+          {isAdmin || isHome ? null : <PageBackBar />}
           <main className="flex-1">
             {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
             <Outlet />
           </main>
           {isAdmin ? null : (
-            <div className={hideFooterOnMobile ? "hidden md:block" : undefined}>
+            <div className={hideFooterOnMobile ? "hidden lg:block" : undefined}>
               <SiteFooter />
             </div>
           )}
