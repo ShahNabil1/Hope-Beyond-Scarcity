@@ -2,16 +2,18 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { HeartHandshake, Repeat, ShieldCheck } from "lucide-react";
+import { Ban, HeartHandshake, Repeat, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 
 import { AdminPageHeader } from "@/components/admin/admin-shell";
+import { MemberDetailDialog } from "@/components/admin/member-detail-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { adminListMembers, adminSetMemberRole } from "@/lib/admin-people.functions";
+
 
 export const Route = createFileRoute("/_authenticated/admin/members")({
   component: AdminMembers,
