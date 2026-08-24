@@ -280,8 +280,6 @@ export function ContentManager({
                     </div>
                   </div>
                 </CardContent>
-
-                </CardContent>
               </Card>
             );
           })}
