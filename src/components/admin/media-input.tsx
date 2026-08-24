@@ -125,17 +125,23 @@ export function GalleryInput({
     setBusy(true);
     try {
       const paths: string[] = [];
+      let saved = 0;
       for (const file of Array.from(files)) {
         try {
-          paths.push(await uploadFile(file, folder));
+          const { path, result } = await uploadFile(file, folder);
+          paths.push(path);
+          saved += result.originalBytes - result.bytes;
         } catch (error) {
           toast.error(error instanceof Error ? error.message : "Upload failed");
         }
       }
       if (paths.length) {
         onChange([...value, ...paths]);
-        toast.success(`${paths.length} image${paths.length > 1 ? "s" : ""} added`);
+        toast.success(`${paths.length} image${paths.length > 1 ? "s" : ""} added`, {
+          description: saved > 0 ? `${formatBytes(saved)} saved by optimising` : undefined,
+        });
       }
+
     } finally {
       setBusy(false);
       if (inputRef.current) inputRef.current.value = "";
