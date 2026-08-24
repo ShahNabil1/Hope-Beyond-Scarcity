@@ -11,9 +11,9 @@ export function BrandLoader({
   className,
   size = "md",
 }: {
-  label?: string;
-  className?: string;
-  size?: "sm" | "md" | "lg";
+  label?: string | undefined;
+  className?: string | undefined;
+  size?: "sm" | "md" | "lg" | undefined;
 }) {
   const dims = size === "sm" ? "size-8" : size === "lg" ? "size-20" : "size-12";
   return (
@@ -51,9 +51,9 @@ export function BrandSkeleton({
   className,
   label,
 }: {
-  rows?: number;
-  className?: string;
-  label?: string;
+  rows?: number | undefined;
+  className?: string | undefined;
+  label?: string | undefined;
 }) {
   return (
     <div className={cn("relative", className)}>
