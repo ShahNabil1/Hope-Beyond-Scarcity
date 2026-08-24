@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { AlertTriangle, X } from "lucide-react";
@@ -14,8 +14,13 @@ export function EmergencyBanner() {
     staleTime: 60_000,
   });
   const [dismissed, setDismissed] = useState(false);
+  // The banner depends on cached/persisted client data, so it renders only
+  // after hydration to keep the server and client markup identical.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
-  if (dismissed || !isEmergencyLive(data ?? null)) return null;
+  if (!mounted || dismissed || !isEmergencyLive(data ?? null)) return null;
+
 
   const headline = data?.emergency_headline?.trim() || "Emergency Appeal";
   const ctaLabel = data?.emergency_cta_label?.trim() || "Give now";
