@@ -1,5 +1,12 @@
 import { useEffect } from "react";
-import { dehydrate, hydrate, type QueryClient } from "@tanstack/react-query";
+import {
+  dehydrate,
+  hydrate,
+  type DehydratedState,
+  type QueryClient,
+} from "@tanstack/react-query";
+
+import type { ContentTable } from "@/lib/admin-content";
 
 import { getContentVersion } from "@/lib/content.functions";
 
@@ -22,7 +29,7 @@ const SCHEMA_VERSION = "v2";
 const STORAGE_KEY = "hbs-query-cache";
 /** Mirrors the server `site_settings.content_version` — shared across tabs. */
 export const CONTENT_VERSION_KEY = "hbs-content-version";
-const MAX_AGE = 24 * 60 * 60 * 1000;
+const MAX_AGE = 60 * 60 * 1000;
 
 function isPublicKey(key: readonly unknown[]) {
   return PERSISTED_KEYS.includes(String(key[0]));
@@ -75,30 +82,8 @@ export function usePersistedPublicCache(queryClient: QueryClient) {
       });
     };
 
-    // 1. Restore (only if the stored cache matches the known content version)
-    try {
-      const raw = window.localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw) as {
-          buster?: string;
-          savedAt?: number;
-          state?: unknown;
-        };
-        const fresh =
-          parsed.buster === cacheKeyFor(readLocalVersion()) &&
-          typeof parsed.savedAt === "number" &&
-          Date.now() - parsed.savedAt < MAX_AGE;
-        if (fresh && parsed.state) {
-          hydrate(queryClient, parsed.state);
-        } else {
-          window.localStorage.removeItem(STORAGE_KEY);
-        }
-      }
-    } catch {
-      // Corrupt or unavailable storage — fall back to network only.
-    }
-
-    // 2. Check the server version (cross-device invalidation)
+    // Check the server version before trusting browser storage. SSR data is
+    // always authoritative and persisted data only fills genuinely empty keys.
     void (async () => {
       try {
         const remote = await getContentVersion();
@@ -106,12 +91,38 @@ export function usePersistedPublicCache(queryClient: QueryClient) {
         const next = String(remote.version ?? 1);
         const current = readLocalVersion();
         writeLocalVersion(next);
-        // Only throw the cache away when this browser previously knew a
-        // *different* version. On a first visit there is nothing stale, and
-        // invalidating here would trigger an extra refetch on every cold load.
-        if (current !== null && current !== next) drop();
+        if (current !== null && current !== next) {
+          drop();
+          return;
+        }
+
+        const raw = window.localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw) as {
+          buster?: string;
+          savedAt?: number;
+          state?: DehydratedState;
+        };
+        const fresh =
+          parsed.buster === cacheKeyFor(next) &&
+          typeof parsed.savedAt === "number" &&
+          Date.now() - parsed.savedAt < MAX_AGE;
+        if (!fresh || !parsed.state) {
+          window.localStorage.removeItem(STORAGE_KEY);
+          return;
+        }
+
+        const missingQueries = parsed.state.queries.filter(
+          (query) => queryClient.getQueryState(query.queryKey) === undefined,
+        );
+        if (missingQueries.length) {
+          hydrate(queryClient, { ...parsed.state, queries: missingQueries });
+          await queryClient.invalidateQueries({
+            predicate: (query) => missingQueries.some((saved) => saved.queryHash === query.queryHash),
+          });
+        }
       } catch {
-        // Offline or unreachable — keep serving the cached copy.
+        // SSR content remains visible if version validation is unavailable.
       }
     })();
 
@@ -174,4 +185,28 @@ export function clearPersistedPublicCache(version?: number | string) {
   } catch {
     // ignore
   }
+}
+
+const PUBLIC_KEYS_BY_TABLE: Record<ContentTable, string[]> = {
+  programs: ["programs"],
+  news_posts: ["news"],
+  events: ["events"],
+  volunteer_roles: ["volunteer-roles"],
+  legal_pages: ["legal-pages"],
+  impact_stats: ["home-content"],
+  partners: ["home-content"],
+};
+
+/** Immediately removes stale public data after any successful CMS mutation. */
+export async function invalidatePublicContent(
+  queryClient: QueryClient,
+  table: ContentTable,
+  version?: number | string,
+) {
+  clearPersistedPublicCache(version);
+  await Promise.all(
+    PUBLIC_KEYS_BY_TABLE[table].map((key) =>
+      queryClient.invalidateQueries({ queryKey: [key] }),
+    ),
+  );
 }

@@ -12,9 +12,7 @@ const description =
   "Give your time, skills, or voice. Volunteer with Hope Beyond Scarcity in Canada or with our field partners.";
 
 export const Route = createFileRoute("/volunteer")({
-  loader: ({ context }) => {
-    void context.queryClient.ensureQueryData(volunteerRolesQueryOptions);
-  },
+  loader: ({ context }) => context.queryClient.ensureQueryData(volunteerRolesQueryOptions),
   head: () => ({
     meta: [
       { title },

@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
-import { motion, useInView, useReducedMotion } from "framer-motion";
+import { type ReactNode } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 
 type RevealProps = {
   children: ReactNode;
@@ -14,9 +14,8 @@ type RevealProps = {
  * Subtle scroll-reveal wrapper. Animates once when the element enters
  * the viewport, and respects prefers-reduced-motion.
  *
- * Safety: the content is *always* revealed after a short timeout, so a missed
- * IntersectionObserver callback (slow hydration, restored scroll position,
- * background tab) can never leave a section permanently invisible.
+ * Content is visible in the server HTML and before hydration. Motion is a
+ * progressive enhancement only, so a slow script can never create a blank page.
  */
 export function Reveal({
   children,
@@ -27,15 +26,6 @@ export function Reveal({
 }: RevealProps) {
   const reduced = useReducedMotion();
   const MotionTag = motion[as];
-  const ref = useRef<HTMLElement | null>(null);
-  const inView = useInView(ref, { once: true, amount: 0.2, margin: "0px 0px -80px 0px" });
-  const [forced, setForced] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setForced(true), 1200);
-    return () => clearTimeout(timer);
-  }, []);
-
   if (reduced) {
     return <MotionTag className={className}>{children}</MotionTag>;
   }
@@ -49,15 +39,13 @@ export function Reveal({
           ? { x: 0, y: 0 }
           : { x: 0, y: 28 };
 
-  const show = inView || forced;
-
   return (
     <MotionTag
-      ref={ref as never}
       className={className}
-      initial={{ opacity: 0, ...offset }}
-      animate={show ? { opacity: 1, x: 0, y: 0 } : { opacity: 0, ...offset }}
-      transition={{ duration: 0.7, delay: show && !inView ? 0 : delay, ease: [0.16, 1, 0.3, 1] }}
+      initial={false}
+      whileInView={{ opacity: [0.94, 1], x: [offset.x, 0], y: [offset.y, 0] }}
+      viewport={{ once: true, amount: 0.15, margin: "0px 0px -40px 0px" }}
+      transition={{ duration: 0.55, delay, ease: [0.16, 1, 0.3, 1] }}
     >
       {children}
     </MotionTag>

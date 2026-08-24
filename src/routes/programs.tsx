@@ -20,9 +20,7 @@ const icons: Record<string, typeof Package> = {
 };
 
 export const Route = createFileRoute("/programs")({
-  loader: ({ context }) => {
-    void context.queryClient.ensureQueryData(programsQueryOptions);
-  },
+  loader: ({ context }) => context.queryClient.ensureQueryData(programsQueryOptions),
   head: () => ({
     meta: [
       { title },

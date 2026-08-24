@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowRight, CalendarDays, HeartHandshake, ShieldCheck } from "lucide-react";
 
 import { BrandLogo } from "@/components/brand-logo";
@@ -34,13 +34,12 @@ export const Route = createFileRoute("/")({
       { name: "twitter:description", content: description },
       { name: "twitter:image", content: "https://hopebeyondscarcity.com/og-image.jpg" },
     ],
-    links: [{ rel: "canonical", href: "https://hopebeyondscarcity.com/" }],
+    links: [
+      { rel: "canonical", href: "https://hopebeyondscarcity.com/" },
+      { rel: "preload", as: "image", href: heroImage, fetchPriority: "high" },
+    ],
   }),
-  loader: ({ context }) => {
-    // Warm the cache, but never let a transient content failure blank the page:
-    // the component renders with built-in fallback copy while data arrives.
-    void context.queryClient.ensureQueryData(homeContentQueryOptions).catch(() => undefined);
-  },
+  loader: ({ context }) => context.queryClient.ensureQueryData(homeContentQueryOptions),
   errorComponent: ({ error }) => (
     <div role="alert" className="mx-auto max-w-3xl px-4 py-24 text-center">
       <h1 className="text-2xl font-bold text-foreground">We could not load the homepage</h1>
@@ -59,7 +58,7 @@ export const Route = createFileRoute("/")({
 
 
 function Index() {
-  const { data } = useQuery(homeContentQueryOptions);
+  const { data } = useSuspenseQuery(homeContentQueryOptions);
   const settings = data?.settings ?? null;
   const t = (key: Parameters<typeof homeText>[1]) => homeText(settings, key);
   const partners = data?.partners ?? [];
@@ -93,6 +92,8 @@ function Index() {
           alt="Children in a rural village receiving care packages from a volunteer"
           width={1600}
           height={1104}
+          fetchPriority="high"
+          decoding="async"
           className="absolute inset-0 size-full object-cover opacity-40"
         />
         <div
