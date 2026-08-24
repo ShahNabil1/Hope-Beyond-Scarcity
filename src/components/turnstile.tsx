@@ -144,7 +144,7 @@ export function Turnstile({
       }
       widgetIdRef.current = null;
     };
-  }, [siteKey, action]);
+  }, [siteKey, action, attempt]);
 
   useEffect(() => {
     if (!handleRef) return;
