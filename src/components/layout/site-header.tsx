@@ -60,7 +60,7 @@ export function SiteHeader() {
         </Link>
 
 
-        <nav className="ml-auto hidden shrink-0 items-center gap-0.5 lg:flex xl:gap-1" aria-label="Main">
+        <nav className="ml-auto hidden shrink-0 items-center gap-0.5 xl:flex xl:gap-1" aria-label="Main">
           {navLinks.map((link) => (
             <Link
               key={link.to}
@@ -75,8 +75,8 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <div className="ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2 lg:ml-4">
-          <Button asChild variant="outline" className="hidden whitespace-nowrap sm:inline-flex">
+        <div className="ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2 xl:ml-4">
+          <Button asChild variant="outline" className="hidden whitespace-nowrap md:inline-flex">
             <Link to="/volunteer">Get Involved</Link>
           </Button>
           <Button asChild size="sm" className="shadow-sm sm:h-10 sm:px-4 sm:text-sm">
@@ -127,7 +127,7 @@ export function SiteHeader() {
 
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open menu">
+              <Button variant="ghost" size="icon" className="xl:hidden" aria-label="Open menu">
                 <Menu className="size-5" />
               </Button>
             </SheetTrigger>
