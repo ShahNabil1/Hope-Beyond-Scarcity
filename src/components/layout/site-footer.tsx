@@ -39,13 +39,31 @@ const columns = [
 ] as const;
 
 const socials = [
-  { label: "Facebook", Icon: Facebook },
-  { label: "Instagram", Icon: Instagram },
-  { label: "LinkedIn", Icon: Linkedin },
-  { label: "YouTube", Icon: Youtube },
-];
+  { key: "social_facebook", label: "Facebook", Icon: Facebook },
+  { key: "social_instagram", label: "Instagram", Icon: Instagram },
+  { key: "social_linkedin", label: "LinkedIn", Icon: Linkedin },
+  { key: "social_youtube", label: "YouTube", Icon: Youtube },
+  { key: "social_x", label: "X (Twitter)", Icon: Twitter },
+  { key: "social_tiktok", label: "TikTok", Icon: Music2 },
+  { key: "social_whatsapp", label: "WhatsApp", Icon: MessageCircle },
+] as const;
 
 export function SiteFooter() {
+  const fetchSettings = useServerFn(getSiteSettings);
+  const { data: settings } = useQuery({
+    queryKey: ["site-settings"],
+    queryFn: () => fetchSettings(),
+    staleTime: 60_000,
+  });
+
+  const links = socials
+    .map((s) => ({ ...s, href: (settings?.[s.key] ?? "").trim() }))
+    .filter((s) => s.href.length > 0);
+
+  const address = settings?.contact_address?.trim() || "Toronto, Ontario, Canada";
+  const email = settings?.contact_email?.trim() || "info@hopebeyondscarcity.com";
+  const phone = settings?.contact_phone?.trim() || "Phone number coming soon";
+
   return (
     <footer className="mt-24 border-t border-border bg-primary-deep text-primary-foreground">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-2 lg:grid-cols-4 lg:px-8">
