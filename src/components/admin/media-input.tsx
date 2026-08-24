@@ -6,21 +6,38 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/lib/supabase";
 import { MEDIA_BUCKET as BUCKET, mediaUrl } from "@/lib/media";
+import { compressImage, formatBytes, type CompressPreset } from "@/lib/image-compress";
 
 export { mediaUrl };
 
+/** Folders whose images are small marks rather than full-width photography. */
+function presetForFolder(folder: string): CompressPreset {
+  if (/partner|logo|icon|avatar/i.test(folder)) return "icon";
+  if (/gallery/i.test(folder)) return "gallery";
+  return "banner";
+}
+
 async function uploadFile(file: File, folder: string) {
   if (!file.type.startsWith("image/")) throw new Error(`${file.name} is not an image`);
-  if (file.size > 5 * 1024 * 1024) throw new Error(`${file.name} is larger than 5MB`);
-  const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
+  if (file.size > 15 * 1024 * 1024) throw new Error(`${file.name} is larger than 15MB`);
+
+  const result = await compressImage(file, presetForFolder(folder));
+  const upload = result.file;
+  if (upload.size > 5 * 1024 * 1024) {
+    throw new Error(`${file.name} is still larger than 5MB after optimising`);
+  }
+
+  const ext = upload.name.split(".").pop()?.toLowerCase() ?? "jpg";
   const path = `${folder}/${crypto.randomUUID()}.${ext}`;
-  const { error } = await supabase.storage.from(BUCKET).upload(path, file, {
-    cacheControl: "3600",
+  const { error } = await supabase.storage.from(BUCKET).upload(path, upload, {
+    contentType: upload.type,
+    cacheControl: "31536000",
     upsert: false,
   });
   if (error) throw new Error(error.message);
-  return path;
+  return { path, result };
 }
+
 
 export function ImageInput({
   value,
