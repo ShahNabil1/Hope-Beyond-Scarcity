@@ -85,7 +85,7 @@ function StatCard({
       initial={reduced ? false : { opacity: 0, y: 24 }}
       animate={active ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.6, delay: index * 0.09, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={reduced ? undefined : { y: -4 }}
+      {...(reduced ? {} : { whileHover: { y: -4 } })}
       className="group relative overflow-hidden rounded-3xl border border-primary/20 bg-card/80 p-5 backdrop-blur-xl transition-colors duration-500 hover:border-primary/50 sm:p-6"
       style={{ boxShadow: "var(--shadow-soft)" }}
     >
