@@ -149,20 +149,24 @@ function RootComponent() {
   // the flows focused and reduce scrolling on small screens (native-app feel).
   const hideFooterOnMobile =
     pathname.startsWith("/donate") || pathname.startsWith("/dashboard");
+  // The admin CMS renders its own full-screen chrome (sidebar + topbar).
+  const isAdmin = pathname.startsWith("/admin");
 
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <ConfirmProvider>
         <div className="flex min-h-screen flex-col font-sans antialiased">
-          <SiteHeader />
+          {isAdmin ? null : <SiteHeader />}
           <main className="flex-1">
             {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
             <Outlet />
           </main>
-          <div className={hideFooterOnMobile ? "hidden md:block" : undefined}>
-            <SiteFooter />
-          </div>
+          {isAdmin ? null : (
+            <div className={hideFooterOnMobile ? "hidden md:block" : undefined}>
+              <SiteFooter />
+            </div>
+          )}
         </div>
         <Toaster richColors position="top-center" />
         </ConfirmProvider>
