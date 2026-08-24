@@ -119,17 +119,17 @@ export function SiteFooter() {
           <ul className="mt-4 space-y-3 text-sm text-primary-foreground/85">
             <li className="flex gap-2.5">
               <MapPin className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-              <span>Toronto, Ontario, Canada</span>
+              <span>{address}</span>
             </li>
             <li className="flex gap-2.5">
               <Mail className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-              <a href="mailto:info@hopebeyondscarcity.com" className="hover:underline">
-                info@hopebeyondscarcity.com
+              <a href={`mailto:${email}`} className="hover:underline">
+                {email}
               </a>
             </li>
             <li className="flex gap-2.5">
               <Phone className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-              <span>Phone number coming soon</span>
+              <span>{phone}</span>
             </li>
           </ul>
         </div>
