@@ -283,6 +283,28 @@ function AdminSettings() {
           </CardContent>
         </Card>
 
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Social media links</CardTitle>
+            <CardDescription>
+              Shown as icons in the footer. Leave a field empty to hide that icon.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-4 sm:grid-cols-2">
+            {SOCIAL_FIELDS.map((field) => (
+              <div key={field.key} className="space-y-2">
+                <Label htmlFor={field.key}>{field.label}</Label>
+                <Input
+                  id={field.key}
+                  value={form[field.key]}
+                  onChange={(e) => set(field.key, e.target.value)}
+                  placeholder={field.placeholder}
+                />
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
         <div>
           <Button onClick={handleSave} disabled={saving}>
             {saving ? "Saving…" : "Save changes"}
