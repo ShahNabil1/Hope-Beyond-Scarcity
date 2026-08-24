@@ -3,6 +3,7 @@ import { ArrowRight, CalendarDays, HeartHandshake, ShieldCheck } from "lucide-re
 
 import { BrandLogo } from "@/components/brand-logo";
 import { ImpactStats } from "@/components/impact-stats";
+import { Reveal } from "@/components/reveal";
 
 import heroImage from "@/assets/hero-children.jpg";
 import missionImage from "@/assets/mission-founders.jpg";
