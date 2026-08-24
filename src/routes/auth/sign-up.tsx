@@ -342,7 +342,13 @@ function SignUpPage() {
             />
           </div>
 
-          <Button type="submit" className="w-full" disabled={submitting || !allPoliciesAccepted}>
+          <Turnstile onToken={captcha.setToken} handleRef={captcha.ref} action="sign-up" />
+
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={submitting || !allPoliciesAccepted || !captcha.ready}
+          >
             {submitting ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : null}
             {submitting ? "Creating account…" : "Create account"}
           </Button>
