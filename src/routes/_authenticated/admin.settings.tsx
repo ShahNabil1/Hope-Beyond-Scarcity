@@ -13,7 +13,12 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import { adminGetSettings, adminSaveSettings } from "@/lib/admin.functions";
-import { fromLocalInput, isEmergencyLive, toLocalInput } from "@/lib/site-settings";
+import {
+  SOCIAL_FIELDS,
+  fromLocalInput,
+  isEmergencyLive,
+  toLocalInput,
+} from "@/lib/site-settings";
 
 export const Route = createFileRoute("/_authenticated/admin/settings")({
   component: AdminSettings,
