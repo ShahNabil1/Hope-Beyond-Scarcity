@@ -7,6 +7,8 @@ import { PROGRAM_BUCKET } from "@/components/programs/use-program-images";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/lib/supabase";
+import { compressImage } from "@/lib/image-compress";
+
 
 /** Staff-only control that uploads additional photos into a program gallery. */
 export function ProgramImageUploader({ programId, slug }: { programId: string; slug: string }) {
