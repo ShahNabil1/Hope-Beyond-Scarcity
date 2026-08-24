@@ -27,18 +27,21 @@ export function ProgramImageUploader({ programId, slug }: { programId: string; s
           toast.error(`${file.name} is not an image`);
           continue;
         }
-        if (file.size > 5 * 1024 * 1024) {
-          toast.error(`${file.name} is larger than 5MB`);
+        if (file.size > 15 * 1024 * 1024) {
+          toast.error(`${file.name} is larger than 15MB`);
           continue;
         }
-        const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
+        const { file: optimised } = await compressImage(file, "gallery");
+        const ext = optimised.name.split(".").pop()?.toLowerCase() ?? "jpg";
         const path = `${slug}/${crypto.randomUUID()}.${ext}`;
-        const { error } = await supabase.storage.from(PROGRAM_BUCKET).upload(path, file, {
-          cacheControl: "3600",
+        const { error } = await supabase.storage.from(PROGRAM_BUCKET).upload(path, optimised, {
+          contentType: optimised.type,
+          cacheControl: "31536000",
           upsert: false,
         });
         if (error) throw new Error(error.message);
         paths.push(path);
+
       }
 
       if (paths.length === 0) return;
