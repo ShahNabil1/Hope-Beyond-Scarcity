@@ -56,8 +56,14 @@ export function ImageInput({
     if (!file) return;
     setBusy(true);
     try {
-      onChange(await uploadFile(file, folder));
-      toast.success("Image uploaded");
+      const { path, result } = await uploadFile(file, folder);
+      onChange(path);
+      toast.success(
+        result.changed
+          ? `Image optimised — ${formatBytes(result.originalBytes)} → ${formatBytes(result.bytes)}`
+          : "Image uploaded",
+      );
+
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Upload failed");
     } finally {
