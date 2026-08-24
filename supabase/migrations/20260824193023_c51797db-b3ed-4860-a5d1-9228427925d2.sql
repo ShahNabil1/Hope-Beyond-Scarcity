@@ -1,0 +1,1 @@
+ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS content_version BIGINT NOT NULL DEFAULT 1;
