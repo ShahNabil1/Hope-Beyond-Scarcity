@@ -524,6 +524,13 @@ export type Database = {
           emergency_message: string
           emergency_starts_at: string | null
           id: string
+          social_facebook: string
+          social_instagram: string
+          social_linkedin: string
+          social_tiktok: string
+          social_whatsapp: string
+          social_x: string
+          social_youtube: string
           updated_at: string
         }
         Insert: {
@@ -542,6 +549,13 @@ export type Database = {
           emergency_message?: string
           emergency_starts_at?: string | null
           id?: string
+          social_facebook?: string
+          social_instagram?: string
+          social_linkedin?: string
+          social_tiktok?: string
+          social_whatsapp?: string
+          social_x?: string
+          social_youtube?: string
           updated_at?: string
         }
         Update: {
@@ -560,6 +574,13 @@ export type Database = {
           emergency_message?: string
           emergency_starts_at?: string | null
           id?: string
+          social_facebook?: string
+          social_instagram?: string
+          social_linkedin?: string
+          social_tiktok?: string
+          social_whatsapp?: string
+          social_x?: string
+          social_youtube?: string
           updated_at?: string
         }
         Relationships: []
