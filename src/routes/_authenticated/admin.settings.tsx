@@ -98,7 +98,7 @@ const FormCtx = createContext<{
   errors: Record<string, string>;
 }>({ text: () => "", set: () => {}, errors: {} });
 
-function FieldError({ message }: { message?: string }) {
+function FieldError({ message }: { message?: string | undefined }) {
   if (!message) return null;
   return (
     <p role="alert" className="text-xs font-medium text-destructive">
