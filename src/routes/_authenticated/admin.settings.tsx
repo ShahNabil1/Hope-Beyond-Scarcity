@@ -10,6 +10,7 @@ import {
   Home,
   Mail,
   Megaphone,
+  RefreshCw,
   Share2,
   Sparkles,
   Target,
@@ -27,11 +28,17 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { BrandSkeleton } from "@/components/ui/brand-loader";
-import { adminGetSettings, adminSaveSettings } from "@/lib/admin.functions";
+import {
+  adminBumpContentVersion,
+  adminGetSettings,
+  adminSaveSettings,
+} from "@/lib/admin.functions";
+import { SETTINGS_RULES, validateField, validateForm } from "@/lib/cms-validation";
 import { HOME_FALLBACK, type HomeTextKey } from "@/lib/home-content";
 import { clearPersistedPublicCache } from "@/lib/query-persist";
 import { withRetry } from "@/lib/retry";
 import { fromLocalInput, isEmergencyLive, toLocalInput } from "@/lib/site-settings";
+
 
 export const Route = createFileRoute("/_authenticated/admin/settings")({
   component: AdminSettings,
