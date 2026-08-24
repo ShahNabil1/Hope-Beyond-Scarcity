@@ -107,6 +107,11 @@ function AdminMembers() {
                         <HeartHandshake className="size-3" /> Volunteer
                       </Badge>
                     ) : null}
+                    {m.banned ? (
+                      <Badge variant="destructive" className="gap-1">
+                        <Ban className="size-3" /> Banned
+                      </Badge>
+                    ) : null}
                   </div>
                   <p className="mt-1 truncate text-xs text-muted-foreground">{m.email}</p>
                   <p className="mt-1 text-xs text-muted-foreground">
@@ -117,6 +122,9 @@ function AdminMembers() {
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2">
+                  <Button size="sm" variant="secondary" onClick={() => setOpenMember(m.id)}>
+                    View details
+                  </Button>
                   {data?.isAdmin ? (
                     ROLES.map((role) => {
                       const has = m.roles.includes(role);
@@ -142,6 +150,12 @@ function AdminMembers() {
           ))}
         </div>
       )}
+
+      <MemberDetailDialog
+        userId={openMember}
+        onOpenChange={(open) => setOpenMember(open ? openMember : null)}
+      />
     </>
   );
+
 }
