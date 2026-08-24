@@ -91,7 +91,10 @@ export function MemberDetailDialog({
     });
     if (!ok) return;
     const result = await setBan({ data: { user_id: userId, ban } });
-    if ("error" in result) return toast.error(result.error);
+    if ("error" in result) {
+      toast.error(result.error);
+      return;
+    }
     toast.success(ban ? "Member banned" : "Member unbanned");
     refresh();
   }
@@ -107,7 +110,10 @@ export function MemberDetailDialog({
     });
     if (!ok) return;
     const result = await deleteMember({ data: { user_id: userId } });
-    if ("error" in result) return toast.error(result.error);
+    if ("error" in result) {
+      toast.error(result.error);
+      return;
+    }
     toast.success("Account deleted");
     onOpenChange(false);
     refresh();
