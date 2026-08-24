@@ -47,13 +47,14 @@ export const Route = createFileRoute("/sitemap.xml")({
           ]);
 
           for (const post of news) {
-            entries.push({
+            const entry: SitemapEntry = {
               path: `/news/${post.slug}`,
-              // Authoritative per-page timestamp: the story's publication date.
-              lastmod: post.published_at ? new Date(post.published_at).toISOString() : undefined,
               changefreq: "monthly",
               priority: post.is_featured ? "0.8" : "0.7",
-            });
+            };
+            // Authoritative per-page timestamp: the story's publication date.
+            if (post.published_at) entry.lastmod = new Date(post.published_at).toISOString();
+            entries.push(entry);
           }
 
           for (const page of legal as { slug: string }[]) {
