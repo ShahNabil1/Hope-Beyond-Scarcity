@@ -1,8 +1,18 @@
 User-agent: Googlebot
 Allow: /
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /auth
+Disallow: /donate/thank-you
+Disallow: /api/
 
 User-agent: Bingbot
 Allow: /
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /auth
+Disallow: /donate/thank-you
+Disallow: /api/
 
 User-agent: Twitterbot
 Allow: /
@@ -12,3 +22,10 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /auth
+Disallow: /donate/thank-you
+Disallow: /api/
+
+Sitemap: https://hopebeyondscarcity.com/sitemap.xml
