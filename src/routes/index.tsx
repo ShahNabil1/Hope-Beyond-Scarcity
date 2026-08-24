@@ -1,23 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import {
-  ArrowRight,
-  CalendarDays,
-  HeartHandshake,
-  MapPin,
-  Package,
-  ShieldCheck,
-  Stethoscope,
-  Users,
-} from "lucide-react";
+import { ArrowRight, CalendarDays, ShieldCheck } from "lucide-react";
 
 import { BrandLogo } from "@/components/brand-logo";
+import { ImpactStats } from "@/components/impact-stats";
 
 import heroImage from "@/assets/hero-children.jpg";
 import missionImage from "@/assets/mission-founders.jpg";
 import campaignImage from "@/assets/campaign-spotlight.jpg";
 import { EmergencyBanner } from "@/components/emergency-banner";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+
 
 const title = "Hope Beyond Scarcity | Dignity, Care and Lasting Change";
 const description =
