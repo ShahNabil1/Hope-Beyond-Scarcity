@@ -19,10 +19,8 @@ import {
 export const GA_MEASUREMENT_ID =
   (import.meta.env["VITE_LOVABLE_CONNECTOR_GOOGLE_ANALYTICS_API_KEY"] as string | undefined) ?? "";
 
-const SUPABASE_URL = (import.meta.env["VITE_SUPABASE_URL"] as string | undefined) ?? "";
-const SUPABASE_KEY =
-  (import.meta.env["VITE_SUPABASE_PUBLISHABLE_KEY"] as string | undefined) ?? "";
-const TRACK_ENDPOINT = SUPABASE_URL ? `${SUPABASE_URL}/functions/v1/track` : "";
+/** Same-origin ingest endpoint (TanStack public server route). */
+const TRACK_ENDPOINT = "/api/public/track";
 
 const VISITOR_KEY = "hbs.analytics.visitor";
 const SESSION_KEY = "hbs.analytics.session";
@@ -142,7 +140,6 @@ function utmParams() {
 }
 
 function sendToEdge(eventName: string, params: EventParams) {
-  if (!TRACK_ENDPOINT || !SUPABASE_KEY) return;
   const body = JSON.stringify({
     event_name: eventName,
     page_path: window.location.pathname,
@@ -161,7 +158,7 @@ function sendToEdge(eventName: string, params: EventParams) {
   try {
     void fetch(TRACK_ENDPOINT, {
       method: "POST",
-      headers: { "Content-Type": "application/json", apikey: SUPABASE_KEY },
+      headers: { "Content-Type": "application/json" },
       body,
       keepalive: true,
     }).catch(() => undefined);
