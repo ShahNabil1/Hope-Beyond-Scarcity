@@ -86,17 +86,44 @@ export async function fetchVolunteerRoles() {
   return data ?? [];
 }
 
-const SITE_SETTINGS_FIELDS =
-  "id,emergency_active,emergency_headline,emergency_message,emergency_cta_label,emergency_cta_url,emergency_starts_at,emergency_ends_at,contact_intro,contact_address,contact_email,contact_phone,contact_hours,contact_map_url,social_facebook,social_instagram,social_linkedin,social_youtube,social_x,social_tiktok,social_whatsapp";
-
 export async function fetchSiteSettings() {
   const { data, error } = await publicClient()
     .from("site_settings")
-    .select(SITE_SETTINGS_FIELDS)
+    .select("*")
     .eq("id", "default")
     .maybeSingle();
   if (error) throw new Error(error.message);
   return data;
+}
+
+export async function fetchImpactStats() {
+  const { data, error } = await publicClient()
+    .from("impact_stats")
+    .select("id,icon,value,suffix,display,label,caption,sort_order")
+    .eq("is_active", true)
+    .order("sort_order", { ascending: true });
+  if (error) throw new Error(error.message);
+  return data ?? [];
+}
+
+export async function fetchPartners() {
+  const { data, error } = await publicClient()
+    .from("partners")
+    .select("id,name,logo_url,url,sort_order")
+    .eq("is_active", true)
+    .order("sort_order", { ascending: true });
+  if (error) throw new Error(error.message);
+  return data ?? [];
+}
+
+/** Everything the homepage needs, in one round-trip. */
+export async function fetchHomeContent() {
+  const [settings, stats, partners] = await Promise.all([
+    fetchSiteSettings(),
+    fetchImpactStats(),
+    fetchPartners(),
+  ]);
+  return { settings, stats, partners };
 }
 
 const LEGAL_FIELDS = "id,slug,title,summary,body,effective_date,updated_at";

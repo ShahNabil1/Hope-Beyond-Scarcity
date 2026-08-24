@@ -17,6 +17,7 @@ import { Toaster } from "../components/ui/sonner";
 import { ConfirmProvider } from "../components/ui/confirm-dialog";
 import { SiteHeader } from "../components/layout/site-header";
 import { SiteFooter } from "../components/layout/site-footer";
+import { usePersistedPublicCache } from "../lib/query-persist";
 
 
 function NotFoundComponent() {
@@ -144,6 +145,7 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  usePersistedPublicCache(queryClient);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   // On the donate and dashboard pages, the footer is hidden on mobile to keep
   // the flows focused and reduce scrolling on small screens (native-app feel).

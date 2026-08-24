@@ -4,14 +4,17 @@ import { CalendarDays, Clock, MapPin, Users, Video } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { getEvents } from "@/lib/content.functions";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { eventsQueryOptions } from "@/lib/public-content";
 
 const title = "Events | Hope Beyond Scarcity";
 const description =
   "Fundraisers, distribution drives, and community gatherings hosted by Hope Beyond Scarcity.";
 
 export const Route = createFileRoute("/events")({
-  loader: () => getEvents(),
+  loader: ({ context }) => {
+    void context.queryClient.ensureQueryData(eventsQueryOptions);
+  },
   head: () => ({
     meta: [
       { title },
@@ -53,7 +56,7 @@ const timeFmt = new Intl.DateTimeFormat("en-CA", {
 });
 
 function EventsPage() {
-  const events = Route.useLoaderData() ?? [];
+  const events = useSuspenseQuery(eventsQueryOptions).data ?? [];
   const now = Date.now();
   const upcoming = events.filter((event) => new Date(event.starts_at).getTime() >= now);
   const past = events.filter((event) => new Date(event.starts_at).getTime() < now).reverse();

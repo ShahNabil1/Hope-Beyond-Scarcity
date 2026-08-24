@@ -227,6 +227,48 @@ export type Database = {
         }
         Relationships: []
       }
+      impact_stats: {
+        Row: {
+          caption: string
+          created_at: string
+          display: string
+          icon: string
+          id: string
+          is_active: boolean
+          label: string
+          sort_order: number
+          suffix: string
+          updated_at: string
+          value: number
+        }
+        Insert: {
+          caption?: string
+          created_at?: string
+          display?: string
+          icon?: string
+          id?: string
+          is_active?: boolean
+          label?: string
+          sort_order?: number
+          suffix?: string
+          updated_at?: string
+          value?: number
+        }
+        Update: {
+          caption?: string
+          created_at?: string
+          display?: string
+          icon?: string
+          id?: string
+          is_active?: boolean
+          label?: string
+          sort_order?: number
+          suffix?: string
+          updated_at?: string
+          value?: number
+        }
+        Relationships: []
+      }
       legal_pages: {
         Row: {
           body: string
@@ -411,6 +453,39 @@ export type Database = {
           },
         ]
       }
+      partners: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          logo_url: string
+          name: string
+          sort_order: number
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          logo_url?: string
+          name?: string
+          sort_order?: number
+          updated_at?: string
+          url?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          logo_url?: string
+          name?: string
+          sort_order?: number
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -509,6 +584,19 @@ export type Database = {
       }
       site_settings: {
         Row: {
+          campaign_active: boolean
+          campaign_body: string
+          campaign_cost_label: string
+          campaign_cost_value: string
+          campaign_eyebrow: string
+          campaign_goal_label: string
+          campaign_goal_value: string
+          campaign_image_url: string
+          campaign_primary_label: string
+          campaign_primary_url: string
+          campaign_secondary_label: string
+          campaign_secondary_url: string
+          campaign_title: string
           contact_address: string
           contact_email: string
           contact_hours: string
@@ -516,6 +604,12 @@ export type Database = {
           contact_map_url: string
           contact_phone: string
           created_at: string
+          cta_body: string
+          cta_primary_label: string
+          cta_primary_url: string
+          cta_secondary_label: string
+          cta_secondary_url: string
+          cta_title: string
           emergency_active: boolean
           emergency_cta_label: string
           emergency_cta_url: string
@@ -523,7 +617,27 @@ export type Database = {
           emergency_headline: string
           emergency_message: string
           emergency_starts_at: string | null
+          hero_badge: string
+          hero_image_url: string
+          hero_primary_label: string
+          hero_primary_url: string
+          hero_secondary_label: string
+          hero_secondary_url: string
+          hero_subtitle: string
+          hero_title: string
+          hero_trust_note: string
           id: string
+          impact_eyebrow: string
+          impact_intro: string
+          impact_title: string
+          mission_body_1: string
+          mission_body_2: string
+          mission_cta_label: string
+          mission_cta_url: string
+          mission_eyebrow: string
+          mission_image_url: string
+          mission_title: string
+          partners_heading: string
           social_facebook: string
           social_instagram: string
           social_linkedin: string
@@ -534,6 +648,19 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          campaign_active?: boolean
+          campaign_body?: string
+          campaign_cost_label?: string
+          campaign_cost_value?: string
+          campaign_eyebrow?: string
+          campaign_goal_label?: string
+          campaign_goal_value?: string
+          campaign_image_url?: string
+          campaign_primary_label?: string
+          campaign_primary_url?: string
+          campaign_secondary_label?: string
+          campaign_secondary_url?: string
+          campaign_title?: string
           contact_address?: string
           contact_email?: string
           contact_hours?: string
@@ -541,6 +668,12 @@ export type Database = {
           contact_map_url?: string
           contact_phone?: string
           created_at?: string
+          cta_body?: string
+          cta_primary_label?: string
+          cta_primary_url?: string
+          cta_secondary_label?: string
+          cta_secondary_url?: string
+          cta_title?: string
           emergency_active?: boolean
           emergency_cta_label?: string
           emergency_cta_url?: string
@@ -548,7 +681,27 @@ export type Database = {
           emergency_headline?: string
           emergency_message?: string
           emergency_starts_at?: string | null
+          hero_badge?: string
+          hero_image_url?: string
+          hero_primary_label?: string
+          hero_primary_url?: string
+          hero_secondary_label?: string
+          hero_secondary_url?: string
+          hero_subtitle?: string
+          hero_title?: string
+          hero_trust_note?: string
           id?: string
+          impact_eyebrow?: string
+          impact_intro?: string
+          impact_title?: string
+          mission_body_1?: string
+          mission_body_2?: string
+          mission_cta_label?: string
+          mission_cta_url?: string
+          mission_eyebrow?: string
+          mission_image_url?: string
+          mission_title?: string
+          partners_heading?: string
           social_facebook?: string
           social_instagram?: string
           social_linkedin?: string
@@ -559,6 +712,19 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          campaign_active?: boolean
+          campaign_body?: string
+          campaign_cost_label?: string
+          campaign_cost_value?: string
+          campaign_eyebrow?: string
+          campaign_goal_label?: string
+          campaign_goal_value?: string
+          campaign_image_url?: string
+          campaign_primary_label?: string
+          campaign_primary_url?: string
+          campaign_secondary_label?: string
+          campaign_secondary_url?: string
+          campaign_title?: string
           contact_address?: string
           contact_email?: string
           contact_hours?: string
@@ -566,6 +732,12 @@ export type Database = {
           contact_map_url?: string
           contact_phone?: string
           created_at?: string
+          cta_body?: string
+          cta_primary_label?: string
+          cta_primary_url?: string
+          cta_secondary_label?: string
+          cta_secondary_url?: string
+          cta_title?: string
           emergency_active?: boolean
           emergency_cta_label?: string
           emergency_cta_url?: string
@@ -573,7 +745,27 @@ export type Database = {
           emergency_headline?: string
           emergency_message?: string
           emergency_starts_at?: string | null
+          hero_badge?: string
+          hero_image_url?: string
+          hero_primary_label?: string
+          hero_primary_url?: string
+          hero_secondary_label?: string
+          hero_secondary_url?: string
+          hero_subtitle?: string
+          hero_title?: string
+          hero_trust_note?: string
           id?: string
+          impact_eyebrow?: string
+          impact_intro?: string
+          impact_title?: string
+          mission_body_1?: string
+          mission_body_2?: string
+          mission_cta_label?: string
+          mission_cta_url?: string
+          mission_eyebrow?: string
+          mission_image_url?: string
+          mission_title?: string
+          partners_heading?: string
           social_facebook?: string
           social_instagram?: string
           social_linkedin?: string

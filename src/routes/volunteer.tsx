@@ -4,14 +4,17 @@ import { Clock, MapPin, Users } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { getVolunteerRoles } from "@/lib/content.functions";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { volunteerRolesQueryOptions } from "@/lib/public-content";
 
 const title = "Volunteer | Hope Beyond Scarcity";
 const description =
   "Give your time, skills, or voice. Volunteer with Hope Beyond Scarcity in Canada or with our field partners.";
 
 export const Route = createFileRoute("/volunteer")({
-  loader: () => getVolunteerRoles(),
+  loader: ({ context }) => {
+    void context.queryClient.ensureQueryData(volunteerRolesQueryOptions);
+  },
   head: () => ({
     meta: [
       { title },
@@ -46,7 +49,7 @@ const steps = [
 ];
 
 function VolunteerPage() {
-  const roles = Route.useLoaderData() ?? [];
+  const roles = useSuspenseQuery(volunteerRolesQueryOptions).data ?? [];
 
   return (
     <>

@@ -5,7 +5,8 @@ import { PageHero } from "@/components/page-hero";
 import { ProgramDetailDialog } from "@/components/programs/program-detail-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { getPrograms } from "@/lib/content.functions";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { programsQueryOptions } from "@/lib/public-content";
 
 const title = "Programs | Hope Beyond Scarcity";
 const description =
@@ -19,7 +20,9 @@ const icons: Record<string, typeof Package> = {
 };
 
 export const Route = createFileRoute("/programs")({
-  loader: () => getPrograms(),
+  loader: ({ context }) => {
+    void context.queryClient.ensureQueryData(programsQueryOptions);
+  },
   head: () => ({
     meta: [
       { title },
@@ -48,7 +51,7 @@ function ProgramsFallback({ note }: { note: string }) {
 }
 
 function ProgramsPage() {
-  const programs = Route.useLoaderData() ?? [];
+  const programs = useSuspenseQuery(programsQueryOptions).data ?? [];
 
   return (
     <>

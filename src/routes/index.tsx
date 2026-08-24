@@ -1,4 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowRight, CalendarDays, HeartHandshake, ShieldCheck } from "lucide-react";
 
 import { BrandLogo } from "@/components/brand-logo";
@@ -10,6 +11,9 @@ import missionImage from "@/assets/mission-founders.jpg";
 import campaignImage from "@/assets/campaign-spotlight.jpg";
 import { EmergencyBanner } from "@/components/emergency-banner";
 import { Button } from "@/components/ui/button";
+import { CmsLink } from "@/components/cms-link";
+import { mediaUrl } from "@/components/admin/media-input";
+import { homeContentQueryOptions, homeText } from "@/lib/home-content";
 
 
 const title = "Hope Beyond Scarcity | Dignity, Care and Lasting Change";
@@ -25,22 +29,50 @@ export const Route = createFileRoute("/")({
       { property: "og:description", content: description },
     ],
   }),
+  loader: ({ context }) => {
+    void context.queryClient.ensureQueryData(homeContentQueryOptions);
+  },
+  errorComponent: ({ error }) => (
+    <div role="alert" className="mx-auto max-w-3xl px-4 py-24 text-center">
+      <h1 className="text-2xl font-bold text-foreground">We could not load the homepage</h1>
+      <p className="mt-3 text-muted-foreground">{error.message}</p>
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-3xl px-4 py-24 text-center text-muted-foreground">
+      Page not found.
+    </div>
+  ),
   component: Index,
 });
 
 
 
 
-const partners = [
-  "Prioom Nath's Clinic Initiative",
-  "Toronto Community Trust",
-  "Riverside Volunteers Guild",
-  "Bengal Health Collective",
-  "Maple Leaf Giving Circle",
-  "Hope Logistics Partners",
-];
-
 function Index() {
+  const { data } = useSuspenseQuery(homeContentQueryOptions);
+  const settings = data.settings;
+  const t = (key: Parameters<typeof homeText>[1]) => homeText(settings, key);
+  const partners = data.partners ?? [];
+  const heroSrc = settings?.hero_image_url ? mediaUrl(settings.hero_image_url) : heroImage;
+  const missionSrc = settings?.mission_image_url
+    ? mediaUrl(settings.mission_image_url)
+    : missionImage;
+  const campaignSrc = settings?.campaign_image_url
+    ? mediaUrl(settings.campaign_image_url)
+    : campaignImage;
+  const campaignVisible = settings?.campaign_active ?? true;
+  const partnerCards = partners.length
+    ? partners
+    : [
+        { id: "p1", name: "Prioom Nath's Clinic Initiative", logo_url: "", url: "" },
+        { id: "p2", name: "Toronto Community Trust", logo_url: "", url: "" },
+        { id: "p3", name: "Riverside Volunteers Guild", logo_url: "", url: "" },
+        { id: "p4", name: "Bengal Health Collective", logo_url: "", url: "" },
+        { id: "p5", name: "Maple Leaf Giving Circle", logo_url: "", url: "" },
+        { id: "p6", name: "Hope Logistics Partners", logo_url: "", url: "" },
+      ];
+
   return (
     <>
       <EmergencyBanner />
@@ -48,7 +80,7 @@ function Index() {
       {/* Hero */}
       <section className="relative overflow-hidden bg-primary-deep text-primary-foreground">
         <img
-          src={heroImage}
+          src={heroSrc}
           alt="Children in a rural village receiving care packages from a volunteer"
           width={1600}
           height={1104}
@@ -83,18 +115,17 @@ function Index() {
           <Reveal from="none">
             <span className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/25 bg-primary-foreground/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-widest backdrop-blur-md sm:text-xs">
               <BrandLogo className="size-5" />
-              Canadian Not-for-Profit Corporation
+              {t("hero_badge")}
             </span>
           </Reveal>
           <Reveal delay={0.08}>
             <h1 className="mt-6 max-w-3xl text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-              Every child deserves hope beyond scarcity
+              {t("hero_title")}
             </h1>
           </Reveal>
           <Reveal delay={0.16}>
             <p className="mt-5 max-w-2xl text-base text-primary-foreground/90 sm:text-lg">
-              We walk with families in under-served villages — delivering care packages, health
-              support and education so children can grow up with dignity, safety and possibility.
+              {t("hero_subtitle")}
             </p>
           </Reveal>
           <Reveal delay={0.24}>
@@ -104,10 +135,10 @@ function Index() {
                 size="lg"
                 className="group bg-accent text-accent-foreground shadow-lg shadow-accent/25 transition-all duration-300 hover:bg-accent/90 hover:shadow-xl hover:shadow-accent/40 motion-safe:hover:-translate-y-0.5"
               >
-                <Link to="/donate">
-                  Donate Now
+                <CmsLink href={t("hero_primary_url")}>
+                  {t("hero_primary_label")}
                   <ArrowRight className="size-4 transition-transform duration-300 motion-safe:group-hover:translate-x-1" />
-                </Link>
+                </CmsLink>
               </Button>
               <Button
                 asChild
@@ -115,14 +146,14 @@ function Index() {
                 variant="outline"
                 className="border-primary-foreground/50 bg-primary-foreground/10 text-primary-foreground backdrop-blur-md transition-all duration-300 hover:bg-primary-foreground/20 hover:text-primary-foreground motion-safe:hover:-translate-y-0.5"
               >
-                <Link to="/volunteer">Get Involved</Link>
+                <CmsLink href={t("hero_secondary_url")}>{t("hero_secondary_label")}</CmsLink>
               </Button>
             </div>
           </Reveal>
           <Reveal delay={0.32}>
             <p className="mt-6 inline-flex items-center gap-2 rounded-full border border-primary-foreground/20 bg-primary-foreground/10 px-4 py-2 text-xs text-primary-foreground backdrop-blur-md sm:text-sm">
               <ShieldCheck className="size-4 shrink-0" aria-hidden="true" />
-              Secure giving. Transparent reporting. 100% of field costs published annually.
+              {t("hero_trust_note")}
             </p>
           </Reveal>
         </div>
@@ -137,7 +168,7 @@ function Index() {
               style={{ boxShadow: "var(--shadow-soft)" }}
             >
               <img
-                src={missionImage}
+                src={missionSrc}
                 alt="Founders Rajasree and Lilibet speaking with village families"
                 width={1200}
                 height={900}
@@ -149,30 +180,22 @@ function Index() {
           <Reveal from="right" delay={0.1}>
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-                Our Mission
+                {t("mission_eyebrow")}
               </p>
               <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                It started with two women and one refusal to look away
+                {t("mission_title")}
               </h2>
-              <p className="mt-5 text-muted-foreground">
-                <strong className="text-foreground">Rajasree</strong> and{" "}
-                <strong className="text-foreground">Lilibet</strong> met over a shared conviction:
-                scarcity is not destiny. What began as a handful of care packages sent from Toronto
-                to a single Bangladeshi village has grown into a community-led movement.
-              </p>
-              <p className="mt-4 text-muted-foreground">
-                Today, Hope Beyond Scarcity works shoulder-to-shoulder with local leaders, mothers
-                and clinicians — because lasting change is built by the people who live there.
-              </p>
+              <p className="mt-5 text-muted-foreground">{t("mission_body_1")}</p>
+              <p className="mt-4 text-muted-foreground">{t("mission_body_2")}</p>
               <Button
                 asChild
                 variant="outline"
                 className="group mt-7 transition-all duration-300 motion-safe:hover:-translate-y-0.5"
               >
-                <Link to="/about">
-                  Read our story
+                <CmsLink href={t("mission_cta_url")}>
+                  {t("mission_cta_label")}
                   <ArrowRight className="size-4 transition-transform duration-300 motion-safe:group-hover:translate-x-1" />
-                </Link>
+                </CmsLink>
               </Button>
             </div>
           </Reveal>
@@ -180,16 +203,17 @@ function Index() {
       </section>
 
       {/* Live impact statistics */}
-      <ImpactStats />
+      <ImpactStats settings={settings} stats={data.stats} />
 
 
       {/* Campaign spotlight */}
+      {campaignVisible ? (
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <Reveal>
           <div className="group overflow-hidden rounded-3xl border border-border bg-card transition-shadow duration-500 hover:shadow-xl lg:grid lg:grid-cols-2">
             <div className="overflow-hidden">
               <img
-                src={campaignImage}
+                src={campaignSrc}
                 alt="Volunteers loading relief supplies onto a boat at a riverside village"
                 width={1200}
                 height={900}
@@ -200,24 +224,20 @@ function Index() {
             <div className="p-8 sm:p-12">
               <span className="inline-flex items-center gap-2 rounded-full bg-accent/15 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-accent-foreground">
                 <CalendarDays className="size-3.5" aria-hidden="true" />
-                Campaign Spotlight
+                {t("campaign_eyebrow")}
               </span>
               <h2 className="mt-5 text-3xl font-bold tracking-tight text-foreground">
-                August 2026 Care Package Distribution
+                {t("campaign_title")}
               </h2>
-              <p className="mt-4 text-muted-foreground">
-                This month our field team travels to six Bangladeshi villages with family care
-                packages containing rice, hygiene kits, school supplies and clean-water tablets. Our
-                goal: 1,200 packages before the monsoon peak.
-              </p>
+              <p className="mt-4 text-muted-foreground">{t("campaign_body")}</p>
               <dl className="mt-7 grid grid-cols-2 gap-6">
                 <div>
-                  <dt className="text-sm text-muted-foreground">Goal</dt>
-                  <dd className="text-2xl font-bold text-foreground">1,200 packages</dd>
+                  <dt className="text-sm text-muted-foreground">{t("campaign_goal_label")}</dt>
+                  <dd className="text-2xl font-bold text-foreground">{t("campaign_goal_value")}</dd>
                 </div>
                 <div>
-                  <dt className="text-sm text-muted-foreground">Cost per family</dt>
-                  <dd className="text-2xl font-bold text-foreground">$50 CAD</dd>
+                  <dt className="text-sm text-muted-foreground">{t("campaign_cost_label")}</dt>
+                  <dd className="text-2xl font-bold text-foreground">{t("campaign_cost_value")}</dd>
                 </div>
               </dl>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -226,7 +246,7 @@ function Index() {
                   size="lg"
                   className="transition-all duration-300 motion-safe:hover:-translate-y-0.5"
                 >
-                  <Link to="/donate">Fund a care package</Link>
+                  <CmsLink href={t("campaign_primary_url")}>{t("campaign_primary_label")}</CmsLink>
                 </Button>
                 <Button
                   asChild
@@ -234,30 +254,44 @@ function Index() {
                   variant="outline"
                   className="transition-all duration-300 motion-safe:hover:-translate-y-0.5"
                 >
-                  <Link to="/programs">See the program</Link>
+                  <CmsLink href={t("campaign_secondary_url")}>
+                    {t("campaign_secondary_label")}
+                  </CmsLink>
                 </Button>
               </div>
             </div>
           </div>
         </Reveal>
       </section>
+      ) : null}
 
       {/* Partner carousel */}
       <section className="border-y border-border bg-muted/50 py-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <p className="text-center text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-            Supported by partners who show up
+            {t("partners_heading")}
           </p>
         </div>
         <div className="group relative mt-8 overflow-hidden">
           <div className="flex w-max gap-4 motion-safe:animate-[marquee_38s_linear_infinite] group-hover:[animation-play-state:paused]">
-            {[...partners, ...partners].map((partner, index) => (
+            {[...partnerCards, ...partnerCards].map((partner, index) => (
               <div
-                key={`${partner}-${index}`}
+                key={`${partner.id}-${index}`}
                 className="flex h-20 w-64 shrink-0 items-center justify-center gap-2 rounded-xl border border-border bg-card px-5 text-center text-sm font-semibold text-muted-foreground transition-all duration-300 hover:border-primary/40 hover:text-foreground motion-safe:hover:-translate-y-1"
               >
-                <HeartHandshake className="size-4 shrink-0 text-primary" aria-hidden="true" />
-                {partner}
+                {partner.logo_url ? (
+                  <img
+                    src={mediaUrl(partner.logo_url)}
+                    alt={partner.name}
+                    loading="lazy"
+                    className="max-h-12 max-w-[80%] object-contain"
+                  />
+                ) : (
+                  <>
+                    <HeartHandshake className="size-4 shrink-0 text-primary" aria-hidden="true" />
+                    {partner.name}
+                  </>
+                )}
               </div>
             ))}
           </div>
@@ -278,19 +312,16 @@ function Index() {
             />
             <div className="relative">
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                Be the reason a child stops going without
+                {t("cta_title")}
               </h2>
-              <p className="mx-auto mt-4 max-w-2xl text-primary-foreground/90">
-                Whether you give, volunteer or share our story — you become part of a family's
-                turning point.
-              </p>
+              <p className="mx-auto mt-4 max-w-2xl text-primary-foreground/90">{t("cta_body")}</p>
               <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
                 <Button
                   asChild
                   size="lg"
                   className="bg-accent text-accent-foreground shadow-lg shadow-accent/25 transition-all duration-300 hover:bg-accent/90 motion-safe:hover:-translate-y-0.5"
                 >
-                  <Link to="/donate">Donate Now</Link>
+                  <CmsLink href={t("cta_primary_url")}>{t("cta_primary_label")}</CmsLink>
                 </Button>
                 <Button
                   asChild
@@ -298,7 +329,7 @@ function Index() {
                   variant="outline"
                   className="border-primary-foreground/50 bg-primary-foreground/10 text-primary-foreground backdrop-blur-md transition-all duration-300 hover:bg-primary-foreground/20 hover:text-primary-foreground motion-safe:hover:-translate-y-0.5"
                 >
-                  <Link to="/volunteer">Get Involved</Link>
+                  <CmsLink href={t("cta_secondary_url")}>{t("cta_secondary_label")}</CmsLink>
                 </Button>
               </div>
             </div>

@@ -5,14 +5,17 @@ import { ArrowRight, CalendarDays, Clock, MapPin, PlayCircle } from "lucide-reac
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { getNews } from "@/lib/content.functions";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { newsQueryOptions } from "@/lib/public-content";
 
 const title = "Newsroom | Hope Beyond Scarcity";
 const description =
   "Field updates, impact stories, and announcements from Hope Beyond Scarcity's work in Bangladesh and Canada.";
 
 export const Route = createFileRoute("/news/")({
-  loader: () => getNews(),
+  loader: ({ context }) => {
+    void context.queryClient.ensureQueryData(newsQueryOptions);
+  },
   head: () => ({
     meta: [
       { title },
@@ -49,7 +52,7 @@ export function formatDate(value: string) {
 }
 
 function NewsIndexPage() {
-  const posts = Route.useLoaderData() ?? [];
+  const posts = useSuspenseQuery(newsQueryOptions).data ?? [];
   const [category, setCategory] = useState<string>("All");
 
   const categories = useMemo(

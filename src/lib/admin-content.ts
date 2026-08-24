@@ -4,6 +4,8 @@ export const CONTENT_TABLES = [
   "events",
   "volunteer_roles",
   "legal_pages",
+  "impact_stats",
+  "partners",
 ] as const;
 export type ContentTable = (typeof CONTENT_TABLES)[number];
 
@@ -16,7 +18,8 @@ export type FieldKind =
   | "datetime"
   | "list"
   | "image"
-  | "gallery";
+  | "gallery"
+  | "icon";
 
 export type FieldDef = {
   name: string;
@@ -193,6 +196,51 @@ export const CONTENT_CONFIG: Record<ContentTable, ContentConfig> = {
       is_active: true,
     },
   },
+  impact_stats: {
+    table: "impact_stats",
+    singular: "Impact stat",
+    plural: "Impact stats",
+    titleField: "label",
+    subtitleField: "caption",
+    fields: [
+      { name: "label", label: "Label", kind: "text", required: true, placeholder: "Villages Supported" },
+      { name: "display", label: "Display value", kind: "text", required: true, placeholder: "8,400+", help: "Exactly what visitors see, e.g. 8,400+" },
+      { name: "value", label: "Count-up number", kind: "number", help: "Plain number used for the animation, e.g. 8400" },
+      { name: "suffix", label: "Suffix", kind: "text", placeholder: "+" },
+      { name: "caption", label: "Caption", kind: "text", full: true, placeholder: "Rice, hygiene & school kits" },
+      { name: "icon", label: "Icon", kind: "icon" },
+      ...commonTail,
+    ],
+    defaults: {
+      icon: "sparkles",
+      value: 0,
+      suffix: "",
+      display: "",
+      caption: "",
+      sort_order: 0,
+      is_active: true,
+    },
+  },
+  partners: {
+    table: "partners",
+    singular: "Partner",
+    plural: "Partners",
+    titleField: "name",
+    subtitleField: "url",
+    fields: [
+      { name: "name", label: "Partner name", kind: "text", required: true },
+      { name: "url", label: "Website link", kind: "text", full: true, placeholder: "https://…" },
+      { name: "logo_url", label: "Logo", kind: "image", full: true },
+      ...commonTail,
+    ],
+    defaults: {
+      name: "",
+      url: "",
+      logo_url: "",
+      sort_order: 0,
+      is_active: true,
+    },
+  },
 };
 
 export const CONTENT_COLUMNS: Record<ContentTable, string[]> = {
@@ -201,6 +249,8 @@ export const CONTENT_COLUMNS: Record<ContentTable, string[]> = {
   events: CONTENT_CONFIG.events.fields.map((f) => f.name),
   volunteer_roles: CONTENT_CONFIG.volunteer_roles.fields.map((f) => f.name),
   legal_pages: CONTENT_CONFIG.legal_pages.fields.map((f) => f.name),
+  impact_stats: CONTENT_CONFIG.impact_stats.fields.map((f) => f.name),
+  partners: CONTENT_CONFIG.partners.fields.map((f) => f.name),
 };
 
 export function slugify(value: string) {

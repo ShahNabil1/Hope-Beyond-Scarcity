@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
-import { MapPin, Package, Stethoscope, Users, type LucideIcon } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+
+import { resolveIcon } from "@/lib/icon-map";
+import { HOME_FALLBACK, type HomeSettings, type ImpactStatRow } from "@/lib/home-content";
+import { homeText } from "@/lib/home-content";
 
 type Stat = {
   icon: LucideIcon;
@@ -11,16 +15,16 @@ type Stat = {
   caption: string;
 };
 
-const stats: Stat[] = [
+const FALLBACK_STATS: Stat[] = [
   {
-    icon: MapPin,
+    icon: resolveIcon("map-pin"),
     value: 24,
     display: "24",
     label: "Villages Supported",
     caption: "Active field partnerships",
   },
   {
-    icon: Package,
+    icon: resolveIcon("package"),
     value: 8400,
     suffix: "+",
     display: "8,400+",
@@ -28,14 +32,14 @@ const stats: Stat[] = [
     caption: "Rice, hygiene & school kits",
   },
   {
-    icon: Users,
+    icon: resolveIcon("users"),
     value: 3100,
     display: "3,100",
     label: "Children Reached",
     caption: "Nutrition & education support",
   },
   {
-    icon: Stethoscope,
+    icon: resolveIcon("stethoscope"),
     value: 12,
     display: "12",
     label: "Health Camps Hosted",
@@ -135,7 +139,25 @@ function StatCard({
   );
 }
 
-export function ImpactStats() {
+export function ImpactStats({
+  settings,
+  stats: rows,
+}: {
+  settings?: Partial<HomeSettings> | null | undefined;
+  stats?: ImpactStatRow[] | undefined;
+} = {}) {
+  const stats: Stat[] =
+    rows && rows.length
+      ? rows.map((row) => ({
+          icon: resolveIcon(row.icon),
+          value: Number(row.value ?? 0),
+          suffix: row.suffix ?? "",
+          display: row.display || String(row.value ?? ""),
+          label: row.label,
+          caption: row.caption ?? "",
+        }))
+      : FALLBACK_STATS;
+
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   const reduced = useReducedMotion() ?? false;
@@ -174,14 +196,13 @@ export function ImpactStats() {
               <span className="absolute inline-flex size-full animate-ping rounded-full bg-primary/70 motion-reduce:hidden" />
               <span className="relative inline-flex size-2 rounded-full bg-primary" />
             </span>
-            Live Impact
+            {homeText(settings, "impact_eyebrow") || HOME_FALLBACK.impact_eyebrow}
           </p>
           <h2 className="mt-4 text-2xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-            Generosity, measured in real lives
+            {homeText(settings, "impact_title")}
           </h2>
           <p className="mt-4 text-sm text-muted-foreground sm:text-base">
-            Every number below is a family reached, a clinic opened, a school bag filled — verified
-            by our field team and published in our annual transparency report.
+            {homeText(settings, "impact_intro")}
           </p>
         </motion.div>
 
