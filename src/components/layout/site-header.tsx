@@ -42,7 +42,7 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-      <div className="mx-auto flex h-18 max-w-7xl items-center gap-2 px-4 py-3 sm:gap-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-18 max-w-7xl flex-nowrap items-center gap-2 px-4 py-3 sm:gap-4 sm:px-6 lg:px-8">
         <Link
           to="/"
           className="flex min-w-0 items-center gap-2 sm:gap-2.5"
@@ -53,14 +53,14 @@ export function SiteHeader() {
             <span className="block truncate text-sm font-bold tracking-tight text-foreground sm:text-base">
               Hope Beyond Scarcity
             </span>
-            <span className="hidden text-[11px] font-medium uppercase tracking-widest text-muted-foreground sm:block">
+            <span className="hidden truncate whitespace-nowrap text-[11px] font-medium uppercase tracking-widest text-muted-foreground sm:block">
               Canadian Not-for-Profit
             </span>
           </span>
         </Link>
 
 
-        <nav className="ml-auto hidden items-center gap-1 lg:flex" aria-label="Main">
+        <nav className="ml-auto hidden shrink-0 items-center gap-0.5 lg:flex xl:gap-1" aria-label="Main">
           {navLinks.map((link) => (
             <Link
               key={link.to}
@@ -68,7 +68,7 @@ export function SiteHeader() {
               activeOptions={{ exact: link.to === "/" }}
               activeProps={{ className: "text-primary bg-primary-soft" }}
               inactiveProps={{ className: "text-muted-foreground" }}
-              className="rounded-md px-3 py-2 text-sm font-medium transition-colors hover:text-primary"
+              className="whitespace-nowrap rounded-md px-2 py-2 text-[13px] font-medium transition-colors hover:text-primary xl:px-3 xl:text-sm"
             >
               {link.label}
             </Link>
@@ -76,11 +76,11 @@ export function SiteHeader() {
         </nav>
 
         <div className="ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2 lg:ml-4">
-          <Button asChild variant="outline" className="hidden sm:inline-flex">
+          <Button asChild variant="outline" className="hidden whitespace-nowrap sm:inline-flex">
             <Link to="/volunteer">Get Involved</Link>
           </Button>
           <Button asChild size="sm" className="shadow-sm sm:h-10 sm:px-4 sm:text-sm">
-            <Link to="/donate">
+            <Link to="/donate" className="whitespace-nowrap">
               Donate<span className="hidden sm:inline">&nbsp;Now</span>
             </Link>
           </Button>
