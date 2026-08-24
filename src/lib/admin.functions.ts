@@ -249,3 +249,21 @@ export const submitContactMessage = createServerFn({ method: "POST" })
     if (error) return { error: "Your message could not be sent. Please try again." };
     return { ok: true as const };
   });
+
+/**
+ * Bumps the global content version so every browser and device drops its
+ * persisted public cache on the next page load.
+ */
+export const adminBumpContentVersion = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { requireStaff } = await import("@/lib/admin.server");
+    const { admin } = await requireStaff(context.supabase, context.userId);
+    const version = Date.now();
+    const { error } = await (admin as any)
+      .from("site_settings")
+      .update({ content_version: version })
+      .eq("id", "default");
+    if (error) return { error: error.message };
+    return { ok: true as const, version };
+  });
