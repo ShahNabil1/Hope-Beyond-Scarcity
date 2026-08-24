@@ -66,13 +66,16 @@ export type TurnstileHandle = { reset: () => void };
  * clear the challenge after every submit attempt.
  */
 export function useTurnstile() {
+  const siteKey = useTurnstileSiteKey();
   const [token, setToken] = useState("");
   const ref = useRef<TurnstileHandle | null>(null);
   const reset = useCallback(() => {
     setToken("");
     ref.current?.reset();
   }, []);
-  return { token, setToken, ref, reset };
+  // When no site key is configured the captcha is simply skipped.
+  const ready = !siteKey || Boolean(token);
+  return { token, setToken, ref, reset, siteKey, ready };
 }
 
 export function Turnstile({
