@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowLeft, ChevronLeft, LogOut, Menu, Sparkles } from "lucide-react";
+import { ArrowLeft, ChevronLeft, LogOut, Menu } from "lucide-react";
 
 import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
@@ -132,7 +132,7 @@ function SidebarBody({
       {!collapsed ? (
         <div className="rounded-2xl bg-gradient-to-br from-primary/12 via-accent/10 to-transparent p-3">
           <p className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
-            <Sparkles className="size-3.5 text-accent" /> Live site
+            <BrandLogo className="size-3.5 shrink-0" /> Live site
           </p>
           <p className="mt-1 text-[11px] text-muted-foreground">
             Changes publish instantly to visitors.
