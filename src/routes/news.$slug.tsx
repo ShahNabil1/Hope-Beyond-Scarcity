@@ -7,6 +7,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getNewsPost } from "@/lib/content.functions";
 
+const SITE_URL = "https://hopebeyondscarcity.com";
+
+function absoluteMediaUrl(value: string | null | undefined) {
+  const url = mediaUrl(value);
+  if (!url) return "";
+  return url.startsWith("http") ? url : `${SITE_URL}${url}`;
+}
+
 export const Route = createFileRoute("/news/$slug")({
   loader: async ({ params }) => {
     const result = await getNewsPost({ data: { slug: params.slug } });
@@ -49,7 +57,7 @@ export const Route = createFileRoute("/news/$slug")({
             description: summary,
             image: [image],
             datePublished: post.published_at,
-            dateModified: post.updated_at ?? post.published_at,
+            dateModified: post.published_at,
             mainEntityOfPage: url,
             author: {
               "@type": post.author_name ? "Person" : "Organization",
