@@ -24,6 +24,7 @@ import { passwordSchema } from "@/lib/password";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { fetchRoles, landingPathForRoles } from "@/hooks/use-auth";
 import { supabase } from "@/lib/supabase";
+import { Turnstile, useTurnstile } from "@/components/turnstile";
 
 export const Route = createFileRoute("/auth/forgot-password")({
   ssr: false,
@@ -68,6 +69,7 @@ function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const [sending, setSending] = useState(false);
   const [resetting, setResetting] = useState(false);
+  const captcha = useTurnstile();
 
   const requestForm = useForm<z.infer<typeof requestSchema>>({
     resolver: zodResolver(requestSchema),
@@ -83,10 +85,12 @@ function ForgotPasswordPage() {
     setSending(true);
     const { error } = await supabase.auth.resetPasswordForEmail(values.email, {
       redirectTo: `${window.location.origin}/auth/reset-password`,
+      ...(captcha.token ? { captchaToken: captcha.token } : {}),
     });
     setSending(false);
 
     if (error) {
+      captcha.reset();
       toast.error(error.message || "We couldn't send that reset email. Please try again.");
       return;
     }
@@ -225,7 +229,9 @@ function ForgotPasswordPage() {
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full" disabled={sending}>
+          <Turnstile onToken={captcha.setToken} handleRef={captcha.ref} action="password-reset" />
+
+          <Button type="submit" className="w-full" disabled={sending || !captcha.ready}>
             {sending ? (
               <Loader2 className="size-4 animate-spin" aria-hidden="true" />
             ) : (
