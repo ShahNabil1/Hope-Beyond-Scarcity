@@ -132,6 +132,7 @@ function TrendChart({ data }: { data: { date: string; pageViews: number; visitor
 
 function AdminAnalytics() {
   const [days, setDays] = useState<(typeof RANGES)[number]>(30);
+  const [recentShown, setRecentShown] = useState(10);
   const fetchAnalytics = useServerFn(adminGetAnalytics);
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "analytics", days],
@@ -259,7 +260,7 @@ function AdminAnalytics() {
                   No events recorded yet — data appears once visitors accept performance cookies.
                 </p>
               ) : (
-                data.recent.map((row) => (
+                data.recent.slice(0, recentShown).map((row) => (
                   <div
                     key={row.id}
                     className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3 last:border-0 last:pb-0"
@@ -279,6 +280,15 @@ function AdminAnalytics() {
                   </div>
                 ))
               )}
+              {data.recent.length > recentShown ? (
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => setRecentShown((count) => count + 20)}
+                >
+                  View more
+                </Button>
+              ) : null}
             </CardContent>
           </Card>
         </div>
