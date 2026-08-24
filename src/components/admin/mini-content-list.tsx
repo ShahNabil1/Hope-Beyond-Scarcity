@@ -151,7 +151,7 @@ export function MiniContentList({ table }: { table: ContentTable }) {
     const index = rows.findIndex((r) => r["id"] === row["id"]);
     const swap = rows[index + direction];
     if (!swap) return;
-    await Promise.all([
+    const results = await Promise.all([
       saveContent({
         data: { table, id: row["id"], values: { sort_order: Number(swap["sort_order"] ?? 0) } },
       }),
@@ -159,7 +159,10 @@ export function MiniContentList({ table }: { table: ContentTable }) {
         data: { table, id: swap["id"], values: { sort_order: Number(row["sort_order"] ?? 0) } },
       }),
     ]);
-    refresh();
+    const latestVersion = Math.max(
+      ...results.map((result) => ("version" in result ? Number(result.version) : 0)),
+    );
+    refresh(latestVersion || undefined);
   }
 
   return (

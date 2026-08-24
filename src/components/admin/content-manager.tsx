@@ -236,7 +236,7 @@ export function ContentManager({
           : `${config.singular} removed from featured`,
       { id: toastId },
     );
-    refresh();
+    refresh(result.version);
   }
 
   const hasFeatured = config.fields.some((f) => f.name === "is_featured");

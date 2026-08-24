@@ -7,6 +7,12 @@ export type HomeSettings = NonNullable<HomeContent["settings"]>;
 export type ImpactStatRow = HomeContent["stats"][number];
 export type PartnerRow = HomeContent["partners"][number];
 
+export const HOME_FALLBACK_CONTENT: HomeContent = {
+  settings: null,
+  stats: [],
+  partners: [],
+};
+
 /**
  * Public content is cached aggressively (and persisted to localStorage) so
  * repeat visits paint instantly, then revalidated in the background so a CMS
@@ -14,7 +20,15 @@ export type PartnerRow = HomeContent["partners"][number];
  */
 export const homeContentQueryOptions = queryOptions({
   queryKey: ["home-content"],
-  queryFn: () => getHomeContent(),
+  queryFn: async () => {
+    try {
+      return await getHomeContent();
+    } catch {
+      // The static brand content remains available during a transient outage;
+      // React Query retries/revalidates on the next mount or reconnect.
+      return HOME_FALLBACK_CONTENT;
+    }
+  },
   staleTime: 5 * 60_000,
   gcTime: 24 * 60 * 60_000,
   refetchOnMount: "always",
