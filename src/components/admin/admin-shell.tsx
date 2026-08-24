@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowLeft, ChevronLeft, LogOut, Menu, Sparkles } from "lucide-react";
+import { ArrowLeft, ChevronLeft, LogOut, Menu } from "lucide-react";
 
 import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
