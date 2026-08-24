@@ -58,6 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(nextSession);
       if (!nextSession?.user) {
         setRoles([]);
+        setDisplayName(null);
         setLoading(false);
         return;
       }
@@ -66,9 +67,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(true);
       // Defer the Supabase call out of the auth callback to avoid deadlocks.
       setTimeout(() => {
-        fetchRoles(nextSession.user.id)
-          .then((next) => {
-            if (active) setRoles(next);
+        Promise.all([fetchRoles(nextSession.user.id), fetchDisplayName(nextSession.user.id)])
+          .then(([nextRoles, name]) => {
+            if (!active) return;
+            setRoles(nextRoles);
+            setDisplayName(name);
           })
           .finally(() => {
             if (active) setLoading(false);
