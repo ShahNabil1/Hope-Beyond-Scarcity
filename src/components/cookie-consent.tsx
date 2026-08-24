@@ -13,7 +13,7 @@ import {
   CATEGORY_COPY,
   OPTIONAL_CATEGORIES,
   acceptAllState,
-  effectiveConsent,
+  defaultDraftState,
   readConsent,
   rejectAllState,
   writeConsent,
@@ -88,15 +88,15 @@ export function CookieConsent() {
   const [mounted, setMounted] = useState(false);
   const [decided, setDecided] = useState(true);
   const [prefsOpen, setPrefsOpen] = useState(false);
-  const [draft, setDraft] = useState<ConsentState>(() => effectiveConsent());
+  const [draft, setDraft] = useState<ConsentState>(() => defaultDraftState());
 
   useEffect(() => {
     setMounted(true);
     const stored = readConsent();
     setDecided(Boolean(stored));
-    setDraft(stored ?? effectiveConsent());
+    setDraft(stored ?? defaultDraftState());
     const open = () => {
-      setDraft(effectiveConsent());
+      setDraft(readConsent() ?? defaultDraftState());
       setPrefsOpen(true);
     };
     window.addEventListener(OPEN_PREFERENCES_EVENT, open);
@@ -114,7 +114,7 @@ export function CookieConsent() {
   return (
     <>
       <AnimatePresence>
-        {!decided ? (
+        {!decided && !prefsOpen ? (
           <motion.aside
             role="dialog"
             aria-live="polite"
@@ -156,7 +156,7 @@ export function CookieConsent() {
               <button
                 type="button"
                 onClick={() => {
-                  setDraft(effectiveConsent());
+                  setDraft(readConsent() ?? defaultDraftState());
                   setPrefsOpen(true);
                 }}
                 className="mt-3 text-sm font-semibold text-primary underline-offset-4 hover:underline"
@@ -169,16 +169,16 @@ export function CookieConsent() {
       </AnimatePresence>
 
       <Dialog open={prefsOpen} onOpenChange={setPrefsOpen}>
-        <DialogContent className="max-w-lg gap-0 overflow-hidden p-0">
-          <DialogHeader className="border-b border-border/70 px-6 py-4 text-left">
+        <DialogContent className="flex max-h-[90svh] w-[calc(100vw-1.5rem)] max-w-lg flex-col gap-0 overflow-hidden p-0 sm:w-full">
+          <DialogHeader className="shrink-0 border-b border-border/70 px-5 py-4 text-left sm:px-6">
             <DialogTitle className="flex items-center gap-2 text-lg font-bold">
               <BrandLogo className="size-7" />
               Your privacy matters
             </DialogTitle>
           </DialogHeader>
 
-          <ScrollArea className="max-h-[60vh]">
-            <div className="space-y-4 px-6 py-5">
+          <ScrollArea className="min-h-0 flex-1">
+            <div className="space-y-4 px-5 py-5 sm:px-6">
               <div className="space-y-2 text-sm leading-relaxed text-muted-foreground">
                 <p>
                   We use cookies to help our website run smoothly, understand how it’s used and
@@ -224,7 +224,7 @@ export function CookieConsent() {
             </div>
           </ScrollArea>
 
-          <div className="flex flex-col gap-2 border-t border-border/70 bg-muted/30 px-6 py-4 sm:flex-row sm:justify-end">
+          <div className="shrink-0 flex flex-col gap-2 border-t border-border/70 bg-muted/30 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
             <Button variant="ghost" onClick={() => commit(rejectAllState())}>
               Reject all
             </Button>

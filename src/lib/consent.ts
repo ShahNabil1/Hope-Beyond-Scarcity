@@ -87,6 +87,15 @@ export function rejectAllState(): ConsentState {
   return { ...DENY_ALL, updatedAt: new Date().toISOString() };
 }
 
+/**
+ * Pre-selected state shown in the preferences UI before a decision exists.
+ * Every optional category appears enabled; visitors can switch them off.
+ * This is a UI default only — nothing runs until the choice is confirmed.
+ */
+export function defaultDraftState(): ConsentState {
+  return acceptAllState();
+}
+
 export const CONSENT_EVENT = "hbs:consent-change";
 
 let cached: ConsentState | null = null;
