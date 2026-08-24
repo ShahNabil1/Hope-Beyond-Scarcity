@@ -22,6 +22,7 @@ import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/hooks/use-auth";
 import { ensureRegistered } from "@/lib/account.functions";
 import { supabase } from "@/lib/supabase";
+import { Turnstile, useTurnstile } from "@/components/turnstile";
 
 
 export const Route = createFileRoute("/auth/")({
@@ -60,6 +61,7 @@ function SignInPage() {
   const { isAuthenticated, loading, homePath } = useAuth();
   const [submitting, setSubmitting] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const captcha = useTurnstile();
 
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
@@ -99,10 +101,12 @@ function SignInPage() {
     const { data, error } = await supabase.auth.signInWithPassword({
       email: values.email,
       password: values.password,
+      ...(captcha.token ? { options: { captchaToken: captcha.token } } : {}),
     });
 
     if (error || !data.user) {
       setSubmitting(false);
+      captcha.reset();
       toast.error(
         error?.message?.toLowerCase().includes("invalid")
           ? "Invalid credentials. Please check your email and password."
@@ -178,7 +182,9 @@ function SignInPage() {
             )}
           />
 
-          <Button type="submit" className="w-full" disabled={submitting}>
+          <Turnstile onToken={captcha.setToken} handleRef={captcha.ref} action="sign-in" />
+
+          <Button type="submit" className="w-full" disabled={submitting || !captcha.ready}>
             {submitting ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : null}
             {submitting ? "Signing in…" : "Sign in"}
           </Button>

@@ -25,6 +25,7 @@ import { PasswordStrength } from "@/components/auth/password-strength";
 import { passwordSchema } from "@/lib/password";
 import { fetchRoles, landingPathForRoles } from "@/hooks/use-auth";
 import { supabase } from "@/lib/supabase";
+import { Turnstile, useTurnstile } from "@/components/turnstile";
 
 
 export const Route = createFileRoute("/auth/sign-up")({
@@ -78,6 +79,7 @@ function SignUpPage() {
   const [verifying, setVerifying] = useState(false);
   const [resending, setResending] = useState(false);
   const [sentTo, setSentTo] = useState<string | null>(null);
+  const captcha = useTurnstile();
 
   const form = useForm<SignUpValues>({
     resolver: zodResolver(signUpSchema),
@@ -112,11 +114,13 @@ function SignUpPage() {
       password: parsed.data.password,
       options: {
         data: { full_name: parsed.data.fullName, policies_accepted: "true" },
+        ...(captcha.token ? { captchaToken: captcha.token } : {}),
       },
     });
     setSubmitting(false);
 
     if (error) {
+      captcha.reset();
       toast.error(
         error.message.toLowerCase().includes("already")
           ? "An account with this email already exists. Try signing in instead."
@@ -159,7 +163,12 @@ function SignUpPage() {
   async function resendCode() {
     if (!sentTo) return;
     setResending(true);
-    const { error } = await supabase.auth.resend({ type: "signup", email: sentTo });
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email: sentTo,
+      ...(captcha.token ? { options: { captchaToken: captcha.token } } : {}),
+    });
+    captcha.reset();
     setResending(false);
     if (error) {
       toast.error(error.message || "We couldn't resend the code. Try again shortly.");
@@ -333,7 +342,13 @@ function SignUpPage() {
             />
           </div>
 
-          <Button type="submit" className="w-full" disabled={submitting || !allPoliciesAccepted}>
+          <Turnstile onToken={captcha.setToken} handleRef={captcha.ref} action="sign-up" />
+
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={submitting || !allPoliciesAccepted || !captcha.ready}
+          >
             {submitting ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : null}
             {submitting ? "Creating account…" : "Create account"}
           </Button>
