@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Mail, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { useConfirm } from "@/components/ui/confirm-dialog";
 
 import { AdminPageHeader } from "@/components/admin/admin-shell";
 import { Badge } from "@/components/ui/badge";
@@ -40,6 +41,7 @@ function AdminMessages() {
     queryFn: () => listMessages(),
   });
 
+  const confirm = useConfirm();
   const refresh = () => queryClient.invalidateQueries({ queryKey: ["admin", "messages"] });
 
   async function patch(id: string, values: { status?: (typeof STATUSES)[number]; admin_notes?: string }) {
@@ -52,7 +54,15 @@ function AdminMessages() {
     refresh();
   }
 
-  async function remove(id: string) {
+  async function remove(id: string, subject: string) {
+    const ok = await confirm({
+      title: "Delete this message?",
+      description: "The enquiry will be permanently removed from the inbox. This cannot be undone.",
+      detail: subject,
+      confirmLabel: "Delete message",
+      cancelLabel: "Keep it",
+    });
+    if (!ok) return;
     const result = await deleteMessage({ data: { id } });
     if ("error" in result) {
       toast.error(result.error);
@@ -132,7 +142,7 @@ function AdminMessages() {
                         <Mail className="size-4" />
                       </a>
                     </Button>
-                    <Button variant="outline" size="icon" onClick={() => remove(m.id)}>
+                    <Button variant="outline" size="icon" onClick={() => remove(m.id, m.subject)}>
                       <Trash2 className="size-4 text-destructive" />
                     </Button>
                   </div>
