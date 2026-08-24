@@ -88,20 +88,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Hope Beyond Scarcity" },
+      { title: "Hope Beyond Scarcity — Building Hope and Lasting Change" },
       {
         name: "description",
         content:
-          "Hope Beyond Scarcity — building hope and lasting change beyond scarcity.",
+          "A Canadian not-for-profit delivering care packages, clean water, health support and emergency relief to children and families facing hardship.",
       },
       { name: "author", content: "Hope Beyond Scarcity" },
       { name: "apple-mobile-web-app-title", content: "Hope Beyond Scarcity" },
       { name: "theme-color", content: "#ffffff" },
-      { property: "og:title", content: "Hope Beyond Scarcity" },
+      { property: "og:title", content: "Hope Beyond Scarcity — Building Hope and Lasting Change" },
       {
         property: "og:description",
         content:
-          "Hope Beyond Scarcity — building hope and lasting change beyond scarcity.",
+          "A Canadian not-for-profit delivering care packages, clean water, health support and emergency relief to children and families facing hardship.",
       },
       { property: "og:site_name", content: "Hope Beyond Scarcity" },
       { property: "og:type", content: "website" },
