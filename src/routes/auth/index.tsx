@@ -101,7 +101,7 @@ function SignInPage() {
     const { data, error } = await supabase.auth.signInWithPassword({
       email: values.email,
       password: values.password,
-      options: captcha.token ? { captchaToken: captcha.token } : undefined,
+      ...(captcha.token ? { options: { captchaToken: captcha.token } } : {}),
     });
 
     if (error || !data.user) {
