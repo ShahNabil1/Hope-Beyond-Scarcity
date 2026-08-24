@@ -14,7 +14,6 @@ import {
   OPTIONAL_CATEGORIES,
   acceptAllState,
   defaultDraftState,
-  effectiveConsent,
   readConsent,
   rejectAllState,
   writeConsent,
