@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { Pencil, Plus, Star, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useConfirm } from "@/components/ui/confirm-dialog";
+import { withRetry } from "@/lib/retry";
 
 import { AdminPageHeader } from "@/components/admin/admin-shell";
 import { GalleryInput, ImageInput, mediaUrl } from "@/components/admin/media-input";
@@ -20,7 +21,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Skeleton } from "@/components/ui/skeleton";
+import { BrandSkeleton } from "@/components/ui/brand-loader";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -172,11 +173,40 @@ export function ContentManager({
   }
 
   async function handleToggle(row: Row, field: "is_active" | "is_featured", value: boolean) {
-    const result = await toggleContent({ data: { table, id: row["id"], field, value } });
-    if ("error" in result) {
-      toast.error(result.error);
+    const action =
+      field === "is_active" ? (value ? "Publishing" : "Unpublishing") : value ? "Featuring" : "Unfeaturing";
+    const toastId = toast.loading(`${action}…`);
+    let result: Awaited<ReturnType<typeof toggleContent>>;
+    try {
+      result = await withRetry(
+        () => toggleContent({ data: { table, id: row["id"], field, value } }),
+        {
+          retries: 2,
+          onRetry: (attempt) =>
+            toast.loading(`Connection hiccup — retrying (${attempt}/2)…`, { id: toastId }),
+        },
+      );
+    } catch (error) {
+      toast.error("Could not reach the server", {
+        id: toastId,
+        description: error instanceof Error ? error.message : "Please try again.",
+      });
       return;
     }
+    if ("error" in result) {
+      toast.error("Update failed", { id: toastId, description: result.error });
+      return;
+    }
+    toast.success(
+      field === "is_active"
+        ? value
+          ? `${config.singular} is live`
+          : `${config.singular} moved to draft`
+        : value
+          ? `${config.singular} featured`
+          : `${config.singular} removed from featured`,
+      { id: toastId },
+    );
     refresh();
   }
 
@@ -203,11 +233,7 @@ export function ContentManager({
       />
 
       {isLoading ? (
-        <div className="space-y-3">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="h-24 rounded-xl" />
-          ))}
-        </div>
+        <BrandSkeleton rows={4} label={`Loading ${config.plural.toLowerCase()}…`} />
       ) : rows.length === 0 ? (
         <p className="text-sm text-muted-foreground">Nothing here yet — create the first one.</p>
       ) : (
