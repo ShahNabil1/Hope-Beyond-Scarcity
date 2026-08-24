@@ -45,3 +45,8 @@ export const getLegalPage = createServerFn({ method: "GET" })
     const { fetchLegalPage } = await import("./content.server");
     return fetchLegalPage(data.slug);
   });
+
+export const getHomeContent = createServerFn({ method: "GET" }).handler(async () => {
+  const { fetchHomeContent } = await import("./content.server");
+  return fetchHomeContent();
+});

@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Save } from "lucide-react";
 import { toast } from "sonner";
 
+import { IconPicker } from "@/components/admin/icon-picker";
 import { GalleryInput, ImageInput } from "@/components/admin/media-input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -299,6 +300,8 @@ export function FieldControl({
             )
           }
         />
+      ) : field.kind === "icon" ? (
+        <IconPicker value={String(value ?? "")} onChange={(next) => onChange(next)} />
       ) : field.kind === "image" ? (
         <ImageInput value={String(value ?? "")} folder={folder} onChange={(next) => onChange(next)} />
       ) : field.kind === "gallery" ? (

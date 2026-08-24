@@ -24,6 +24,45 @@ const settingsSchema = z.object({
   social_x: z.string().trim().max(300),
   social_tiktok: z.string().trim().max(300),
   social_whatsapp: z.string().trim().max(300),
+  campaign_active: z.boolean().optional(),
+  hero_badge: z.string().trim().max(2000).optional(),
+  hero_title: z.string().trim().max(2000).optional(),
+  hero_subtitle: z.string().trim().max(2000).optional(),
+  hero_primary_label: z.string().trim().max(2000).optional(),
+  hero_primary_url: z.string().trim().max(2000).optional(),
+  hero_secondary_label: z.string().trim().max(2000).optional(),
+  hero_secondary_url: z.string().trim().max(2000).optional(),
+  hero_trust_note: z.string().trim().max(2000).optional(),
+  hero_image_url: z.string().trim().max(2000).optional(),
+  mission_eyebrow: z.string().trim().max(2000).optional(),
+  mission_title: z.string().trim().max(2000).optional(),
+  mission_body_1: z.string().trim().max(2000).optional(),
+  mission_body_2: z.string().trim().max(2000).optional(),
+  mission_cta_label: z.string().trim().max(2000).optional(),
+  mission_cta_url: z.string().trim().max(2000).optional(),
+  mission_image_url: z.string().trim().max(2000).optional(),
+  impact_eyebrow: z.string().trim().max(2000).optional(),
+  impact_title: z.string().trim().max(2000).optional(),
+  impact_intro: z.string().trim().max(2000).optional(),
+  campaign_eyebrow: z.string().trim().max(2000).optional(),
+  campaign_title: z.string().trim().max(2000).optional(),
+  campaign_body: z.string().trim().max(2000).optional(),
+  campaign_goal_label: z.string().trim().max(2000).optional(),
+  campaign_goal_value: z.string().trim().max(2000).optional(),
+  campaign_cost_label: z.string().trim().max(2000).optional(),
+  campaign_cost_value: z.string().trim().max(2000).optional(),
+  campaign_primary_label: z.string().trim().max(2000).optional(),
+  campaign_primary_url: z.string().trim().max(2000).optional(),
+  campaign_secondary_label: z.string().trim().max(2000).optional(),
+  campaign_secondary_url: z.string().trim().max(2000).optional(),
+  campaign_image_url: z.string().trim().max(2000).optional(),
+  partners_heading: z.string().trim().max(2000).optional(),
+  cta_title: z.string().trim().max(2000).optional(),
+  cta_body: z.string().trim().max(2000).optional(),
+  cta_primary_label: z.string().trim().max(2000).optional(),
+  cta_primary_url: z.string().trim().max(2000).optional(),
+  cta_secondary_label: z.string().trim().max(2000).optional(),
+  cta_secondary_url: z.string().trim().max(2000).optional(),
 });
 
 /** Staff view of the site settings singleton. */
@@ -47,9 +86,12 @@ export const adminSaveSettings = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { requireStaff } = await import("@/lib/admin.server");
     const { admin } = await requireStaff(context.supabase, context.userId);
+    const patch = Object.fromEntries(
+      Object.entries(data).filter(([, value]) => value !== undefined),
+    );
     const { error } = await admin
       .from("site_settings")
-      .update(data)
+      .update(patch as never)
       .eq("id", "default");
     if (error) return { error: error.message };
     return { ok: true as const };

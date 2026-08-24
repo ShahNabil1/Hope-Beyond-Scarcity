@@ -7,6 +7,7 @@ import { useConfirm } from "@/components/ui/confirm-dialog";
 import { withRetry } from "@/lib/retry";
 
 import { AdminPageHeader } from "@/components/admin/admin-shell";
+import { IconPicker } from "@/components/admin/icon-picker";
 import { GalleryInput, ImageInput, mediaUrl } from "@/components/admin/media-input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -441,6 +442,8 @@ function FieldControl({
             )
           }
         />
+      ) : field.kind === "icon" ? (
+        <IconPicker value={String(value ?? "")} onChange={(next) => onChange(next)} />
       ) : field.kind === "image" ? (
         <ImageInput
           value={String(value ?? "")}
