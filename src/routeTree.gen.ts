@@ -19,6 +19,7 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ProgramsRouteImport } from './routes/programs'
 import { Route as RefundRouteImport } from './routes/refund'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SponsorsRouteImport } from './routes/sponsors'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as VolunteerRouteImport } from './routes/volunteer'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
@@ -101,6 +102,11 @@ const RefundRoute = RefundRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SponsorsRoute = SponsorsRouteImport.update({
+  id: '/sponsors',
+  path: '/sponsors',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -300,6 +306,7 @@ export interface FileRoutesByFullPath {
   '/programs': typeof ProgramsRoute
   '/refund': typeof RefundRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sponsors': typeof SponsorsRoute
   '/terms': typeof TermsRoute
   '/volunteer': typeof VolunteerRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
@@ -344,6 +351,7 @@ export interface FileRoutesByTo {
   '/programs': typeof ProgramsRoute
   '/refund': typeof RefundRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sponsors': typeof SponsorsRoute
   '/terms': typeof TermsRoute
   '/volunteer': typeof VolunteerRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -389,6 +397,7 @@ export interface FileRoutesById {
   '/programs': typeof ProgramsRoute
   '/refund': typeof RefundRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sponsors': typeof SponsorsRoute
   '/terms': typeof TermsRoute
   '/volunteer': typeof VolunteerRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
@@ -436,6 +445,7 @@ export interface FileRouteTypes {
     | '/programs'
     | '/refund'
     | '/sitemap.xml'
+    | '/sponsors'
     | '/terms'
     | '/volunteer'
     | '/admin'
@@ -480,6 +490,7 @@ export interface FileRouteTypes {
     | '/programs'
     | '/refund'
     | '/sitemap.xml'
+    | '/sponsors'
     | '/terms'
     | '/volunteer'
     | '/dashboard'
@@ -524,6 +535,7 @@ export interface FileRouteTypes {
     | '/programs'
     | '/refund'
     | '/sitemap.xml'
+    | '/sponsors'
     | '/terms'
     | '/volunteer'
     | '/_authenticated/admin'
@@ -571,6 +583,7 @@ export interface RootRouteChildren {
   ProgramsRoute: typeof ProgramsRoute
   RefundRoute: typeof RefundRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  SponsorsRoute: typeof SponsorsRoute
   TermsRoute: typeof TermsRoute
   VolunteerRoute: typeof VolunteerRoute
   AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
@@ -655,6 +668,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sponsors': {
+      id: '/sponsors'
+      path: '/sponsors'
+      fullPath: '/sponsors'
+      preLoaderRoute: typeof SponsorsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -991,6 +1011,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProgramsRoute: ProgramsRoute,
   RefundRoute: RefundRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  SponsorsRoute: SponsorsRoute,
   TermsRoute: TermsRoute,
   VolunteerRoute: VolunteerRoute,
   AuthForgotPasswordRoute: AuthForgotPasswordRoute,
