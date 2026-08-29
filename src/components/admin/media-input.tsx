@@ -17,11 +17,11 @@ function presetForFolder(folder: string): CompressPreset {
   return "banner";
 }
 
-async function uploadFile(file: File, folder: string) {
+async function uploadFile(file: File, folder: string, preset?: CompressPreset) {
   if (!file.type.startsWith("image/")) throw new Error(`${file.name} is not an image`);
   if (file.size > 15 * 1024 * 1024) throw new Error(`${file.name} is larger than 15MB`);
 
-  const result = await compressImage(file, presetForFolder(folder));
+  const result = await compressImage(file, preset ?? presetForFolder(folder));
   const upload = result.file;
   if (upload.size > 5 * 1024 * 1024) {
     throw new Error(`${file.name} is still larger than 5MB after optimising`);
@@ -43,34 +43,54 @@ export function ImageInput({
   value,
   folder,
   onChange,
+  preset,
+  contain,
 }: {
   value: string;
   folder: string;
   onChange: (next: string) => void;
+  preset?: CompressPreset;
+  contain?: boolean;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
+  const [localPreview, setLocalPreview] = useState<string | null>(null);
+  const [info, setInfo] = useState<string | null>(null);
 
   async function handleFiles(files: FileList | null) {
     const file = files?.[0];
     if (!file) return;
     setBusy(true);
+    const objectUrl = URL.createObjectURL(file);
+    setLocalPreview(objectUrl);
+    setInfo(null);
     try {
-      const { path, result } = await uploadFile(file, folder);
+      const { path, result } = await uploadFile(file, folder, preset);
       onChange(path);
+      setInfo(
+        result.changed
+          ? `Optimised ${formatBytes(result.originalBytes)} → ${formatBytes(result.bytes)}${
+              result.width ? ` · ${result.width}×${result.height}px` : ""
+            }`
+          : `Uploaded · ${formatBytes(result.bytes)}`,
+      );
       toast.success(
         result.changed
           ? `Image optimised — ${formatBytes(result.originalBytes)} → ${formatBytes(result.bytes)}`
           : "Image uploaded",
       );
-
     } catch (error) {
+      setInfo(null);
       toast.error(error instanceof Error ? error.message : "Upload failed");
     } finally {
       setBusy(false);
+      URL.revokeObjectURL(objectUrl);
+      setLocalPreview(null);
       if (inputRef.current) inputRef.current.value = "";
     }
   }
+
+  const previewSrc = localPreview ?? (value ? mediaUrl(value) : null);
 
   return (
     <div className="space-y-2">
@@ -96,13 +116,36 @@ export function ImageInput({
           {busy ? <Loader2 className="size-4 animate-spin" /> : <ImagePlus className="size-4" />}
         </Button>
       </div>
-      {value ? (
-        <img
-          src={mediaUrl(value)}
-          alt="Selected media preview"
-          className="h-32 w-full rounded-lg object-cover"
-          loading="lazy"
-        />
+      {previewSrc ? (
+        <div className="space-y-1">
+          <div className="relative overflow-hidden rounded-lg border bg-muted/40">
+            <img
+              src={previewSrc}
+              alt="Selected media preview"
+              className={`h-32 w-full ${contain ? "object-contain p-3" : "object-cover"}`}
+              loading="lazy"
+            />
+            {busy ? (
+              <div className="absolute inset-0 flex items-center justify-center bg-background/60 backdrop-blur-sm">
+                <Loader2 className="size-5 animate-spin text-primary" />
+              </div>
+            ) : null}
+            {value ? (
+              <button
+                type="button"
+                aria-label="Remove image"
+                onClick={() => {
+                  onChange("");
+                  setInfo(null);
+                }}
+                className="absolute right-2 top-2 rounded-full bg-destructive p-1 text-destructive-foreground shadow"
+              >
+                <X className="size-3" />
+              </button>
+            ) : null}
+          </div>
+          {info ? <p className="text-xs text-muted-foreground">{info}</p> : null}
+        </div>
       ) : null}
     </div>
   );
@@ -112,10 +155,12 @@ export function GalleryInput({
   value,
   folder,
   onChange,
+  preset,
 }: {
   value: string[];
   folder: string;
   onChange: (next: string[]) => void;
+  preset?: CompressPreset;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
@@ -128,7 +173,7 @@ export function GalleryInput({
       let saved = 0;
       for (const file of Array.from(files)) {
         try {
-          const { path, result } = await uploadFile(file, folder);
+          const { path, result } = await uploadFile(file, folder, preset);
           paths.push(path);
           saved += result.originalBytes - result.bytes;
         } catch (error) {
