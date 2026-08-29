@@ -139,7 +139,7 @@ export function SiteFooter() {
         <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-4 py-6 text-xs text-primary-foreground/70 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
           <p className="order-2 md:order-1">
             &copy; {new Date().getFullYear()} Hope Beyond Scarcity. Canadian Not-for-Profit
-            Corporation. Charitable registration pending.
+            Corporation.
           </p>
 
           <a
