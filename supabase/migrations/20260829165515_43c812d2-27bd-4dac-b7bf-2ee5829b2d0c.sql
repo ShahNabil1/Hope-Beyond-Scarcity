@@ -1,0 +1,1 @@
+UPDATE public.sponsors SET since_year = '2026' WHERE since_year IN ('2024','2025');
