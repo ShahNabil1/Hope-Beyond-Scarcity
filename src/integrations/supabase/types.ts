@@ -984,6 +984,63 @@ export type Database = {
         }
         Relationships: []
       }
+      sponsors: {
+        Row: {
+          contribution_label: string
+          created_at: string
+          description: string
+          id: string
+          is_active: boolean
+          is_featured: boolean
+          location: string
+          logo_url: string
+          name: string
+          since_year: string
+          slug: string
+          sort_order: number
+          summary: string
+          tier: string
+          updated_at: string
+          website_url: string
+        }
+        Insert: {
+          contribution_label?: string
+          created_at?: string
+          description?: string
+          id?: string
+          is_active?: boolean
+          is_featured?: boolean
+          location?: string
+          logo_url?: string
+          name?: string
+          since_year?: string
+          slug?: string
+          sort_order?: number
+          summary?: string
+          tier?: string
+          updated_at?: string
+          website_url?: string
+        }
+        Update: {
+          contribution_label?: string
+          created_at?: string
+          description?: string
+          id?: string
+          is_active?: boolean
+          is_featured?: boolean
+          location?: string
+          logo_url?: string
+          name?: string
+          since_year?: string
+          slug?: string
+          sort_order?: number
+          summary?: string
+          tier?: string
+          updated_at?: string
+          website_url?: string
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           amount_cents: number | null

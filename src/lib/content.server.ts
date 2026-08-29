@@ -74,6 +74,19 @@ export async function fetchEvents() {
   return data ?? [];
 }
 
+export async function fetchSponsors() {
+  const { data, error } = await publicClient()
+    .from("sponsors")
+    .select(
+      "id,slug,name,tier,summary,description,website_url,logo_url,contribution_label,location,since_year,is_featured",
+    )
+    .eq("is_active", true)
+    .order("is_featured", { ascending: false })
+    .order("sort_order", { ascending: true });
+  if (error) throw new Error(error.message);
+  return data ?? [];
+}
+
 export async function fetchVolunteerRoles() {
   const { data, error } = await publicClient()
     .from("volunteer_roles")

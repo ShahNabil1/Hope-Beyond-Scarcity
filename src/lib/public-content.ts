@@ -4,6 +4,7 @@ import {
   getEvents,
   getNews,
   getPrograms,
+  getSponsors,
   getVolunteerRoles,
 } from "@/lib/content.functions";
 
@@ -29,6 +30,12 @@ export const newsQueryOptions = queryOptions({
 export const eventsQueryOptions = queryOptions({
   queryKey: ["events"],
   queryFn: () => getEvents(),
+  ...PUBLIC_CACHE,
+});
+
+export const sponsorsQueryOptions = queryOptions({
+  queryKey: ["sponsors"],
+  queryFn: () => getSponsors(),
   ...PUBLIC_CACHE,
 });
 

@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import {
   BarChart3,
-  CalendarDays,
+  Handshake,
   CircleDollarSign,
   Repeat,
 
@@ -20,14 +20,14 @@ import { RequireRole } from "@/components/auth/require-role";
 import { AdminShell, type AdminNavItem } from "@/components/admin/admin-shell";
 
 const title = "Admin CMS | Hope Beyond Scarcity";
-const description = "Internal content management for programs, news, events, and campaigns.";
+const description = "Internal content management for programs, news, sponsors, and campaigns.";
 
 const navItems: AdminNavItem[] = [
   { to: "/admin", label: "Overview", icon: <LayoutDashboard />, exact: true },
   { to: "/admin/analytics", label: "Analytics", icon: <BarChart3 /> },
   { to: "/admin/programs", label: "Programs", icon: <HeartHandshake />, group: "Content" },
   { to: "/admin/news", label: "News", icon: <Newspaper />, group: "Content" },
-  { to: "/admin/events", label: "Events", icon: <CalendarDays />, group: "Content" },
+  { to: "/admin/sponsors", label: "Sponsors", icon: <Handshake />, group: "Content" },
   { to: "/admin/volunteers", label: "Volunteer roles", icon: <HandHeart />, group: "Content" },
   { to: "/admin/legal", label: "Legal pages", icon: <ScrollText />, group: "Content" },
   { to: "/admin/members", label: "Members", icon: <Users />, group: "People" },

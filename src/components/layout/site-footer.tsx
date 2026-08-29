@@ -24,7 +24,7 @@ const columns = [
       { to: "/about", label: "About Us" },
       { to: "/programs", label: "Programs" },
       { to: "/news", label: "News" },
-      { to: "/events", label: "Events" },
+      { to: "/sponsors", label: "Sponsors" },
     ],
   },
   {

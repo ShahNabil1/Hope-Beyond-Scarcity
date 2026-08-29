@@ -19,6 +19,7 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ProgramsRouteImport } from './routes/programs'
 import { Route as RefundRouteImport } from './routes/refund'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SponsorsRouteImport } from './routes/sponsors'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as VolunteerRouteImport } from './routes/volunteer'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
@@ -45,6 +46,7 @@ import { Route as AuthenticatedAdminPitchesRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminProgramsRouteImport } from './routes/_authenticated/admin.programs'
 import { Route as AuthenticatedAdminRecurringRouteImport } from './routes/_authenticated/admin.recurring'
 import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin.settings'
+import { Route as AuthenticatedAdminSponsorsRouteImport } from './routes/_authenticated/admin.sponsors'
 import { Route as AuthenticatedAdminVolunteersRouteImport } from './routes/_authenticated/admin.volunteers'
 import { Route as ApiPublicTrackRouteImport } from './routes/api/public/track'
 import { Route as AuthenticatedAdminNewsIndexRouteImport } from './routes/_authenticated/admin.news.index'
@@ -100,6 +102,11 @@ const RefundRoute = RefundRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SponsorsRoute = SponsorsRouteImport.update({
+  id: '/sponsors',
+  path: '/sponsors',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -242,6 +249,12 @@ const AuthenticatedAdminSettingsRoute =
     path: '/settings',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminSponsorsRoute =
+  AuthenticatedAdminSponsorsRouteImport.update({
+    id: '/sponsors',
+    path: '/sponsors',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminVolunteersRoute =
   AuthenticatedAdminVolunteersRouteImport.update({
     id: '/volunteers',
@@ -293,6 +306,7 @@ export interface FileRoutesByFullPath {
   '/programs': typeof ProgramsRoute
   '/refund': typeof RefundRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sponsors': typeof SponsorsRoute
   '/terms': typeof TermsRoute
   '/volunteer': typeof VolunteerRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
@@ -318,6 +332,7 @@ export interface FileRoutesByFullPath {
   '/admin/programs': typeof AuthenticatedAdminProgramsRoute
   '/admin/recurring': typeof AuthenticatedAdminRecurringRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/admin/sponsors': typeof AuthenticatedAdminSponsorsRoute
   '/admin/volunteers': typeof AuthenticatedAdminVolunteersRoute
   '/api/public/track': typeof ApiPublicTrackRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
@@ -336,6 +351,7 @@ export interface FileRoutesByTo {
   '/programs': typeof ProgramsRoute
   '/refund': typeof RefundRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sponsors': typeof SponsorsRoute
   '/terms': typeof TermsRoute
   '/volunteer': typeof VolunteerRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -359,6 +375,7 @@ export interface FileRoutesByTo {
   '/admin/programs': typeof AuthenticatedAdminProgramsRoute
   '/admin/recurring': typeof AuthenticatedAdminRecurringRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/admin/sponsors': typeof AuthenticatedAdminSponsorsRoute
   '/admin/volunteers': typeof AuthenticatedAdminVolunteersRoute
   '/api/public/track': typeof ApiPublicTrackRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
@@ -380,6 +397,7 @@ export interface FileRoutesById {
   '/programs': typeof ProgramsRoute
   '/refund': typeof RefundRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sponsors': typeof SponsorsRoute
   '/terms': typeof TermsRoute
   '/volunteer': typeof VolunteerRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
@@ -405,6 +423,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/programs': typeof AuthenticatedAdminProgramsRoute
   '/_authenticated/admin/recurring': typeof AuthenticatedAdminRecurringRoute
   '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/_authenticated/admin/sponsors': typeof AuthenticatedAdminSponsorsRoute
   '/_authenticated/admin/volunteers': typeof AuthenticatedAdminVolunteersRoute
   '/api/public/track': typeof ApiPublicTrackRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
@@ -426,6 +445,7 @@ export interface FileRouteTypes {
     | '/programs'
     | '/refund'
     | '/sitemap.xml'
+    | '/sponsors'
     | '/terms'
     | '/volunteer'
     | '/admin'
@@ -451,6 +471,7 @@ export interface FileRouteTypes {
     | '/admin/programs'
     | '/admin/recurring'
     | '/admin/settings'
+    | '/admin/sponsors'
     | '/admin/volunteers'
     | '/api/public/track'
     | '/admin/'
@@ -469,6 +490,7 @@ export interface FileRouteTypes {
     | '/programs'
     | '/refund'
     | '/sitemap.xml'
+    | '/sponsors'
     | '/terms'
     | '/volunteer'
     | '/dashboard'
@@ -492,6 +514,7 @@ export interface FileRouteTypes {
     | '/admin/programs'
     | '/admin/recurring'
     | '/admin/settings'
+    | '/admin/sponsors'
     | '/admin/volunteers'
     | '/api/public/track'
     | '/admin'
@@ -512,6 +535,7 @@ export interface FileRouteTypes {
     | '/programs'
     | '/refund'
     | '/sitemap.xml'
+    | '/sponsors'
     | '/terms'
     | '/volunteer'
     | '/_authenticated/admin'
@@ -537,6 +561,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/programs'
     | '/_authenticated/admin/recurring'
     | '/_authenticated/admin/settings'
+    | '/_authenticated/admin/sponsors'
     | '/_authenticated/admin/volunteers'
     | '/api/public/track'
     | '/_authenticated/admin/'
@@ -558,6 +583,7 @@ export interface RootRouteChildren {
   ProgramsRoute: typeof ProgramsRoute
   RefundRoute: typeof RefundRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  SponsorsRoute: typeof SponsorsRoute
   TermsRoute: typeof TermsRoute
   VolunteerRoute: typeof VolunteerRoute
   AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
@@ -642,6 +668,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sponsors': {
+      id: '/sponsors'
+      path: '/sponsors'
+      fullPath: '/sponsors'
+      preLoaderRoute: typeof SponsorsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -826,6 +859,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminSettingsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/sponsors': {
+      id: '/_authenticated/admin/sponsors'
+      path: '/sponsors'
+      fullPath: '/admin/sponsors'
+      preLoaderRoute: typeof AuthenticatedAdminSponsorsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/volunteers': {
       id: '/_authenticated/admin/volunteers'
       path: '/volunteers'
@@ -909,6 +949,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminProgramsRoute: typeof AuthenticatedAdminProgramsRoute
   AuthenticatedAdminRecurringRoute: typeof AuthenticatedAdminRecurringRoute
   AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
+  AuthenticatedAdminSponsorsRoute: typeof AuthenticatedAdminSponsorsRoute
   AuthenticatedAdminVolunteersRoute: typeof AuthenticatedAdminVolunteersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
@@ -926,6 +967,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminProgramsRoute: AuthenticatedAdminProgramsRoute,
   AuthenticatedAdminRecurringRoute: AuthenticatedAdminRecurringRoute,
   AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
+  AuthenticatedAdminSponsorsRoute: AuthenticatedAdminSponsorsRoute,
   AuthenticatedAdminVolunteersRoute: AuthenticatedAdminVolunteersRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
@@ -969,6 +1011,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProgramsRoute: ProgramsRoute,
   RefundRoute: RefundRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  SponsorsRoute: SponsorsRoute,
   TermsRoute: TermsRoute,
   VolunteerRoute: VolunteerRoute,
   AuthForgotPasswordRoute: AuthForgotPasswordRoute,
