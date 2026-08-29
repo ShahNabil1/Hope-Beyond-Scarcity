@@ -18,7 +18,7 @@ import { homeContentQueryOptions, homeText } from "@/lib/home-content";
 
 const title = "Hope Beyond Scarcity | Dignity, Care and Lasting Change";
 const description =
-  "Hope Beyond Scarcity is a Canadian not-for-profit delivering care packages, health support and hope to children and families living in scarcity.";
+  "Hope Beyond Scarcity is a Canadian not-for-profit delivering care packages, ongoing support and dignity to children and families living in scarcity.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
