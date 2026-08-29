@@ -6,7 +6,7 @@ import { PageHero } from "@/components/page-hero";
 
 const title = "About Us | Hope Beyond Scarcity";
 const description =
-  "Rajasree Roy and Lilibet Yang founded Hope Beyond Scarcity to fund the months after one-time generosity runs out — walking with families in Bangladesh and Peru toward lasting change.";
+  "Rajasree Roy and Lilibet Yang founded Hope Beyond Scarcity in Toronto to fund the months after one-time generosity runs out and walk with families toward lasting change.";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
