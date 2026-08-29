@@ -45,7 +45,7 @@ function AboutPage() {
         </p>
       </section>
 
-      {/* Rajasree */}
+      {/* Rajasree Roy */}
       <section className="bg-primary-soft">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <div className="grid gap-12 lg:grid-cols-[280px_1fr]">
@@ -89,7 +89,7 @@ function AboutPage() {
         </div>
       </section>
 
-      {/* Lilibet */}
+      {/* Lilibet Yang */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-[1fr_280px]">
           <div className="space-y-5 text-lg leading-relaxed text-foreground/90 lg:order-2">
