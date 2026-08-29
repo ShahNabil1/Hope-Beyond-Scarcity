@@ -6,6 +6,7 @@ export const CONTENT_TABLES = [
   "legal_pages",
   "impact_stats",
   "partners",
+  "sponsors",
 ] as const;
 export type ContentTable = (typeof CONTENT_TABLES)[number];
 
@@ -241,6 +242,42 @@ export const CONTENT_CONFIG: Record<ContentTable, ContentConfig> = {
       is_active: true,
     },
   },
+  sponsors: {
+    table: "sponsors",
+    singular: "Sponsor",
+    plural: "Sponsors",
+    titleField: "name",
+    subtitleField: "summary",
+    fields: [
+      { name: "name", label: "Sponsor name", kind: "text", required: true },
+      { name: "slug", label: "Slug", kind: "text", required: true, help: "lowercase-with-dashes" },
+      { name: "tier", label: "Tier", kind: "text", required: true, placeholder: "Founding / Gold / Silver / Community" },
+      { name: "summary", label: "Summary", kind: "textarea", required: true, full: true },
+      { name: "description", label: "Full description", kind: "richtext", full: true },
+      { name: "contribution_label", label: "Contribution", kind: "text", placeholder: "Sponsors 4 health camps a year" },
+      { name: "location", label: "Location", kind: "text" },
+      { name: "since_year", label: "Sponsor since", kind: "text", placeholder: "2025" },
+      { name: "website_url", label: "Website link", kind: "text", full: true, placeholder: "https://…" },
+      { name: "logo_url", label: "Logo", kind: "image", full: true },
+      { name: "is_featured", label: "Featured sponsor", kind: "boolean" },
+      ...commonTail,
+    ],
+    defaults: {
+      name: "",
+      slug: "",
+      tier: "Community",
+      summary: "",
+      description: "",
+      contribution_label: "",
+      location: "",
+      since_year: "",
+      website_url: "",
+      logo_url: "",
+      is_featured: false,
+      sort_order: 0,
+      is_active: true,
+    },
+  },
 };
 
 export const CONTENT_COLUMNS: Record<ContentTable, string[]> = {
@@ -251,6 +288,7 @@ export const CONTENT_COLUMNS: Record<ContentTable, string[]> = {
   legal_pages: CONTENT_CONFIG.legal_pages.fields.map((f) => f.name),
   impact_stats: CONTENT_CONFIG.impact_stats.fields.map((f) => f.name),
   partners: CONTENT_CONFIG.partners.fields.map((f) => f.name),
+  sponsors: CONTENT_CONFIG.sponsors.fields.map((f) => f.name),
 };
 
 export function slugify(value: string) {

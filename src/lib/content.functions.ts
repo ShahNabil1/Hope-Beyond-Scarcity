@@ -6,6 +6,7 @@ import {
   fetchNewsPost,
   fetchPrograms,
   fetchSiteSettings,
+  fetchSponsors,
   fetchVolunteerRoles,
 } from "./content.server";
 
@@ -22,6 +23,8 @@ export const getNewsPost = createServerFn({ method: "GET" })
 
 
 export const getEvents = createServerFn({ method: "GET" }).handler(async () => fetchEvents());
+
+export const getSponsors = createServerFn({ method: "GET" }).handler(async () => fetchSponsors());
 
 export const getVolunteerRoles = createServerFn({ method: "GET" }).handler(async () =>
   fetchVolunteerRoles(),

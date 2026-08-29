@@ -20,6 +20,7 @@ const PERSISTED_KEYS = [
   "programs",
   "news",
   "events",
+  "sponsors",
   "volunteer-roles",
   "legal-pages",
 ];
@@ -195,6 +196,7 @@ const PUBLIC_KEYS_BY_TABLE: Record<ContentTable, string[]> = {
   legal_pages: ["legal-pages"],
   impact_stats: ["home-content"],
   partners: ["home-content"],
+  sponsors: ["sponsors"],
 };
 
 /** Immediately removes stale public data after any successful CMS mutation. */

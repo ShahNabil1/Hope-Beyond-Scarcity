@@ -22,7 +22,7 @@ const navLinks = [
   { to: "/about", label: "About Us" },
   { to: "/programs", label: "Programs" },
   { to: "/news", label: "News" },
-  { to: "/events", label: "Events" },
+  { to: "/sponsors", label: "Sponsors" },
   { to: "/volunteer", label: "Volunteer" },
   { to: "/contact", label: "Contact" },
 ] as const;
