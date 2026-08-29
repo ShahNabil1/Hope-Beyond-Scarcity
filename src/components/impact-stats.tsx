@@ -144,7 +144,12 @@ export function ImpactStats({
       ? rows.map((row) => ({
           icon: resolveIcon(row.icon),
           value: Number(row.value ?? 0),
-          suffix: row.suffix ?? "",
+          // Some rows keep the "+" only inside the display string — derive it so the
+          // animated counter ends on the same text the CMS shows.
+          suffix:
+            (row.suffix ?? "").trim() ||
+            (row.display ?? "").replace(/[\d.,\s]/g, "") ||
+            "",
           display: row.display || String(row.value ?? ""),
           label: row.label,
           caption: row.caption ?? "",
