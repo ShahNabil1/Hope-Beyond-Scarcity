@@ -249,6 +249,8 @@ export function ContentEditorPage({
   );
 }
 
+const LOGO_FIELD = /logo|icon|avatar|mark/i;
+
 export function FieldControl({
   field,
   value,
@@ -307,7 +309,12 @@ export function FieldControl({
       ) : field.kind === "icon" ? (
         <IconPicker value={String(value ?? "")} onChange={(next) => onChange(next)} />
       ) : field.kind === "image" ? (
-        <ImageInput value={String(value ?? "")} folder={folder} onChange={(next) => onChange(next)} />
+        <ImageInput
+          value={String(value ?? "")}
+          folder={folder}
+          onChange={(next) => onChange(next)}
+          {...(LOGO_FIELD.test(field.name) ? { preset: "icon" as const, contain: true } : {})}
+        />
       ) : field.kind === "gallery" ? (
         <GalleryInput
           value={Array.isArray(value) ? (value as string[]) : []}

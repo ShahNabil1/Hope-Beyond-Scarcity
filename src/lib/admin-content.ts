@@ -256,7 +256,7 @@ export const CONTENT_CONFIG: Record<ContentTable, ContentConfig> = {
       { name: "description", label: "Full description", kind: "richtext", full: true },
       { name: "contribution_label", label: "Contribution", kind: "text", placeholder: "Sponsors 4 health camps a year" },
       { name: "location", label: "Location", kind: "text" },
-      { name: "since_year", label: "Sponsor since", kind: "text", placeholder: "2025" },
+      { name: "since_year", label: "Sponsor since", kind: "text", placeholder: "2026" },
       { name: "website_url", label: "Website link", kind: "text", full: true, placeholder: "https://…" },
       { name: "logo_url", label: "Logo", kind: "image", full: true },
       { name: "is_featured", label: "Featured sponsor", kind: "boolean" },
