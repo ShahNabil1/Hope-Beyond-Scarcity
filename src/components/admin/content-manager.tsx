@@ -387,6 +387,8 @@ export function ContentManager({
   );
 }
 
+const LOGO_FIELD = /logo|icon|avatar|mark/i;
+
 function FieldControl({
   field,
   value,
@@ -453,6 +455,7 @@ function FieldControl({
           value={String(value ?? "")}
           folder={folder}
           onChange={(next) => onChange(next)}
+          {...(LOGO_FIELD.test(field.name) ? { preset: "icon" as const, contain: true } : {})}
         />
       ) : field.kind === "gallery" ? (
         <GalleryInput
