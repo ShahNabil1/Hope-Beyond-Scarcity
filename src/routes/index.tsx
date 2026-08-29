@@ -179,7 +179,7 @@ function Index() {
             >
               <img
                 src={missionSrc}
-                alt="Founders Rajasree and Lilibet speaking with village families"
+                alt="Founders Rajasree Roy and Lilibet Yang speaking with village families"
                 width={1200}
                 height={900}
                 loading="lazy"

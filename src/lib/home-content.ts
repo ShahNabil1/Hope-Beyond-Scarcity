@@ -57,7 +57,7 @@ export const HOME_FALLBACK = {
   mission_eyebrow: "Our Mission",
   mission_title: "It started with two women and one refusal to look away",
   mission_body_1:
-    "Rajasree and Lilibet met over a shared conviction: scarcity is not destiny. What began as a handful of care packages sent from Toronto to a single Bangladeshi village has grown into a community-led movement.",
+    "Rajasree Roy and Lilibet Yang met over a shared conviction: scarcity is not destiny. What began as a handful of care packages sent from Toronto to a single Bangladeshi village has grown into a community-led movement.",
   mission_body_2:
     "Today, Hope Beyond Scarcity works shoulder-to-shoulder with local leaders, mothers and clinicians — because lasting change is built by the people who live there.",
   mission_cta_label: "Read our story",

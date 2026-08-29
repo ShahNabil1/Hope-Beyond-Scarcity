@@ -38,13 +38,6 @@ const FALLBACK_STATS: Stat[] = [
     label: "Children Reached",
     caption: "Nutrition & education support",
   },
-  {
-    icon: resolveIcon("stethoscope"),
-    value: 12,
-    display: "12",
-    label: "Health Camps Hosted",
-    caption: "Free clinics with local doctors",
-  },
 ];
 
 function useCountUp(target: number, active: boolean, enabled: boolean, duration = 1600) {
@@ -206,7 +199,7 @@ export function ImpactStats({
           </p>
         </motion.div>
 
-        <ul className="mt-10 grid gap-4 sm:mt-12 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
+        <ul className="mt-10 grid gap-4 sm:mt-12 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
           {stats.map((stat, index) => (
             <StatCard
               key={stat.label}

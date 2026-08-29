@@ -6,7 +6,7 @@ import { PageHero } from "@/components/page-hero";
 
 const title = "About Us | Hope Beyond Scarcity";
 const description =
-  "Rajasree and Lilibet founded Hope Beyond Scarcity to fund the months after one-time generosity runs out — walking with families in Bangladesh and Peru toward lasting change.";
+  "Rajasree Roy and Lilibet Yang founded Hope Beyond Scarcity to fund the months after one-time generosity runs out — walking with families in Bangladesh and Peru toward lasting change.";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -28,7 +28,7 @@ function AboutPage() {
       <PageHero
         eyebrow="Our Story"
         title="Hope begins with people who refuse to look away"
-        description="Founded in Toronto by Rajasree and Lilibet, Hope Beyond Scarcity exists to fund the months after one-time generosity runs out."
+        description="Founded in Toronto by Rajasree Roy and Lilibet Yang, Hope Beyond Scarcity exists to fund the months after one-time generosity runs out."
       />
 
       {/* Lead */}
@@ -40,7 +40,7 @@ function AboutPage() {
           comes once and never again.
         </p>
         <p className="mt-6 text-base text-muted-foreground">
-          This is the story of how Rajasree and Lilibet compared notes and decided to
+          This is the story of how Rajasree Roy and Lilibet Yang compared notes and decided to
           fund the months after that.
         </p>
       </section>
@@ -54,34 +54,34 @@ function AboutPage() {
                 Founder
               </p>
               <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground">
-                Rajasree
+                Rajasree Roy
               </h2>
               <p className="mt-2 text-sm text-muted-foreground">
-                Born 2009 · Toronto
+                Toronto, Ontario
               </p>
               <div className="mt-5 flex items-center gap-2 text-sm text-muted-foreground">
                 <MapPin className="size-4 text-primary" aria-hidden="true" />
-                Bangladesh
+                Toronto
               </div>
             </div>
             <div className="space-y-5 text-lg leading-relaxed text-foreground/90">
               <p>
-                Rajasree was born in 2009, in Toronto. Bangladesh was her mother's voice
+                Rajasree Roy grew up in Toronto. Bangladesh was her mother's voice
                 on Sunday calls and her grandmother's stories — a place she knew by ear,
                 not by sight.
               </p>
               <p>
-                She went for the first time in 2023, at fourteen, staying with an aunt who
+                She went for the first time at fourteen, staying with an aunt who
                 taught at a primary school that had gone three months without classes. The
                 only water pump had broken, and there was no money to fix it until the next
                 year's budget came through. Kids just stopped showing up.
               </p>
               <p>
-                The school reopened days before Rajasree flew home, once her aunt scraped
+                The school reopened days before Rajasree Roy flew home, once her aunt scraped
                 together enough to send someone to buy the part herself.
               </p>
               <p className="border-l-2 border-primary pl-5 text-xl font-medium text-foreground">
-                Rajasree couldn't stop thinking about how small the gap was. A part. A bit
+                Rajasree Roy couldn't stop thinking about how small the gap was. A part. A bit
                 of cash on the right day. None of it was fate.
               </p>
             </div>
@@ -98,24 +98,24 @@ function AboutPage() {
                 Founder
               </p>
               <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground">
-                Lilibet
+                Lilibet Yang
               </h2>
               <p className="mt-2 text-sm text-muted-foreground">
-                Born 2010 · Toronto
+                Toronto, Ontario
               </p>
               <div className="mt-5 flex items-center gap-2 text-sm text-muted-foreground">
                 <MapPin className="size-4 text-primary" aria-hidden="true" />
-                Peru
+                Toronto
               </div>
             </div>
           </div>
           <div className="space-y-5 text-lg leading-relaxed text-foreground/90 lg:order-1">
             <p>
-              Lilibet was born in 2010. Her godmother, Karen, is a missionary in Peru who
+              Lilibet Yang grew up in Toronto. Her godmother, Karen, is a missionary in Peru who
               has spent years caring for orphaned children.
             </p>
             <p>
-              In 2019, when Lilibet was nine, she visited and spent the trip at the home
+              When Lilibet Yang was nine, she visited and spent the trip at the home
               Karen runs. She remembers one boy, maybe five or six, who beat her at a card
               game she never learned the rules to and refused to explain, just laughing
               every time she lost.
