@@ -10,7 +10,7 @@ import { ImageInput } from "@/components/admin/media-input";
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { useConfirm } from "@/components/ui/confirm-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -112,7 +112,7 @@ function AdminAboutPage() {
   const [errors, setErrors] = useState<Errors>({});
   const [saving, setSaving] = useState(false);
   const [tab, setTab] = useState("hero");
-  const [removeIndex, setRemoveIndex] = useState<number | null>(null);
+  const confirm = useConfirm();
 
   useEffect(() => {
     if (data?.content && !form) setForm(structuredClone(data.content));
@@ -330,7 +330,15 @@ function AdminAboutPage() {
                   <Button variant="ghost" size="icon" aria-label="Move down" disabled={i === form.founders.length - 1} onClick={() => moveFounder(i, 1)}>
                     <ArrowDown className="size-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" aria-label="Remove founder" className="text-destructive hover:text-destructive" onClick={() => setRemoveIndex(i)}>
+                  <Button variant="ghost" size="icon" aria-label="Remove founder" className="text-destructive hover:text-destructive" onClick={async () => {
+                      const ok = await confirm({
+                        title: "Remove this founder?",
+                        description: "Their section disappears from the About page after you publish.",
+                        confirmLabel: "Remove",
+                        tone: "destructive",
+                      });
+                      if (ok) update((d) => void d.founders.splice(i, 1));
+                    }}>
                     <Trash2 className="size-4" />
                   </Button>
                 </div>
@@ -450,18 +458,6 @@ function AdminAboutPage() {
         </TabsContent>
       </Tabs>
 
-      <ConfirmDialog
-        open={removeIndex !== null}
-        onOpenChange={(o) => !o && setRemoveIndex(null)}
-        title="Remove this founder?"
-        description="Their section disappears from the About page after you publish."
-        confirmLabel="Remove"
-        destructive
-        onConfirm={() => {
-          if (removeIndex !== null) update((d) => void d.founders.splice(removeIndex, 1));
-          setRemoveIndex(null);
-        }}
-      />
     </>
   );
 }
