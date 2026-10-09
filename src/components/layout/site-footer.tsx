@@ -102,7 +102,7 @@ export function SiteFooter() {
                 <li key={link.to}>
                   <Link
                     to={link.to}
-                    className="text-primary-foreground/85 transition-colors hover:text-primary-foreground"
+                    className="relative inline-block text-primary-foreground/85 transition-colors after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:rounded-full after:bg-primary-foreground after:transition-transform after:duration-300 after:ease-out hover:text-primary-foreground hover:after:scale-x-100"
                   >
                     {link.label}
                   </Link>
