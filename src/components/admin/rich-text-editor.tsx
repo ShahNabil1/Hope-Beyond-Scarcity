@@ -67,7 +67,7 @@ export function RichTextEditor({
 
   function setLink() {
     if (!editor) return;
-    const prev = (editor.getAttributes("link").href as string | undefined) ?? "";
+    const prev = (editor.getAttributes("link")["href"] as string | undefined) ?? "";
     const next = window.prompt("Link URL (https://… or /page)", prev);
     if (next === null) return;
     if (!next.trim()) {

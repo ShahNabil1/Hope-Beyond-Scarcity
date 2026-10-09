@@ -59,10 +59,10 @@ function Field({
   htmlFor,
 }: {
   label: string;
-  hint?: string;
-  error?: string;
+  hint?: string | undefined;
+  error?: string | undefined;
   children: ReactNode;
-  htmlFor?: string;
+  htmlFor?: string | undefined;
 }) {
   return (
     <div className="space-y-1.5">
@@ -155,7 +155,8 @@ function AdminAboutPage() {
 
   function updateFounder(index: number, patch: Partial<Founder>) {
     update((d) => {
-      d.founders[index] = { ...d.founders[index], ...patch };
+      const current = d.founders[index];
+      if (current) d.founders[index] = { ...current, ...patch };
     });
   }
 
@@ -163,7 +164,11 @@ function AdminAboutPage() {
     update((d) => {
       const target = index + dir;
       if (target < 0 || target >= d.founders.length) return;
-      [d.founders[index], d.founders[target]] = [d.founders[target], d.founders[index]];
+      const a = d.founders[index];
+      const b = d.founders[target];
+      if (!a || !b) return;
+      d.founders[index] = b;
+      d.founders[target] = a;
     });
   }
 
@@ -175,7 +180,7 @@ function AdminAboutPage() {
     if (keys.length) {
       const firstTab =
         Object.entries(TAB_PREFIX).find(([, prefixes]) =>
-          prefixes.some((p) => keys[0].startsWith(p)),
+          prefixes.some((p) => (keys[0] ?? "").startsWith(p)),
         )?.[0] ?? tab;
       setTab(firstTab);
       toast.error(`${keys.length} field${keys.length > 1 ? "s need" : " needs"} attention`);
@@ -209,7 +214,7 @@ function AdminAboutPage() {
 
   const err = (key: string) => errors[key];
   const tabHasError = (name: string) =>
-    Object.keys(errors).some((k) => TAB_PREFIX[name].some((p) => k.startsWith(p)));
+    Object.keys(errors).some((k) => (TAB_PREFIX[name] ?? []).some((p) => k.startsWith(p)));
 
   const tabs: { value: string; label: string }[] = [
     { value: "hero", label: "Hero" },
