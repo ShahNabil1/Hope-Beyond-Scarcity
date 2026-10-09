@@ -6,6 +6,7 @@ import {
   Repeat,
 
   HandHeart,
+  Info,
   HeartHandshake,
   Inbox,
   LayoutDashboard,
@@ -25,6 +26,7 @@ const description = "Internal content management for programs, news, sponsors, a
 const navItems: AdminNavItem[] = [
   { to: "/admin", label: "Overview", icon: <LayoutDashboard />, exact: true },
   { to: "/admin/analytics", label: "Analytics", icon: <BarChart3 /> },
+  { to: "/admin/about", label: "About page", icon: <Info />, group: "Content" },
   { to: "/admin/programs", label: "Programs", icon: <HeartHandshake />, group: "Content" },
   { to: "/admin/news", label: "News", icon: <Newspaper />, group: "Content" },
   { to: "/admin/sponsors", label: "Sponsors", icon: <Handshake />, group: "Content" },

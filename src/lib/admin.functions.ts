@@ -271,3 +271,38 @@ export const adminBumpContentVersion = createServerFn({ method: "POST" })
     if (error) return { error: error.message };
     return { ok: true as const, version };
   });
+
+/** Staff view of the About page document. */
+export const adminGetAbout = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { requireStaff } = await import("@/lib/admin.server");
+    const { normalizeAbout } = await import("@/lib/about-content");
+    const { admin } = await requireStaff(context.supabase, context.userId);
+    const { data, error } = await admin
+      .from("about_page")
+      .select("content,updated_at")
+      .eq("id", "default")
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    return { content: normalizeAbout(data?.content ?? null), updatedAt: data?.updated_at ?? null };
+  });
+
+export const adminSaveAbout = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator(async (data: unknown) => {
+    const { aboutContentSchema } = await import("@/lib/about-content");
+    return aboutContentSchema.parse(data);
+  })
+  .handler(async ({ data, context }) => {
+    const { requireStaff } = await import("@/lib/admin.server");
+    const { admin } = await requireStaff(context.supabase, context.userId);
+    const { error } = await admin
+      .from("about_page")
+      .upsert({ id: "default", content: data as never });
+    if (error) return { error: error.message };
+    // Bumping the shared version invalidates every visitor's cached copy.
+    const version = Date.now();
+    await admin.from("site_settings").update({ content_version: version }).eq("id", "default");
+    return { ok: true as const, version };
+  });

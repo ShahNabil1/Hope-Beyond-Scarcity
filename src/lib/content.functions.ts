@@ -58,3 +58,8 @@ export const getContentVersion = createServerFn({ method: "GET" }).handler(async
   const { fetchContentVersion } = await import("./content.server");
   return fetchContentVersion();
 });
+
+export const getAboutPage = createServerFn({ method: "GET" }).handler(async () => {
+  const { fetchAboutPage } = await import("./content.server");
+  return fetchAboutPage();
+});
