@@ -43,7 +43,7 @@ export const Route = createFileRoute("/")({
   errorComponent: ({ error }) => (
     <div role="alert" className="mx-auto max-w-3xl px-4 py-24 text-center">
       <h1 className="text-2xl font-bold text-foreground">We could not load the homepage</h1>
-      <p className="mt-3 text-muted-foreground">{error.message}</p>
+      <p className="mt-3 text-muted-foreground">{error instanceof Error ? error.message : "Please try again."}</p>
     </div>
   ),
   notFoundComponent: () => (
