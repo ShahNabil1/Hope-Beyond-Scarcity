@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { aboutContentSchema } from "@/lib/about-content";
 
 const settingsSchema = z.object({
   emergency_active: z.boolean(),
@@ -290,10 +291,7 @@ export const adminGetAbout = createServerFn({ method: "POST" })
 
 export const adminSaveAbout = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator(async (data: unknown) => {
-    const { aboutContentSchema } = await import("@/lib/about-content");
-    return aboutContentSchema.parse(data);
-  })
+  .inputValidator((data: unknown) => aboutContentSchema.parse(data))
   .handler(async ({ data, context }) => {
     const { requireStaff } = await import("@/lib/admin.server");
     const { admin } = await requireStaff(context.supabase, context.userId);
