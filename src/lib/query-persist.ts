@@ -23,6 +23,7 @@ const PERSISTED_KEYS = [
   "sponsors",
   "volunteer-roles",
   "legal-pages",
+  "about-page",
 ];
 
 /** Bump to drop every persisted cache after a shape change (code-side schema). */

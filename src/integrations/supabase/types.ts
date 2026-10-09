@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      about_page: {
+        Row: {
+          content: Json
+          created_at: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          content?: Json
+          created_at?: string
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          content?: Json
+          created_at?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       account_deletion_requests: {
         Row: {
           completed_at: string | null

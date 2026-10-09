@@ -174,3 +174,14 @@ export async function fetchContentVersion() {
   if (error) throw new Error(error.message);
   return { version: Number(data?.content_version ?? 1), updatedAt: data?.updated_at ?? null };
 }
+
+export async function fetchAboutPage() {
+  const { normalizeAbout } = await import("./about-content");
+  const { data, error } = await publicClient()
+    .from("about_page")
+    .select("content")
+    .eq("id", "default")
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  return normalizeAbout(data?.content ?? null);
+}
