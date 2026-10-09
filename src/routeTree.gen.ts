@@ -34,6 +34,7 @@ import { Route as LegalSlugRouteImport } from './routes/legal.$slug'
 import { Route as NewsIndexRouteImport } from './routes/news.index'
 import { Route as NewsSlugRouteImport } from './routes/news.$slug'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as AuthenticatedAdminAboutRouteImport } from './routes/_authenticated/admin.about'
 import { Route as AuthenticatedAdminAnalyticsRouteImport } from './routes/_authenticated/admin.analytics'
 import { Route as AuthenticatedAdminApplicationsRouteImport } from './routes/_authenticated/admin.applications'
 import { Route as AuthenticatedAdminDonationsRouteImport } from './routes/_authenticated/admin.donations'
@@ -179,6 +180,11 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminAboutRoute = AuthenticatedAdminAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminAnalyticsRoute =
   AuthenticatedAdminAnalyticsRouteImport.update({
     id: '/analytics',
@@ -320,6 +326,7 @@ export interface FileRoutesByFullPath {
   '/auth/': typeof AuthIndexRoute
   '/donate/': typeof DonateIndexRoute
   '/news/': typeof NewsIndexRoute
+  '/admin/about': typeof AuthenticatedAdminAboutRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/applications': typeof AuthenticatedAdminApplicationsRoute
   '/admin/donations': typeof AuthenticatedAdminDonationsRoute
@@ -364,6 +371,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthIndexRoute
   '/donate': typeof DonateIndexRoute
   '/news': typeof NewsIndexRoute
+  '/admin/about': typeof AuthenticatedAdminAboutRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/applications': typeof AuthenticatedAdminApplicationsRoute
   '/admin/donations': typeof AuthenticatedAdminDonationsRoute
@@ -411,6 +419,7 @@ export interface FileRoutesById {
   '/auth/': typeof AuthIndexRoute
   '/donate/': typeof DonateIndexRoute
   '/news/': typeof NewsIndexRoute
+  '/_authenticated/admin/about': typeof AuthenticatedAdminAboutRoute
   '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/_authenticated/admin/applications': typeof AuthenticatedAdminApplicationsRoute
   '/_authenticated/admin/donations': typeof AuthenticatedAdminDonationsRoute
@@ -459,6 +468,7 @@ export interface FileRouteTypes {
     | '/auth/'
     | '/donate/'
     | '/news/'
+    | '/admin/about'
     | '/admin/analytics'
     | '/admin/applications'
     | '/admin/donations'
@@ -503,6 +513,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/donate'
     | '/news'
+    | '/admin/about'
     | '/admin/analytics'
     | '/admin/applications'
     | '/admin/donations'
@@ -549,6 +560,7 @@ export interface FileRouteTypes {
     | '/auth/'
     | '/donate/'
     | '/news/'
+    | '/_authenticated/admin/about'
     | '/_authenticated/admin/analytics'
     | '/_authenticated/admin/applications'
     | '/_authenticated/admin/donations'
@@ -775,6 +787,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/about': {
+      id: '/_authenticated/admin/about'
+      path: '/about'
+      fullPath: '/admin/about'
+      preLoaderRoute: typeof AuthenticatedAdminAboutRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/analytics': {
       id: '/_authenticated/admin/analytics'
       path: '/analytics'
@@ -937,6 +956,7 @@ const AuthenticatedAdminNewsRouteWithChildren =
   )
 
 interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminAboutRoute: typeof AuthenticatedAdminAboutRoute
   AuthenticatedAdminAnalyticsRoute: typeof AuthenticatedAdminAnalyticsRoute
   AuthenticatedAdminApplicationsRoute: typeof AuthenticatedAdminApplicationsRoute
   AuthenticatedAdminDonationsRoute: typeof AuthenticatedAdminDonationsRoute
@@ -955,6 +975,7 @@ interface AuthenticatedAdminRouteChildren {
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminAboutRoute: AuthenticatedAdminAboutRoute,
   AuthenticatedAdminAnalyticsRoute: AuthenticatedAdminAnalyticsRoute,
   AuthenticatedAdminApplicationsRoute: AuthenticatedAdminApplicationsRoute,
   AuthenticatedAdminDonationsRoute: AuthenticatedAdminDonationsRoute,
