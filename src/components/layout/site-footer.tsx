@@ -123,7 +123,10 @@ export function SiteFooter() {
             </li>
             <li className="flex gap-2.5">
               <Mail className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-              <a href={`mailto:${email}`} className="hover:underline">
+              <a
+                href={`mailto:${email}`}
+                className="relative inline-block after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:rounded-full after:bg-primary-foreground after:transition-transform after:duration-300 after:ease-out hover:after:scale-x-100"
+              >
                 {email}
               </a>
             </li>
@@ -143,13 +146,22 @@ export function SiteFooter() {
           </p>
 
           <nav className="order-3 flex flex-wrap gap-4 md:order-3" aria-label="Legal">
-            <Link to="/terms" className="hover:text-primary-foreground">
+            <Link
+              to="/terms"
+              className="relative inline-block transition-colors after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:rounded-full after:bg-primary-foreground after:transition-transform after:duration-300 after:ease-out hover:text-primary-foreground hover:after:scale-x-100"
+            >
               Terms of Use
             </Link>
-            <Link to="/privacy" className="hover:text-primary-foreground">
+            <Link
+              to="/privacy"
+              className="relative inline-block transition-colors after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:rounded-full after:bg-primary-foreground after:transition-transform after:duration-300 after:ease-out hover:text-primary-foreground hover:after:scale-x-100"
+            >
               Privacy Policy
             </Link>
-            <Link to="/refund" className="hover:text-primary-foreground">
+            <Link
+              to="/refund"
+              className="relative inline-block transition-colors after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:rounded-full after:bg-primary-foreground after:transition-transform after:duration-300 after:ease-out hover:text-primary-foreground hover:after:scale-x-100"
+            >
               Refund Policy
             </Link>
           </nav>
