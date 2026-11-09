@@ -2,6 +2,8 @@
 
 The website and donation portal for Hope Beyond Scarcity, a Canadian not-for-profit. It uses TanStack Start, React, and Supabase.
 
+[Visit the website](https://hopebeyondscarcity.com/)
+
 ## Local development
 
 Install Node.js and Bun, then run these commands from the repository directory:
