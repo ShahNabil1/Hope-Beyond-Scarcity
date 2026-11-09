@@ -44,8 +44,7 @@ export async function upsertSubscriptionFromStripe(subscription: any, env: Strip
       stripe_subscription_id: subscription.id,
       stripe_customer_id: customerId,
       product_id: typeof item?.price?.product === "string" ? item.price.product : null,
-      price_id:
-        item?.price?.lookup_key ?? item?.price?.metadata?.lovable_external_id ?? item?.price?.id ?? null,
+      price_id: item?.price?.lookup_key ?? item?.price?.id ?? null,
       amount_cents: item?.price?.unit_amount ?? null,
       currency: item?.price?.currency ?? "cad",
       status: subscription.status,
