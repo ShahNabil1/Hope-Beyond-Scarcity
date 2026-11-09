@@ -1,26 +1,14 @@
 # Hope Beyond Scarcity
 
-hi
+The website and donation portal for Hope Beyond Scarcity, a Canadian not-for-profit. It uses TanStack Start, React, and Supabase.
 
-This project was built with [Lovable](https://lovable.dev).
+## Local development
 
-**Live app**: https://hope-beyond-scarcity.lovable.app
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/a1c269a3-86d2-45c0-9c54-852da7a6fd36).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+Install Node.js and Bun, then run these commands from the repository directory:
 
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
+bun install --frozen-lockfile
+bun run dev
 ```
+
+Run `bun run build` to create a production build. Google Analytics is optional and uses `VITE_GOOGLE_ANALYTICS_MEASUREMENT_ID`.

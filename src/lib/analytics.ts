@@ -17,7 +17,7 @@ import {
 } from "@/lib/consent";
 
 export const GA_MEASUREMENT_ID =
-  (import.meta.env["VITE_LOVABLE_CONNECTOR_GOOGLE_ANALYTICS_API_KEY"] as string | undefined) ?? "";
+  (import.meta.env["VITE_GOOGLE_ANALYTICS_MEASUREMENT_ID"] as string | undefined) ?? "";
 
 /** Same-origin ingest endpoint (TanStack public server route). */
 const TRACK_ENDPOINT = "/api/public/track";
