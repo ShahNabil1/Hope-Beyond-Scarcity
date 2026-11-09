@@ -1,5 +1,3 @@
-const GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
-
 export const RECEIPT_FROM = "Hope Beyond Scarcity <no-reply@hopebeyondscarcity.com>";
 
 export type EmailAttachment = {
@@ -15,18 +13,16 @@ export async function sendEmail(options: {
   text?: string;
   attachments?: EmailAttachment[];
 }): Promise<{ sent: true; id?: string } | { sent: false; error: string }> {
-  const lovableApiKey = process.env["LOVABLE_API_KEY"];
   const resendKey = process.env["RESEND_API_KEY"];
-  if (!lovableApiKey || !resendKey) {
-    return { sent: false, error: "Email is not configured (missing connector credentials)" };
+  if (!resendKey) {
+    return { sent: false, error: "Email is not configured (missing RESEND_API_KEY)" };
   }
 
-  const response = await fetch(`${GATEWAY_URL}/emails`, {
+  const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${lovableApiKey}`,
-      "X-Connection-Api-Key": resendKey,
+      Authorization: `Bearer ${resendKey}`,
     },
     body: JSON.stringify({
       from: RECEIPT_FROM,
